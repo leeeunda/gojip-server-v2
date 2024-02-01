@@ -2,14 +2,17 @@ spring:
   config:
     activate:
       on-profile: local
+
   datasource:
     url: jdbc:h2:tcp://localhost/~/gojip
     username: sa
-    password:
+    password: 1234
     driver-class-name: org.h2.Driver
+
   h2:
     console:
       enabled: true
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -19,5 +22,35 @@ spring:
         show_sql: true
         format_sql: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: 8fea833f382545a59b5d3a4544da1836
+            redirect-uri: http://localhost:8080/oauth2/callback/kakao
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            client-name: Kakao
+            scope:
+              - profile_nickname
+              - account_email
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
 
+
+
+jwt:
+  secret: gojipserverjwtsecurity
+  access:
+    header: Authorization
+  refresh:
+    header: Authorization-refresh
+
+server:
+  port: 8080
 

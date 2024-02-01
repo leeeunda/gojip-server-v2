@@ -1,6 +1,7 @@
 package com.example.gojipserver.domain.checklist.entity;
 
 import com.example.gojipserver.domain.checklist.entity.status.Building;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
@@ -13,4 +14,7 @@ public class RoomCondition {
     private Building building; //건물상태
 
     private int stationDistance; //역과의 거리
+
+    @Embedded
+    private Noise noise; //소음
 }

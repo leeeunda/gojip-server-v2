@@ -25,13 +25,7 @@ public class CheckList {
     private Cost cost; //비용
 
     @Embedded
-    private ManagementCostIncludeOption managementCostIncludeOption; //관리비 포함 옵션
-
-    @Embedded
     private RoomCondition roomCondition; //집 조건
-
-    @Embedded
-    private Noise noise; //소음
 
     @Embedded
     private RoomStatus roomStatus; //방 상태

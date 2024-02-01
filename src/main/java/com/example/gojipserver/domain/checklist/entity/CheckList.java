@@ -1,5 +1,6 @@
 package com.example.gojipserver.domain.checklist.entity;
 
+import com.example.gojipserver.domain.checklist.entity.status.Building;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,31 +19,35 @@ public class CheckList {
     private Long id;
 
     @OneToOne
-    private Address address;
+    private Address address; //주소
 
-    private int deposit; //보증금
-
-    private int monthlyCost; //월세
-
-    private int managementCost; //관리비
+    @Embedded
+    private Cost cost; //비용
 
     @Embedded
     private ManagementCostIncludeOption managementCostIncludeOption; //관리비 포함 옵션
 
     @Embedded
-    private Status status;
+    private RoomCondition roomCondition; //집 조건
 
     @Embedded
     private Noise noise; //소음
 
     @Embedded
-    private RoomOption roomOption;
+    private RoomStatus roomStatus; //방 상태
 
-    private int area; //평수
+    @Embedded
+    private BathRoomStatus bathRoomStatus; //화장실 상태
 
-    private int stationDistance; //역과의 거리
+    @Embedded
+    private InnerOption innerOption; //내부 옵션
 
-    private String text; //이미지 설명
+    @Embedded
+    private OuterOption outerOption; //외부 옵션
+
+    private String note; //추가 사항
+
+    // imgUrl 필요
 
     @ManyToOne(fetch = LAZY)
     private Collection collection;

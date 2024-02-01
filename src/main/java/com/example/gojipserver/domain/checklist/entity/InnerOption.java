@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RoomOption {
+public class InnerOption {
 
 
     private boolean airConditioner; //에어컨
@@ -23,6 +23,8 @@ public class RoomOption {
 
     private boolean bed; //침대
 
+    private boolean desk; //책상
+
     private boolean closet; //옷장
 
     private boolean tv; //TV
@@ -35,15 +37,4 @@ public class RoomOption {
 
     private boolean ventilator; //환풍기
 
-    private boolean parkingLot; //주차장
-
-    private boolean cctv; //cctv
-
-    private boolean elevator; //엘리베이터
-
-    private boolean managementOffice; //관리실
-
-    private boolean commonEntrance; //공동현관
-
-    private boolean separateDischargeSpace; //분리배출공간
 }

@@ -1,4 +1,4 @@
-package com.example.gojipserver.domain.checklist.entity;
+package com.example.gojipserver.domain.address.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

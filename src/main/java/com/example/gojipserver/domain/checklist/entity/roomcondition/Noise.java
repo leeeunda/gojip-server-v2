@@ -1,4 +1,4 @@
-package com.example.gojipserver.domain.checklist.entity;
+package com.example.gojipserver.domain.checklist.entity.roomcondition;
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;

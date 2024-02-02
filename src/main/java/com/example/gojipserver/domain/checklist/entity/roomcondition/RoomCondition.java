@@ -1,6 +1,5 @@
-package com.example.gojipserver.domain.checklist.entity;
+package com.example.gojipserver.domain.checklist.entity.roomcondition;
 
-import com.example.gojipserver.domain.checklist.entity.status.Building;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

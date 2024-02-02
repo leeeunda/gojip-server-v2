@@ -1,6 +1,11 @@
 package com.example.gojipserver.domain.checklist.entity;
 
-import com.example.gojipserver.domain.checklist.entity.status.Building;
+import com.example.gojipserver.domain.checklist.entity.bathroomstatus.BathRoomStatus;
+import com.example.gojipserver.domain.checklist.entity.cost.Cost;
+import com.example.gojipserver.domain.checklist.entity.option.InnerOption;
+import com.example.gojipserver.domain.checklist.entity.option.OuterOption;
+import com.example.gojipserver.domain.checklist.entity.roomcondition.RoomCondition;
+import com.example.gojipserver.domain.checklist.entity.roomstatus.RoomStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

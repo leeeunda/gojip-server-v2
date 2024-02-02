@@ -1,4 +1,4 @@
-package com.example.gojipserver.domain.checklist.entity.status;
+package com.example.gojipserver.domain.checklist.entity.roomstatus;
 
 public enum Light {
 

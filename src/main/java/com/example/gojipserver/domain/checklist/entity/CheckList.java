@@ -1,11 +1,14 @@
 package com.example.gojipserver.domain.checklist.entity;
 
+import com.example.gojipserver.domain.address.entity.Address;
 import com.example.gojipserver.domain.checklist.entity.bathroomstatus.BathRoomStatus;
 import com.example.gojipserver.domain.checklist.entity.cost.Cost;
 import com.example.gojipserver.domain.checklist.entity.option.InnerOption;
 import com.example.gojipserver.domain.checklist.entity.option.OuterOption;
 import com.example.gojipserver.domain.checklist.entity.roomcondition.RoomCondition;
 import com.example.gojipserver.domain.checklist.entity.roomstatus.RoomStatus;
+import com.example.gojipserver.domain.collection.entity.Collection;
+import com.example.gojipserver.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,6 +25,10 @@ public class CheckList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "checklist_id")
     private Long id;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @OneToOne
     private Address address; //주소

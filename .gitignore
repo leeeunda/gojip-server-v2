@@ -1,4 +1,3 @@
-/src/main/resources/application-dev.yml
 HELP.md
 .gradle
 build/
@@ -36,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+### 설정 파일 ###
+/src/main/resources/application-dev.yml
+/src/main/resources/application-aws.yml
+/src/main/resources/application-credentials.yml

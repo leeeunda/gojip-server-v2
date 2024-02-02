@@ -1,14 +1,13 @@
-package com.example.gojipserver.global.security.handler;
+package com.example.gojipserver.global.config.security.handler;
 
 
 import com.example.gojipserver.domain.user.repository.UserRepository;
-import com.example.gojipserver.global.security.config.ExpireTime;
-import com.example.gojipserver.global.security.jwt.JwtTokenProvider;
+import com.example.gojipserver.global.entity.ExpireTime;
+import com.example.gojipserver.global.config.security.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;

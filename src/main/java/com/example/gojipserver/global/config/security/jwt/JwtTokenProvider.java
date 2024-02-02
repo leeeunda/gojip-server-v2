@@ -1,9 +1,8 @@
-package com.example.gojipserver.global.security.jwt;
+package com.example.gojipserver.global.config.security.jwt;
 
 
-import com.example.gojipserver.global.security.config.ExpireTime;
+import com.example.gojipserver.global.entity.ExpireTime;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

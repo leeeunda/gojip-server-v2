@@ -1,4 +1,4 @@
-package com.example.gojipserver.global.security.jwt;
+package com.example.gojipserver.global.config.security.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -23,7 +23,7 @@ public class CheckList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "checklist_id")
+    @Column(name = "check_list_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)

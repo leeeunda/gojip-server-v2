@@ -1,9 +1,9 @@
-package com.example.gojipserver.global.security.config;
+package com.example.gojipserver.global.config;
 
 import com.example.gojipserver.global.oauth2.service.CustomOAuth2UserService;
-import com.example.gojipserver.global.security.handler.OAuth2AuthenticationSuccessHandler;
-import com.example.gojipserver.global.security.jwt.JwtAuthenticationFilter;
-import com.example.gojipserver.global.security.jwt.JwtTokenProvider;
+import com.example.gojipserver.global.config.security.handler.OAuth2AuthenticationSuccessHandler;
+import com.example.gojipserver.global.config.security.jwt.JwtAuthenticationFilter;
+import com.example.gojipserver.global.config.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

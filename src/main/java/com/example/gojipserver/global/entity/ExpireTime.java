@@ -1,4 +1,4 @@
-package com.example.gojipserver.global.security.config;
+package com.example.gojipserver.global.entity;
 
 public class ExpireTime {
 

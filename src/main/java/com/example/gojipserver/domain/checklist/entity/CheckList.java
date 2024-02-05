@@ -30,8 +30,9 @@ public class CheckList {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne
-    private Address address; //주소
+
+    @ManyToOne(fetch = LAZY)
+    private Collection collection;
 
     @Embedded
     private Cost cost; //비용
@@ -52,11 +53,8 @@ public class CheckList {
     private OuterOption outerOption; //외부 옵션
 
     private String note; //추가 사항
+    
 
-    // imgUrl 필요
-
-    @ManyToOne(fetch = LAZY)
-    private Collection collection;
 
 
 }

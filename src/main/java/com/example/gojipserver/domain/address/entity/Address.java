@@ -1,9 +1,7 @@
 package com.example.gojipserver.domain.address.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.gojipserver.domain.checklist.entity.CheckList;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,5 +14,13 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "check_list_id")
+    private CheckList checkList;
+
+    private double latitude; //위도
+
+    private double longitude; //경도
 
 }

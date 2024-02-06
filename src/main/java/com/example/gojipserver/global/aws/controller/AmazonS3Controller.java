@@ -26,6 +26,16 @@ public class AmazonS3Controller {
     }
 
     /**
+     * S3에 업로드된 단일 파일 조회
+     * @param fileName
+     * @return
+     */
+    @GetMapping("/files")
+    public String getFile(@RequestParam("fileName") String fileName) {
+        return awsS3Service.getFile(fileName);
+    }
+
+    /**
      * Amazon S3에 업로드 된 파일을 삭제
      *
      * @return 성공 시 200 Success

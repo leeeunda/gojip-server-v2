@@ -1,4 +1,4 @@
-package com.example.gojipserver.domain.img.entity;
+package com.example.gojipserver.domain.roomimage.entity;
 
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import jakarta.persistence.*;
@@ -24,6 +24,8 @@ public class RoomImage {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "check_list_id", nullable = false)
     private CheckList checkList;
+
+
 
     public RoomImage(String imgUrl, CheckList checkList) {
         this.imgUrl = imgUrl;

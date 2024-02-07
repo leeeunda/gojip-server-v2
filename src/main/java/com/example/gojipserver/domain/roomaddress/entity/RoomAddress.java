@@ -1,6 +1,5 @@
-package com.example.gojipserver.domain.address.entity;
+package com.example.gojipserver.domain.roomaddress.entity;
 
-import com.example.gojipserver.domain.checklist.entity.CheckList;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,15 +8,14 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class Address {
+public class RoomAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "room_address_id")
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "check_list_id")
-    private CheckList checkList;
+    private String addressName;
 
     private double latitude; //위도
 

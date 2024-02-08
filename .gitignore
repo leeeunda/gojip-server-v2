@@ -41,3 +41,5 @@ out/
 /src/main/resources/application-dev.yml
 /src/main/resources/application-aws.yml
 /src/main/resources/application-credentials.yml
+/src/main/resources/application-oauth.yml
+/src/main/resources/application-jwt.yml

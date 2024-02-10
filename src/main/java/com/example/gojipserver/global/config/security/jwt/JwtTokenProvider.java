@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class JwtTokenProvider {
-
     private static final String AUTH_KEY = "AUTHORITIES";
     private static final String BEARER_TYPE = "Bearer";
     private static final String TYPE_ACCESS = "access";

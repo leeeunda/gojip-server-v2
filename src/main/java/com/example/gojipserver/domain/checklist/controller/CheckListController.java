@@ -19,18 +19,13 @@ public class CheckListController {
 
     private final CheckListService checkListService;
 
+    //체크리스트 등록
     @PostMapping
     public void saveCheckList(@AuthenticationPrincipal UserPrincipal user, @RequestBody CheckListSaveDto checkListSaveDto) {
         Long userId = user.getId();
 
     }
-//
-//    // 체크리스트 등록
-//    @PostMapping()
-//    public String checkListPost(@ModelAttribute("checkListDto") CheckListDto checkListDto){
-//        return ResponseEntity<>(messageDto, headers,)
-//    }
-//
+
 //    // 체크리스트 전체 조회
 //    @GetMapping()
 //    public String checkListAllGet(){

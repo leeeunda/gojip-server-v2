@@ -1,6 +1,7 @@
 package com.example.gojipserver.global.config;
 
-import com.example.gojipserver.global.oauth2.service.CustomOAuth2UserService;
+import com.example.gojipserver.domain.oauth2.service.CustomOAuth2UserService;
+import com.example.gojipserver.domain.oauth2.service.CustomUserDetailsService;
 import com.example.gojipserver.global.config.security.handler.OAuth2AuthenticationSuccessHandler;
 import com.example.gojipserver.global.config.security.jwt.JwtAuthenticationFilter;
 import com.example.gojipserver.global.config.security.jwt.JwtTokenProvider;

@@ -24,4 +24,47 @@ public class CheckListController {
         Long userId = user.getId();
 
     }
+//
+//    // 체크리스트 등록
+//    @PostMapping()
+//    public String checkListPost(@ModelAttribute("checkListDto") CheckListDto checkListDto){
+//        return ResponseEntity<>(messageDto, headers,)
+//    }
+//
+//    // 체크리스트 전체 조회
+//    @GetMapping()
+//    public String checkListAllGet(){
+//        return
+//    }
+//
+//    // 체크리스트 단일 조회
+//    @GetMapping("/{id}")
+//    public String checkListOneGet(){
+//        return
+//    }
+//
+//    // 체크리스트 구별 조회 -> 수정 가능
+//    @GetMapping("/checklists?city=\"동작구\"")
+//    public String checkListCityGet(){
+//
+//        return
+//    }
+//
+//    // 체크리스트 컬렉션 별 조회
+//    @GetMapping("/{collection_id}")
+//    public String checkListCollectionGet(){
+//        return
+//    }
+//
+//    // 체크리스트 수정
+//    @PutMapping("/{checklist_id}")
+//    public String checkListCollectionGet(){
+//        return
+//    }
+//
+//    // 체크리스트 삭제
+//    @DeleteMapping("/{checklist_id}")
+//    public String checkListDelete(){
+//        return
+//    }
 }

@@ -1,12 +1,12 @@
-package com.example.gojipserver.global.oauth2.service;
+package com.example.gojipserver.domain.oauth2.service;
 
 import com.example.gojipserver.domain.user.entity.Role;
 import com.example.gojipserver.domain.user.entity.User;
 import com.example.gojipserver.domain.user.repository.UserRepository;
-import com.example.gojipserver.global.oauth2.entity.AuthProvider;
-import com.example.gojipserver.global.oauth2.entity.UserPrincipal;
-import com.example.gojipserver.global.oauth2.userInfo.OAuth2UserInfo;
-import com.example.gojipserver.global.oauth2.userInfo.OAuth2UserInfoFactory;
+import com.example.gojipserver.domain.oauth2.entity.AuthProvider;
+import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
+import com.example.gojipserver.domain.oauth2.userInfo.OAuth2UserInfo;
+import com.example.gojipserver.domain.oauth2.userInfo.OAuth2UserInfoFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -41,6 +41,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             if (!user.getEmail().equals(oAuth2UserInfo.getEmail())){
                 throw new RuntimeException("Email already signed up.");
             }
+            updateUser(user, oAuth2UserInfo);
         }
         //가입되지 않은 경우
         else {
@@ -57,5 +58,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .build();
 
         return userRepository.save(user);
+    }
+
+    private User updateUser(User user, OAuth2UserInfo oAuth2UserInfo) {
+        user.updateNickname(oAuth2UserInfo.getName());
+        return user;
     }
 }

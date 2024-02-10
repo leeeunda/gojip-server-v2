@@ -1,4 +1,4 @@
-package com.example.gojipserver.global.oauth2.entity;
+package com.example.gojipserver.domain.oauth2.entity;
 
 import com.example.gojipserver.domain.user.entity.Role;
 import com.example.gojipserver.domain.user.entity.User;
@@ -36,6 +36,14 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         UserPrincipal userPrincipal = new UserPrincipal(user.getId(), user.getEmail(), authorities);
         userPrincipal.setAttributes(attributes);
         return userPrincipal;
+    }
+
+    public static UserPrincipal create(User user) {
+        return new UserPrincipal(
+                user.getId(),
+                user.getEmail(),
+                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.name()))
+        );
     }
 
     @Override

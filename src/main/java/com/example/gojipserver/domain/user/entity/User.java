@@ -34,4 +34,8 @@ public class User {
     public void updateRefreshToken(String updateRefreshToken) {
         this.refreshToken = updateRefreshToken;
     }
+
+    public void updateNickname(String name) {
+        this.nickname = name;
+    }
 }

@@ -4,13 +4,10 @@ import com.example.gojipserver.domain.collection.dto.CollectionSaveDto;
 import com.example.gojipserver.domain.collection.repository.CollectionRepository;
 import com.example.gojipserver.domain.user.entity.User;
 import com.example.gojipserver.domain.user.repository.UserRepository;
-import com.example.gojipserver.global.oauth2.entity.UserPrincipal;
+import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 
 @Service

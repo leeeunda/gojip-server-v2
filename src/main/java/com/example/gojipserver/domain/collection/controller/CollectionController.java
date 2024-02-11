@@ -2,7 +2,7 @@ package com.example.gojipserver.domain.collection.controller;
 
 import com.example.gojipserver.domain.collection.dto.CollectionSaveDto;
 import com.example.gojipserver.domain.collection.service.CollectionService;
-import com.example.gojipserver.global.oauth2.entity.UserPrincipal;
+import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;

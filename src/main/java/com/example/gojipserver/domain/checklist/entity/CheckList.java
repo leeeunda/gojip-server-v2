@@ -40,7 +40,7 @@ public class CheckList {
     private User user;
 
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<CheckListCollection> collection = new ArrayList<>();
+    private List<CheckListCollection> checkListCollections = new ArrayList<>();
 
     @OneToMany(mappedBy = "checkList",orphanRemoval = true, cascade = CascadeType.ALL)
     private List<RoomImage> roomImages = new ArrayList<>();
@@ -66,20 +66,16 @@ public class CheckList {
     private String note; //추가 사항
 
     // 연관관계 편의 메서드
-    public void setCollection(List<CheckListCollection> list){
-        for (CheckListCollection checkList_Collection : list){
-            if(!this.collection.contains(checkList_Collection)){
-                this.collection.add(checkList_Collection);
-                checkList_Collection.setCheckList(this);
-            }
-        }
+    public void addCheckListCollection(CheckListCollection checkListCollection) {
+        this.checkListCollections.add(checkListCollection);
+        checkListCollection.setCheckList(this);
     }
 
     @Builder
-    public CheckList(RoomAddress roomAddress, User user, List<CheckListCollection> collection, List<RoomImage> roomImages, Cost cost, RoomCondition roomCondition, RoomStatus roomStatus, BathRoomStatus bathRoomStatus, InnerOption innerOption, OuterOption outerOption, String note) {
+    public CheckList(RoomAddress roomAddress, User user, List<CheckListCollection> checkListCollections, List<RoomImage> roomImages, Cost cost, RoomCondition roomCondition, RoomStatus roomStatus, BathRoomStatus bathRoomStatus, InnerOption innerOption, OuterOption outerOption, String note) {
         this.roomAddress = roomAddress;
         this.user = user;
-        this.collection = collection;
+        this.checkListCollections = checkListCollections;
         this.roomImages = roomImages;
         this.cost = cost;
         this.roomCondition = roomCondition;

@@ -1,9 +1,12 @@
 package com.example.gojipserver.domain.user.entity;
 
+import com.example.gojipserver.domain.checklist.entity.CheckList;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -15,6 +18,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "user")
+    private List<CheckList> checkLists = new ArrayList<>();
 
     private String email;
     private String nickname;

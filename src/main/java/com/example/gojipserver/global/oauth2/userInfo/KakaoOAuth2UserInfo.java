@@ -1,4 +1,4 @@
-package com.example.gojipserver.global.oauth2.userInfo;
+package com.example.gojipserver.domain.oauth2.userInfo;
 
 import java.util.Map;
 

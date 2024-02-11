@@ -13,6 +13,7 @@ import lombok.*;
 public class CheckListCollection {
 
     //기본키 매핑
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="checklist_collection_id")
     private Long id;

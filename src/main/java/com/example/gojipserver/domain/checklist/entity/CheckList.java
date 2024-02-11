@@ -66,6 +66,7 @@ public class CheckList {
     private String note; //추가 사항
 
     // 연관관계 편의 메서드
+
     public void addCheckListCollection(CheckListCollection checkListCollection) {
         this.checkListCollections.add(checkListCollection);
         checkListCollection.setCheckList(this);

@@ -32,6 +32,7 @@ public class Collection {
     private String collectionName;
 
     //연관관계 편의 메서드
+
     public void addCheckListCollection(CheckListCollection checkListCollection) {
         this.checkListCollections.add(checkListCollection);
         checkListCollection.setCollection(this);

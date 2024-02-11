@@ -15,7 +15,7 @@ public class MessageDto {
 
     public MessageDto() {
         this.status = 404;
-        this.message = "접근 실패";
+        this.message = null;
         this.data = null;
     }
 

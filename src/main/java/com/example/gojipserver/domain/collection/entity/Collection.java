@@ -30,6 +30,7 @@ public class Collection {
     @OneToMany(mappedBy = "collection")
     private List<CheckList> checkLists = new ArrayList<>();
 
+    @Column(nullable = false)
     private String collectionName;
 
     @Builder

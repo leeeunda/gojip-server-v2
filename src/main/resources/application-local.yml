@@ -7,6 +7,7 @@ spring:
       - classpath:application-credentials.yml
       - classpath:application-oauth.yml
       - classpath:application-jwt.yml
+      - classpath:application-swagger.yml
 
 
   datasource:

@@ -1,6 +1,7 @@
-package com.example.gojipserver.domain.oauth2.userInfo;
+package com.example.gojipserver.global.oauth2.userInfo;
 
-import com.example.gojipserver.domain.oauth2.entity.AuthProvider;
+import com.example.gojipserver.global.oauth2.entity.AuthProvider;
+import com.example.gojipserver.global.oauth2.userInfo.OAuth2UserInfo;
 
 import java.util.Map;
 

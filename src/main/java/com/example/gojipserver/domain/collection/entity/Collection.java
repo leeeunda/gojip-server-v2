@@ -29,9 +29,7 @@ public class Collection {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "users_id")
     private User user;
-
-    @OneToMany(mappedBy = "collection")
-    private List<CheckList> checkLists = new ArrayList<>();
+    
 
     @Column(nullable = false)
     private String collectionName;

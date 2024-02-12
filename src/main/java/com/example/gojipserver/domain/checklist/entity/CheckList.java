@@ -65,6 +65,8 @@ public class CheckList {
 
     private String note; //추가 사항
 
+    private String imgDescription; //이미지 설명
+
     // 연관관계 편의 메서드
 
     public void addCheckListCollection(CheckListCollection checkListCollection) {

@@ -1,5 +1,6 @@
 package com.example.gojipserver.domain.collection.service;
 
+import com.example.gojipserver.domain.collection.dto.CollectionResponseDto;
 import com.example.gojipserver.domain.collection.dto.CollectionSaveDto;
 import com.example.gojipserver.domain.collection.entity.Collection;
 import com.example.gojipserver.domain.collection.repository.CollectionRepository;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 
 
 @Service
@@ -42,4 +44,10 @@ public class CollectionService {
 
         collectionRepository.delete(findCollection);
     }
+
+    // TODO:
+    public List<CollectionResponseDto> getCollections(Long requestUserId) {
+        return collectionRepository.findCollectionsByUserId(requestUserId);
+    }
+
 }

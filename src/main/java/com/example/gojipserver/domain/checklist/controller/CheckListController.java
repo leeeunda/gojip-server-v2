@@ -2,7 +2,7 @@ package com.example.gojipserver.domain.checklist.controller;
 
 import com.example.gojipserver.domain.checklist.dto.CheckListSaveDto;
 import com.example.gojipserver.domain.checklist.service.CheckListService;
-import com.example.gojipserver.global.oauth2.entity.UserPrincipal;
+import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,8 +18,9 @@ public class CheckListController {
 
     //체크리스트 등록
     @PostMapping
-    public void saveCheckList(@AuthenticationPrincipal UserPrincipal user, @RequestBody CheckListSaveDto checkListSaveDto) {
-        Long userId = user.getId();
+    public void saveCheckList(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody CheckListSaveDto checkListSaveDto) {
+
+
     }
 
     // 컬렉션 등록

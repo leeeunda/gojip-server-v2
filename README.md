@@ -10,3 +10,7 @@ type : subject (태그:제목)
 | refactor | 코드 리펙토링 |
 | test | 테스트코드, 리펙토링 테스트 코드 추가 |
 | chore | 빌드 업무 수정, 패키지 매니저 수정 |
+| comment | 주석 추가 및 변경 |
+| test | 테스트 코드 추가, 변경, 리팩토링 |
+| rename | 파일 or 폴더명 수정 및 이동 |
+| remove | 파일 삭제 |

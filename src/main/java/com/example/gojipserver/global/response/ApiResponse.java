@@ -2,6 +2,7 @@ package com.example.gojipserver.global.response;
 
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,6 +29,7 @@ public class ApiResponse<T> {
         return new ApiResponse<>(false, StatusEnum.BAD_REQUEST, null, message);
     }
 
+    @Builder
     private ApiResponse(boolean isSuccess, StatusEnum status, T data, String message) {
         this.isSuccess = isSuccess;
         this.status = status;

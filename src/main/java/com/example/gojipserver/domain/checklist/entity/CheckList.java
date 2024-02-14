@@ -10,6 +10,7 @@ import com.example.gojipserver.domain.checklist.entity.roomcondition.RoomConditi
 import com.example.gojipserver.domain.checklist.entity.roomstatus.RoomStatus;
 import com.example.gojipserver.domain.roomimage.entity.RoomImage;
 import com.example.gojipserver.domain.user.entity.User;
+import com.example.gojipserver.global.auditing.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,7 +25,7 @@ import static jakarta.persistence.FetchType.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class CheckList {
+public class CheckList extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

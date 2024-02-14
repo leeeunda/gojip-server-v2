@@ -2,6 +2,7 @@ package com.example.gojipserver.domain.roomimage.controller;
 
 import com.amazonaws.Response;
 import com.example.gojipserver.global.response.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import com.example.gojipserver.domain.roomimage.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 // 이미지 등록
+@Tag(name = "RoomImage API", description = "방 이미지 API")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

@@ -31,7 +31,7 @@ public class CheckList {
     @Column(name = "check_list_id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "room_address_id")
     private RoomAddress roomAddress;
 

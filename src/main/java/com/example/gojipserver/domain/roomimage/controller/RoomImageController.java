@@ -50,4 +50,5 @@ public class RoomImageController {
                 .collect(Collectors.toList());
         return ApiResponse.createSuccess(imgurl);
     }
+
 }

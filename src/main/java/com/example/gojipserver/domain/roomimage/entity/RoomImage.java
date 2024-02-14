@@ -25,8 +25,6 @@ public class RoomImage {
     @JoinColumn(name = "check_list_id", nullable = false)
     private CheckList checkList;
 
-
-
     public RoomImage(String imgUrl, CheckList checkList) {
         this.imgUrl = imgUrl;
         this.checkList = checkList;

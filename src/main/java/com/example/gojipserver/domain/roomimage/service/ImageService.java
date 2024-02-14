@@ -1,5 +1,6 @@
 package com.example.gojipserver.domain.roomimage.service;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -12,6 +13,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.NoArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +33,11 @@ public class ImageService {
     private String bucket;
 
 
+    @Autowired
+    public ImageService(AmazonS3 s3Client){
+        this.s3Client=s3Client;
+    }
+
     // 파일 업로드
     public String upload(MultipartFile file) throws IOException {
         String fileName = createFileName(file.getOriginalFilename());
@@ -43,5 +50,24 @@ public class ImageService {
 
     private String createFileName(String originalFilename) {
         return new Date().getTime() + "-" + originalFilename;
+    }
+
+//    // 파일 수정
+//    public String update(String oldFileName, MultipartFile newFile) throws IOException{
+//
+//        //기존 파일 삭제
+//        delete(oldFileName);
+//
+//        //새 파일 업로드
+//        return upload(newFile);
+//    }
+
+    // 파일 삭제
+    public void delete(String fileName) throws IOException{
+        try{
+            s3Client.deleteObject(bucket, fileName);
+        } catch (SdkClientException e){
+            throw new IOException("S3부터 파일 제거 오류", e);
+        }
     }
 }

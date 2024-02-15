@@ -12,13 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CollectionSaveDto {
 
-    private User user;
     @NotBlank(message = "컬렉션 이름은 필수 입력값입니다.")
     private String collectionName;
 
     @Builder
-    public CollectionSaveDto(User user, String collectionName) {
-        this.user = user;
+    public CollectionSaveDto(String collectionName) {
         this.collectionName = collectionName;
     }
 

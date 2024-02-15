@@ -1,5 +1,6 @@
 package com.example.gojipserver.domain.collection.controller;
 
+import com.example.gojipserver.domain.collection.dto.CollectionResponseDto;
 import com.example.gojipserver.domain.collection.dto.CollectionSaveDto;
 import com.example.gojipserver.domain.collection.service.CollectionService;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "Collection API", description = "테스트 API")
 @RequiredArgsConstructor
 @RestController
@@ -22,23 +25,32 @@ public class CollectionController {
 
     // TODO: collectionName null, 중복 예외 처리
     @PostMapping
-    @Operation(summary = "컬렉션 등록", description = "로그인한 유저의 정보를 받아 컬렉션을 등록")
-    @Parameter(name = "collectionSaveDto", description = "collectionName을 받습니다.")
-    public ApiResponse<Long> saveCollection(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody @Valid CollectionSaveDto collectionSaveDto) {
+    @Operation(summary = "컬렉션 등록", description = "요청한 유저의 정보를 받아 컬렉션을 등록")
+    @Parameter(name = "collectionSaveDto", description = "collectionName을 담은 DTO")
+    public ApiResponse<Long> saveCollection(@AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CollectionSaveDto collectionSaveDto) {
 
-        Long savedCollectionId = collectionService.saveCollection(userPrincipal.getId(), collectionSaveDto);
+        Long savedCollectionId = collectionService.saveCollection(requestUser.getId(), collectionSaveDto);
         return ApiResponse.createSuccess(savedCollectionId);
     }
 
-
     @DeleteMapping("/{id}")
-    @Operation(summary = "컬렉션 삭제", description = "컬렉션을 삭제, 삭제 요청을 한 유저가 해당 컬렉션의 주인인지 확인")
+    @Operation(summary = "컬렉션 단일 삭제", description = "컬렉션을 삭제, 삭제 요청을 한 유저가 해당 컬렉션의 주인인지 확인")
     @Parameter(name = "id", description = "삭제할 Collection의 id")
-    public ApiResponse<?> deleteCollection(@AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable Long id) {
+    public ApiResponse<?> deleteCollection(@AuthenticationPrincipal UserPrincipal requestUser, @PathVariable Long id) {
 
-        collectionService.deleteCollection(userPrincipal.getId(), id);
+        collectionService.deleteCollection(requestUser.getId(), id);
 
         return ApiResponse.createSuccessWithNoContent();
+    }
+
+    @GetMapping
+    @Operation(summary = "유저의 컬렉션 조회", description = "요청한 유저의 정보를 받아 컬렉션을 조회")
+    @Parameter(name = "collectionSaveDto", description = "collectionName을 받습니다.")
+    public ApiResponse<List<CollectionResponseDto>> getCollections(@AuthenticationPrincipal UserPrincipal requestUser) {
+
+        List<CollectionResponseDto> collectionList = collectionService.getCollections(requestUser.getId());
+
+        return ApiResponse.createSuccess(collectionList);
     }
 
 }

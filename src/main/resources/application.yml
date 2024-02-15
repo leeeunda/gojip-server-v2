@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local, dev
+    active: local, dev, credentials
 
 springdoc:
   packages-to-scan: com.colabear754.springdoc_example.controllers

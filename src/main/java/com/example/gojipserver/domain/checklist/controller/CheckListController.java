@@ -2,12 +2,25 @@ package com.example.gojipserver.domain.checklist.controller;
 
 import com.example.gojipserver.domain.checklist.dto.CheckListSaveDto;
 import com.example.gojipserver.domain.checklist.service.CheckListService;
+import com.example.gojipserver.domain.collection.dto.CollectionSaveDto;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
+import com.example.gojipserver.global.response.ApiResponse;
+import com.example.gojipserver.global.response.StatusEnum;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.Charset;
+
+@Tag(name = "CheckList API", description = "체크리스트 API")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/checklists")
@@ -16,23 +29,25 @@ public class CheckListController {
 
     private final CheckListService checkListService;
 
-    //체크리스트 등록
-    @PostMapping
-    public void saveCheckList(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody CheckListSaveDto checkListSaveDto) {
-
-
-    }
-
-    // 컬렉션 등록
-    // 체크리스트 전체 조회
-//    @GetMapping()
-//    public ResponseEntity<MessageDto> checkListAllGet(){
+//    //체크리스트 등록
+//    @PostMapping
+//    @Operation(summary = "체크리스트 등록", description = "체크리스트 등록 api")
+//    @Parameter(name="checkListSaveDto", description = "")
+//    public ApiResponse saveCheckList(@RequestBody CheckListSaveDto checkListSaveDto) {
 //
-//        MessageDto messageDto = new MessageDto();
+//        return ApiResponse.createSuccess();
+//    }
+
+
+
+    //체크리스트 전체 조회
+//    @GetMapping()
+//    public ResponseEntity<ApiResponse> checkListAllGet(){
+//
+//        ApiResponse apiResponse = new ApiResponse();
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//
-//        messageDto.setStatus(HttpStatus.OK.value());
+//        apiResponse.setStatus(HttpStatus.OK.value());
 //        messageDto.setMessage("전체 조회 성공");
 //        messageDto.setData(CheckList);
 //        return new ResponseEntity<>(messageDto, headers,  )

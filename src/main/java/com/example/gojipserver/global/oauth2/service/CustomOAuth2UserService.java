@@ -1,12 +1,12 @@
-package com.example.gojipserver.domain.oauth2.service;
+package com.example.gojipserver.global.oauth2.service;
 
 import com.example.gojipserver.domain.user.entity.Role;
 import com.example.gojipserver.domain.user.entity.User;
 import com.example.gojipserver.domain.user.repository.UserRepository;
-import com.example.gojipserver.domain.oauth2.entity.AuthProvider;
+import com.example.gojipserver.global.oauth2.entity.AuthProvider;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
-import com.example.gojipserver.domain.oauth2.userInfo.OAuth2UserInfo;
-import com.example.gojipserver.domain.oauth2.userInfo.OAuth2UserInfoFactory;
+import com.example.gojipserver.global.oauth2.userInfo.OAuth2UserInfo;
+import com.example.gojipserver.global.oauth2.userInfo.OAuth2UserInfoFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;

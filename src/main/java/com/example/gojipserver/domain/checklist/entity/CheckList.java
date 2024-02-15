@@ -76,7 +76,7 @@ public class CheckList extends BaseTimeEntity {
     }
 
     @Builder
-    public CheckList(RoomAddress roomAddress, User user, List<CheckListCollection> checkListCollections, List<RoomImage> roomImages, Cost cost, RoomCondition roomCondition, RoomStatus roomStatus, BathRoomStatus bathRoomStatus, InnerOption innerOption, OuterOption outerOption, String note) {
+    public CheckList(RoomAddress roomAddress, User user, List<CheckListCollection> checkListCollections, List<RoomImage> roomImages, Cost cost, RoomCondition roomCondition, RoomStatus roomStatus, BathRoomStatus bathRoomStatus, InnerOption innerOption, OuterOption outerOption, String note, String imgDescription) {
         this.roomAddress = roomAddress;
         this.user = user;
         this.checkListCollections = checkListCollections;
@@ -88,6 +88,7 @@ public class CheckList extends BaseTimeEntity {
         this.innerOption = innerOption;
         this.outerOption = outerOption;
         this.note = note;
+        this.imgDescription = imgDescription;
     }
 
 

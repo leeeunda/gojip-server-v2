@@ -30,7 +30,6 @@ public class Collection extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "users_id")
     private User user;
-    
 
     @Column(nullable = false)
     private String collectionName;

@@ -40,9 +40,6 @@ public class CheckList extends BaseTimeEntity {
     @JoinColumn(name = "users_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<CheckListCollection> checkListCollections = new ArrayList<>();
-
     @OneToMany(mappedBy = "checkList",orphanRemoval = true, cascade = CascadeType.ALL)
     private List<RoomImage> roomImages = new ArrayList<>();
 
@@ -68,18 +65,10 @@ public class CheckList extends BaseTimeEntity {
 
     private String imgDescription; //이미지 설명
 
-    // 연관관계 편의 메서드
-
-    public void addCheckListCollection(CheckListCollection checkListCollection) {
-        this.checkListCollections.add(checkListCollection);
-        checkListCollection.setCheckList(this);
-    }
-
     @Builder
-    public CheckList(RoomAddress roomAddress, User user, List<CheckListCollection> checkListCollections, List<RoomImage> roomImages, Cost cost, RoomCondition roomCondition, RoomStatus roomStatus, BathRoomStatus bathRoomStatus, InnerOption innerOption, OuterOption outerOption, String note, String imgDescription) {
+    public CheckList(RoomAddress roomAddress, User user, List<RoomImage> roomImages, Cost cost, RoomCondition roomCondition, RoomStatus roomStatus, BathRoomStatus bathRoomStatus, InnerOption innerOption, OuterOption outerOption, String note, String imgDescription) {
         this.roomAddress = roomAddress;
         this.user = user;
-        this.checkListCollections = checkListCollections;
         this.roomImages = roomImages;
         this.cost = cost;
         this.roomCondition = roomCondition;

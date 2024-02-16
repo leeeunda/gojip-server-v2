@@ -2,6 +2,7 @@ package com.example.gojipserver.domain.roomimage.controller;
 
 import com.amazonaws.Response;
 import com.example.gojipserver.global.response.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import com.example.gojipserver.domain.roomimage.service.ImageService;
@@ -25,7 +26,7 @@ public class RoomImageController {
     private final ImageService imageService;
 
     // 한 번에 한 장의 이미지 업로드
-
+    @Operation(summary = "단일 이미지 업로드", description = "하나의 이미지를 받아 업로드")
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE } )
     public ApiResponse<String> execWrite(@RequestPart MultipartFile file) throws IOException{
         String imgPath = imageService.upload(file);
@@ -34,6 +35,7 @@ public class RoomImageController {
     }
 
     // 여러장의 이미지 한 번에 업로드
+    @Operation(summary="여러 이미지 업로드", description = "여러 장의 이미지를 받아 업로드")
     @PostMapping(value="/bulk", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<List<String>> execWriteBulk(@RequestPart List<MultipartFile> file) throws IOException{
 

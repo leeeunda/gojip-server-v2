@@ -3,6 +3,7 @@ package com.example.gojipserver.domain.roomimage.entity;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,12 +22,22 @@ public class RoomImage {
     @Column(nullable = false)
     private String imgUrl;
 
+    @Column(name="origin_img_name")
+    private String originImgName;
+
+    @Column(name="img_name")
+    private String imgName;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "check_list_id", nullable = false)
     private CheckList checkList;
 
+    @Builder
     public RoomImage(String imgUrl, CheckList checkList) {
         this.imgUrl = imgUrl;
         this.checkList = checkList;
+        checkList.getRoomImages().add(this); // 체크리스트에 이미지 추가
     }
+
+
 }

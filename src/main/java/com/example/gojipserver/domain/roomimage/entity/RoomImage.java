@@ -22,11 +22,6 @@ public class RoomImage {
     @Column(nullable = false)
     private String imgUrl;
 
-    @Column(name="origin_img_name")
-    private String originImgName;
-
-    @Column(name="img_name")
-    private String imgName;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "check_list_id", nullable = false)
@@ -36,7 +31,6 @@ public class RoomImage {
     public RoomImage(String imgUrl, CheckList checkList) {
         this.imgUrl = imgUrl;
         this.checkList = checkList;
-        checkList.getRoomImages().add(this); // 체크리스트에 이미지 추가
     }
 
 

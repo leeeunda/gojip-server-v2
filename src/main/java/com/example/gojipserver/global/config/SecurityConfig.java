@@ -2,7 +2,7 @@ package com.example.gojipserver.global.config;
 
 import com.example.gojipserver.domain.oauth2.service.CustomOAuth2UserService;
 import com.example.gojipserver.domain.oauth2.service.CustomUserDetailsService;
-import com.example.gojipserver.global.config.security.handler.OAuth2AuthenticationSuccessHandler;
+import com.example.gojipserver.domain.oauth2.handler.OAuth2AuthenticationSuccessHandler;
 import com.example.gojipserver.global.config.security.jwt.JwtAuthenticationFilter;
 import com.example.gojipserver.global.config.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final CustomOAuth2UserService customOAuth2Service;
     private final CustomUserDetailsService customUserDetailsService;
-    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final JwtTokenProvider jwtTokenProvider;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -40,13 +38,6 @@ public class SecurityConfig {
 //                .anyRequest().authenticated() // 나머지 요청은 모두 인증 필요
         );
 
-        http.oauth2Login(oauth->oauth
-                .authorizationEndpoint(authorization->authorization.baseUri("/oauth2/authorize")) // 인증 요청을 처리하는 Endpoint 설정
-                .redirectionEndpoint(redirection->redirection.baseUri("/oauth2/callback/*")) // OAuth2 인증 서버로부터 리다이렉트를 받을 Endpoint 설정
-                .userInfoEndpoint(userInfo->userInfo.userService(customOAuth2Service))
-                .successHandler(oAuth2AuthenticationSuccessHandler) //성공시
-//                .failureHandler(null) //실패시
-        );
         http.userDetailsService(customUserDetailsService);
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

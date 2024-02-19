@@ -27,7 +27,6 @@ import java.util.Optional;
 public class KakaoService{
     private final UserRepository userRepository;
     private final WebClient webClient;
-    private final CustomOAuth2UserService customOAuth2UserService;
 
     public UserInfoDto getUserProfileByToken(String accessToken){
         KakaoUserInfoResponse kakaoInfoDto = getUserAttributesByToken(accessToken);

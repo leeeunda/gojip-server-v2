@@ -1,6 +1,8 @@
 package com.example.gojipserver.global.config.security.jwt;
 
 
+import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
+import com.example.gojipserver.domain.oauth2.service.CustomUserDetailsService;
 import com.example.gojipserver.global.entity.ExpireTime;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -32,23 +34,24 @@ public class JwtTokenProvider {
     @Value("${jwt.refresh.header}")
     private String refreshHeader;
 
-    private final Key key;
-    private final UserDetailsService userDetailsService;
+    @Value("${jwt.secret}")
+    private String secretKey;
+    private final CustomUserDetailsService userDetailsService;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, UserDetailsService userDetailsService) {
-        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    public JwtTokenProvider(CustomUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
-    public String createAccessToken(String email, Collection<? extends GrantedAuthority> authorities){
+    // 토큰 생성
+    public String createAccessToken(String email,Collection<? extends GrantedAuthority> authorities) {
+        Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위
         Date now = new Date();
         return Jwts.builder()
-                .setSubject(email)
+                .setClaims(claims) // 정보 저장
                 .claim(AUTH_KEY, authorities)
-                .claim("type", TYPE_ACCESS)
-                .setIssuedAt(now)   //토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + ExpireTime.ACCESS_TOKEN_EXPIRE_TIME))  //토큰 만료 시간 설정
-                .signWith(key, SignatureAlgorithm.HS256)
+                .setIssuedAt(now) // 토큰 발행 시간 정보
+                .setExpiration(new Date(now.getTime() + ExpireTime.ACCESS_TOKEN_EXPIRE_TIME))
+                .signWith(SignatureAlgorithm.HS256, secretKey)  // 암호화 알고리즘과, secret 값
                 .compact();
     }
 
@@ -60,7 +63,7 @@ public class JwtTokenProvider {
                 .claim("type", TYPE_REFRESH)
                 .setIssuedAt(now)   //토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + ExpireTime.REFRESH_TOKEN_EXPIRE_TIME)) //토큰 만료 시간 설정
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(SignatureAlgorithm.HS256,secretKey)
                 .compact();
     }
 
@@ -72,20 +75,21 @@ public class JwtTokenProvider {
         log.info("Access Token, Refresh Token 헤더 설정 완료");
     }
 
-    //JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
-    public Authentication getAuthentication(String accessToken) {
-        //토큰 복호화
-        Claims claims = parseClaims(accessToken);
-
-        //UserDetails 객체를 만들어서 Authentication 리턴
-        UserDetails userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
-        return new UsernamePasswordAuthenticationToken(userDetails, accessToken, userDetails.getAuthorities());
+    public Authentication getAuthentication(String token) {
+        log.info(this.getUserEmail(token));
+        UserPrincipal userPrincipal = (UserPrincipal) userDetailsService.loadUserByUsername(this.getUserEmail(token));
+        return new UsernamePasswordAuthenticationToken(userPrincipal, "", userPrincipal.getAuthorities());
     }
+    public String getUserEmail(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+
 
     //토큰 정보를 검증하는 메서드
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
@@ -97,13 +101,5 @@ public class JwtTokenProvider {
             log.info("JWT claims string is empty.", e);
         }
         return false;
-    }
-
-    private Claims parseClaims(String accessToken) {
-        try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
-        }
     }
 }

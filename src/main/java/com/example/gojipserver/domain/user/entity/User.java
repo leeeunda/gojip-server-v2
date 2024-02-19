@@ -17,6 +17,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "users_id")
     private Long id;
 
     @OneToMany(mappedBy = "user")

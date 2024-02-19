@@ -24,6 +24,7 @@ public class CheckListSaveDto {
     private InnerOption innerOption;
     private OuterOption outerOption;
     private String note;
+    private String imgDescription;
 
     @Builder
     public CheckListSaveDto(CheckList checkList) {
@@ -35,6 +36,7 @@ public class CheckListSaveDto {
         this.innerOption = checkList.getInnerOption();
         this.outerOption = checkList.getOuterOption();
         this.note = checkList.getNote();
+        this.imgDescription=checkList.getImgDescription();
     }
 
     public CheckList toEntity() {

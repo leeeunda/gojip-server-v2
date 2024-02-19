@@ -65,6 +65,8 @@ public class CheckList {
 
     private String note; //추가 사항
 
+    private String imgDescription; //이미지 설명
+
     // 연관관계 편의 메서드
 
     public void addCheckListCollection(CheckListCollection checkListCollection) {
@@ -73,7 +75,7 @@ public class CheckList {
     }
 
     @Builder
-    public CheckList(RoomAddress roomAddress, User user, List<CheckListCollection> checkListCollections, List<RoomImage> roomImages, Cost cost, RoomCondition roomCondition, RoomStatus roomStatus, BathRoomStatus bathRoomStatus, InnerOption innerOption, OuterOption outerOption, String note) {
+    public CheckList(RoomAddress roomAddress, User user, List<CheckListCollection> checkListCollections, List<RoomImage> roomImages, Cost cost, RoomCondition roomCondition, RoomStatus roomStatus, BathRoomStatus bathRoomStatus, InnerOption innerOption, OuterOption outerOption, String note, String imgDescription) {
         this.roomAddress = roomAddress;
         this.user = user;
         this.checkListCollections = checkListCollections;
@@ -85,6 +87,7 @@ public class CheckList {
         this.innerOption = innerOption;
         this.outerOption = outerOption;
         this.note = note;
+        this.imgDescription = imgDescription;
     }
 
 

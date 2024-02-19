@@ -1,5 +1,6 @@
 package com.example.gojipserver.domain.collection.entity;
 
+import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.checklist_collection.entity.CheckListCollection;
 import com.example.gojipserver.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -29,6 +30,7 @@ public class Collection {
     @JoinColumn(name = "users_id")
     private User user;
 
+    @Column(nullable = false)
     private String collectionName;
 
     //연관관계 편의 메서드

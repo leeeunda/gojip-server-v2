@@ -24,6 +24,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class KakaoService{
     private final UserRepository userRepository;
     private final WebClient webClient;
@@ -36,19 +37,25 @@ public class KakaoService{
                 .nickname(kakaoInfoDto.getProperties().getNickname())
                 .role(Role.GUEST)
                 .build();
-        log.info("kakaoUserId : {}", kakaoInfoDto.getId());
-        if(userRepository.findByEmail(newUser.getEmail()).isPresent()) {
-            User user = userRepository.findByEmail(newUser.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
-            user.update(kakaoInfoDto.getKakao_account().getEmail(), kakaoInfoDto.getProperties().getNickname());
+        User findUser = userRepository.findByEmail(newUser.getEmail()).orElse(null);
+        if(findUser != null) {
+            findUser.update(kakaoInfoDto.getKakao_account().getEmail(), kakaoInfoDto.getProperties().getNickname());
         } else {
-            userRepository.save(newUser);
+            extracted(newUser);
         }
         UserInfoDto userDto = UserInfoDto.builder()
                 .id(newUser.getId())
                 .email(newUser.getEmail())
+                .nickname(newUser.getNickname())
                 .build();
         return userDto;
     }
+
+    @Transactional
+    public void extracted(User newUser) {
+        userRepository.save(newUser);
+    }
+
     public KakaoUserInfoResponse getUserAttributesByToken(String accessToken){
         Flux<KakaoUserInfoResponse> response = webClient.get()
                 .uri("https://kapi.kakao.com/v2/user/me")

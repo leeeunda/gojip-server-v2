@@ -1,6 +1,7 @@
 package com.example.gojipserver.domain.roomimage.controller;
 
 import com.amazonaws.Response;
+import com.example.gojipserver.domain.roomimage.dto.RoomImageDto;
 import com.example.gojipserver.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,6 +9,7 @@ import org.springframework.http.MediaType;
 import com.example.gojipserver.domain.roomimage.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,4 +54,28 @@ public class RoomImageController {
         return ApiResponse.createSuccess(imgurl);
     }
 
+    // 이미지 업데이트
+    @Operation(summary = "이미지 수정", description = "이미지를 삭제 후 다시 업로드")
+    @PutMapping(value="/{fileName}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ApiResponse<String> updateFile(@PathVariable String fileName, @RequestPart MultipartFile newFile) throws IOException{
+
+        String newImgPath = imageService.updateImage(fileName, newFile);
+        log.info("new imagePath = {}", newImgPath);
+
+        return ApiResponse.createSuccess(newImgPath);
+    }
+
+    // 이미지 삭제
+    @Operation(summary = "이미지 삭제", description = "이미지 url을 DB에서 삭제")
+    @DeleteMapping(value = "/{fileName}")
+    ApiResponse<String> deleteFile(@PathVariable String fileName) throws IOException{
+        try {
+            // s3에서 이미지 원본 삭제
+            imageService.deleteImage(fileName);
+            log.info("deleted file : {}", fileName);
+        } catch (IOException e) {
+            log.error("파일 삭제 에러", e);
+        }
+        return ApiResponse.createSuccess("Deleted"+fileName)
+    }
 }

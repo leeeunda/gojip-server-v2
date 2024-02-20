@@ -22,7 +22,6 @@ public class RoomImage {
     @Column(nullable = false)
     private String imgUrl;
 
-
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "check_list_id", nullable = false)
     private CheckList checkList;

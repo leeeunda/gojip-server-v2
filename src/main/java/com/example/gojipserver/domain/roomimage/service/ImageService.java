@@ -15,7 +15,7 @@ import com.example.gojipserver.domain.roomimage.dto.RoomImageDto;
 import com.example.gojipserver.domain.roomimage.entity.RoomImage;
 import com.example.gojipserver.domain.roomimage.repository.RoomImageRepository;
 import jakarta.transaction.Transactional;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,9 @@ import java.util.Date;
 public class ImageService {
 
     private final AmazonS3 s3Client;
+
     private final RoomImageRepository roomImageRepository;
+
     private final CheckListRepository checkListRepository;
 
 
@@ -42,10 +44,6 @@ public class ImageService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Autowired
-    public ImageService(AmazonS3 s3Client){
-        this.s3Client=s3Client;
-    }
 
     // S3로 파일 업로드 -> 이미지의 url 반환
     public String upload(MultipartFile file) throws IOException {
@@ -75,20 +73,32 @@ public class ImageService {
     public void saveImageToDB(RoomImageDto roomImageDto) throws IOException{
 
         CheckList checkList=checkListRepository.findById(roomImageDto.getCheckListId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 체크리스트를 찾을 수 없습니다. id= "+roomImageDto.getCheckListId());
+                .orElseThrow(() -> new IllegalArgumentException("해당 체크리스트를 찾을 수 없습니다. id= "+roomImageDto.getCheckListId()));
         RoomImage roomImage = roomImageDto.toEntity(checkList);
         roomImageRepository.save(roomImage);
 
     }
 
     // 파일 수정
-    public String updateImage(String fileName, MultipartFile newFile) throws IOException{
+    @Transactional
+    public String updateImage(Long id, String fileName, MultipartFile newFile) throws IOException{
 
-        //기존 파일 삭제
-        deleteImage(fileName);
+        // DB에서 삭제
+        RoomImage roomImage = roomImageRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이미지가 없습니다. id=" + id));
+        roomImageRepository.delete(roomImage);
+
+        // s3에서 삭제
+        deleteImage(id, fileName);
+
+        String newImgUrl = upload(newFile);
+        RoomImageDto roomImageDto = new RoomImageDto(newImgUrl, roomImage.getCheckList().getId());
+        RoomImage newRoomImage=roomImageDto.toEntity(roomImage.getCheckList());
+
+        roomImageRepository.save(newRoomImage);
 
         //새 파일 업로드
-        return upload(newFile);
+        return newImgUrl;
     }
 
     // s3로부터 이미지 찾기
@@ -97,10 +107,15 @@ public class ImageService {
     }
 
     // 이미지 삭제
-    public void deleteImage(String fileName) throws IOException{
+    @Transactional
+    public void deleteImage(Long id, String fileName) throws IOException{
         log.info("file name: " + fileName);
+
         try{
+            RoomImage roomImage = roomImageRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 이미지가 없습니다. id=" + id));
             s3Client.deleteObject(bucket, fileName); //삭제할 버킷 및 객체의 이름 전달
+            roomImageRepository.delete(roomImage); // db에서 삭제
         } catch (SdkClientException e){
             throw new IOException("S3부터 파일 제거 오류", e);
         }

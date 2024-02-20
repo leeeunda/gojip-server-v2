@@ -10,7 +10,8 @@ import java.util.List;
 public interface RoomImageRepository extends JpaRepository<RoomImage, Long> {
 
     // 게시글 저장 시 연관관계 매핑
-    @Query("SELECT roomImage FROM RoomImage roomImage" + "WHERE roomImage.id in :list")
+    @Query("SELECT roomImage FROM RoomImage roomImage " +
+            "WHERE roomImage.id in :list")
     List<RoomImage> findAllRoomImagesById(@Param("list") final List<Long> roomImageIds);
 
 }

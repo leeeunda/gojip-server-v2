@@ -47,7 +47,7 @@ public class ImageService {
         this.s3Client=s3Client;
     }
 
-    // 파일 업로드 -> 이미지의 url 반환, db에 저장
+    // S3로 파일 업로드 -> 이미지의 url 반환
     public String upload(MultipartFile file) throws IOException {
 
         // 원본 이미지 이름
@@ -81,18 +81,24 @@ public class ImageService {
 
     }
 
-//    // 파일 수정
-//    public String update(String oldFileName, MultipartFile newFile) throws IOException{
-//
-//        //기존 파일 삭제
-//        delete(oldFileName);
-//
-//        //새 파일 업로드
-//        return upload(newFile);
-//    }
+    // 파일 수정
+    public String updateImage(String fileName, MultipartFile newFile) throws IOException{
 
-    // 파일 삭제
-    public void delete(String fileName) throws IOException{
+        //기존 파일 삭제
+        deleteImage(fileName);
+
+        //새 파일 업로드
+        return upload(newFile);
+    }
+
+    // s3로부터 이미지 찾기
+    public String getUrl(String imgUrl){
+        return s3Client.getUrl(bucket, imgUrl).toString();
+    }
+
+    // 이미지 삭제
+    public void deleteImage(String fileName) throws IOException{
+        log.info("file name: " + fileName);
         try{
             s3Client.deleteObject(bucket, fileName); //삭제할 버킷 및 객체의 이름 전달
         } catch (SdkClientException e){

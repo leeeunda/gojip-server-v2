@@ -11,11 +11,13 @@ public class UserDto {
     public static class UserInfoDto{
         private Long id;
         private String email;
+        private String nickname;
         private String accessToken;
         private String refreshToken;
 
-        public void setAccessToken(String accessToken) {
+        public void setToken(String accessToken,String refreshToken) {
             this.accessToken = accessToken;
+            this.refreshToken = refreshToken;
         }
     }
 }

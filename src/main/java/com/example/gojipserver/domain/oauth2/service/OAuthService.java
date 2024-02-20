@@ -19,25 +19,20 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
-    private final KakaoService kakaoService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final CustomUserDetailsService userDetailsService;
 
-    public String getToken(UserDto.UserInfoDto userInfoDto, HttpServletResponse response){
+    public String getRefreshToken(UserDto.UserInfoDto userInfoDto){
         Authentication authentication = getAuthentication(userInfoDto.getEmail());
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        System.out.println(userPrincipal.getAuthorities());
-        final String accessToken = jwtTokenProvider.createAccessToken(userInfoDto.getEmail(), userPrincipal.getAuthorities());
-        jwtTokenProvider.sendAccessAndRefreshToken(response, accessToken,"");
-        // 리프레시 토큰 만들기
+        final String refreshToken =  jwtTokenProvider.createRefreshToken(userInfoDto.getEmail(), userPrincipal.getAuthorities());
+        return refreshToken;
+    }
 
-        User user = userRepository.findById(userInfoDto.getId()).orElseThrow(() -> new RuntimeException("User not found"));
-        // 리프레시 저장
-        // 리프레시 업데이트
-
-        // 리프레시 쿠키설정
+    public String getAccessToken(UserDto.UserInfoDto userInfoDto, String refreshToken){
+        Authentication authentication = getAuthentication(userInfoDto.getEmail());
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        final String accessToken = jwtTokenProvider.createAccessToken(refreshToken, userPrincipal.getAuthorities());
         return accessToken;
     }
 

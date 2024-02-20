@@ -32,10 +32,6 @@ public class User {
     private Role role;
     private String refreshToken;
 
-    public void updateRefreshToken(String updateRefreshToken) {
-        this.refreshToken = updateRefreshToken;
-    }
-
     public void update(String email,String nickname) {
         this.email = email;
         this.nickname = nickname;

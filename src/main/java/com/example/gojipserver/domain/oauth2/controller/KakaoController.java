@@ -6,6 +6,7 @@ import com.example.gojipserver.domain.oauth2.service.KakaoService;
 import com.example.gojipserver.domain.oauth2.service.OAuthService;
 import com.example.gojipserver.global.config.security.jwt.JwtTokenProvider;
 import com.example.gojipserver.global.response.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -27,15 +28,19 @@ import java.net.URL;
 @RequestMapping
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Kakao", description = "카카오 로그인 API")
 public class KakaoController {
     private final KakaoService kakaoService;
     private final OAuthService oauthService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login/kakao")
     public ApiResponse<UserInfoDto> login(@RequestHeader String token,HttpServletResponse response) {
         UserInfoDto userInfo = kakaoService.getUserProfileByToken(token);
-        String accessToken = oauthService.getToken(userInfo,response);
-        userInfo.setAccessToken(accessToken);
+        String refreshToken = oauthService.getRefreshToken(userInfo);
+        String accessToken = oauthService.getAccessToken(userInfo, refreshToken);
+        userInfo.setToken(accessToken,refreshToken);
+        jwtTokenProvider.sendAccessAndRefreshToken(response,accessToken,refreshToken);
         return ApiResponse.createSuccess(userInfo);
     }
 
@@ -45,7 +50,7 @@ public class KakaoController {
         return ResponseEntity.ok(userPrincipal);
     }
 
-    @PostMapping
+    @PostMapping("/logout/kakao")
     public void logout(HttpSession session) {
         String token = (String) session.getAttribute("access_token");
         String reqURL = "https://kapi.kakao.com/v1/user/logout";

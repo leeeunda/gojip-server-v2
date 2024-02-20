@@ -3,9 +3,12 @@ package com.example.gojipserver.global.config.security.jwt;
 
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
 import com.example.gojipserver.domain.oauth2.service.CustomUserDetailsService;
+import com.example.gojipserver.global.config.redis.entity.RefreshToken;
+import com.example.gojipserver.global.config.redis.repository.RefreshTokenRepository;
 import com.example.gojipserver.global.entity.ExpireTime;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +21,7 @@ import java.util.Date;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
     private static final String AUTH_KEY = "AUTHORITIES";
     private static final String BEARER_TYPE = "Bearer";
@@ -33,13 +37,12 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
     private final CustomUserDetailsService userDetailsService;
-
-    public JwtTokenProvider(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+    private final RefreshTokenRepository refreshTokenRepository;
 
     // 토큰 생성
-    public String createAccessToken(String email,Collection<? extends GrantedAuthority> authorities) {
+    public String createAccessToken(String refreshToken,Collection<? extends GrantedAuthority> authorities) {
+        RefreshToken findRefreshToken = refreshTokenRepository.findById(refreshToken).orElseThrow(() -> new RuntimeException("Refresh Token not found"));
+        String email = findRefreshToken.getEmail();
         Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위
         Date now = new Date();
         return Jwts.builder()
@@ -52,15 +55,20 @@ public class JwtTokenProvider {
     }
 
     public String createRefreshToken(String email, Collection<? extends GrantedAuthority> authorities){
+        Claims claims = Jwts.claims().setSubject(email);
         Date now = new Date();
-        return Jwts.builder()
-                .setSubject(email)
+        String refreshToken = Jwts.builder()
+                .setClaims(claims)
                 .claim(AUTH_KEY, authorities)
-                .claim("type", TYPE_REFRESH)
                 .setIssuedAt(now)   //토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + ExpireTime.REFRESH_TOKEN_EXPIRE_TIME)) //토큰 만료 시간 설정
                 .signWith(SignatureAlgorithm.HS256,secretKey)
                 .compact();
+
+        // 리프레시 토큰 저장
+        RefreshToken newRefreshToken = new RefreshToken(refreshToken, email);
+        refreshTokenRepository.save(newRefreshToken);
+        return refreshToken;
     }
 
     public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {

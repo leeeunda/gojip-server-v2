@@ -6,11 +6,6 @@ import com.example.gojipserver.domain.checklist.entity.roomstatus.Boiler;
 import com.example.gojipserver.domain.checklist.entity.roomstatus.Light;
 import com.example.gojipserver.domain.checklist_collection.entity.CheckListCollection;
 import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
-import com.example.gojipserver.domain.checklist.entity.cost.Cost;
-import com.example.gojipserver.domain.checklist.entity.option.InnerOption;
-import com.example.gojipserver.domain.checklist.entity.option.OuterOption;
-import com.example.gojipserver.domain.checklist.entity.roomcondition.RoomCondition;
-import com.example.gojipserver.domain.checklist.entity.roomstatus.RoomStatus;
 import com.example.gojipserver.domain.roomimage.entity.RoomImage;
 import com.example.gojipserver.domain.user.entity.User;
 import com.example.gojipserver.global.auditing.BaseTimeEntity;
@@ -43,7 +38,10 @@ public class CheckList extends BaseTimeEntity {
     @JoinColumn(name = "users_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "checkList",orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "checkList")
+    private List<CheckListCollection> checkListCollections = new ArrayList<>();
+
+    @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<RoomImage> roomImages = new ArrayList<>();
 
     // 비용
@@ -132,7 +130,7 @@ public class CheckList extends BaseTimeEntity {
     public CheckList(RoomAddress roomAddress, User user, List<RoomImage> roomImages, int deposit, int monthlyCost, int managementCost, boolean waterCost, boolean heatingCost, boolean electricCost, boolean internetCost, int area, Building building, int stationDistance, boolean floor, boolean wall, boolean outside, Light light, Boiler boiler, boolean mold, boolean wind, boolean bug, boolean wallpaperPollution, Toilet toilet, WashStand washstand, Sink sink, ShowerHead showerHead, HotWater hotWater, Tile tile, boolean airConditioner, boolean refrigerator, boolean washingMachine, boolean microwave, boolean gasRange, boolean induction, boolean bed, boolean desk, boolean closet, boolean tv, boolean wifiRouter, boolean computer, boolean doorLock, boolean ventilator, boolean parkingLot, boolean cctv, boolean elevator, boolean managementOffice, boolean commonEntrance, boolean separateDischargeSpace, String note, String imgDescription) {
         this.roomAddress = roomAddress;
         this.user = user;
-        this.roomImages = roomImages;
+        this.roomImages = (roomImages != null) ? roomImages : new ArrayList<>();
         this.deposit = deposit;
         this.monthlyCost = monthlyCost;
         this.managementCost = managementCost;
@@ -181,4 +179,16 @@ public class CheckList extends BaseTimeEntity {
         this.note = note;
         this.imgDescription = imgDescription;
     }
+
+    // 연관관계 편의 메서드
+    public void addCheckListCollection(CheckListCollection checkListCollection) {
+        this.checkListCollections.add(checkListCollection);
+        checkListCollection.registerCheckList(this);
+    }
+
+    public void addRoomImage(RoomImage roomImage) {
+        this.roomImages.add(roomImage);
+        roomImage.registerToCheckList(this);
+    }
+
 }

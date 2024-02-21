@@ -28,11 +28,9 @@ public class RoomImage extends BaseTimeEntity {
     private CheckList checkList;
 
     @Builder
-    public RoomImage(String imgUrl) {
+    public RoomImage(String imgUrl, CheckList checkList) {
         this.imgUrl = imgUrl;
-    }
-
-    public void registerToCheckList(CheckList checkList) {
         this.checkList = checkList;
     }
+
 }

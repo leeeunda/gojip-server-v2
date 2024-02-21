@@ -2,15 +2,14 @@ package com.example.gojipserver.domain.roomimage.dto;
 
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.roomimage.entity.RoomImage;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RoomImageDto {
 
     private String imgUrl;

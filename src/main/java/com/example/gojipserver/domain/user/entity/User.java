@@ -33,11 +33,9 @@ public class User extends BaseTimeEntity {
     private Role role;
     private String refreshToken;
 
-    public void updateRefreshToken(String updateRefreshToken) {
-        this.refreshToken = updateRefreshToken;
+    public void update(String email,String nickname) {
+        this.email = email;
+        this.nickname = nickname;
     }
 
-    public void updateNickname(String name) {
-        this.nickname = name;
-    }
 }

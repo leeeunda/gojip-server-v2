@@ -3,7 +3,7 @@ package com.example.gojipserver.global.config;
 import com.example.gojipserver.domain.oauth2.service.CustomUserDetailsService;
 import com.example.gojipserver.global.config.security.jwt.JwtAuthenticationFilter;
 import com.example.gojipserver.global.config.security.jwt.JwtTokenProvider;
-import com.example.gojipserver.global.oauth2.service.CustomOAuth2UserService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

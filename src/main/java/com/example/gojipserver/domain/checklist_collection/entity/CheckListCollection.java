@@ -9,7 +9,6 @@ import lombok.*;
 // 중간 테이블
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CheckListCollection extends BaseTimeEntity {
 
@@ -33,6 +32,19 @@ public class CheckListCollection extends BaseTimeEntity {
         this.collection = collection;
     }
 
+    public void registerCheckList(CheckList checkList) {
+        this.checkList = checkList;
+    }
 
+    public void addCollection(Collection collection) {
+        this.collection = collection;
+    }
+
+    public static CheckListCollection createCheckListCollection(CheckList checkList, Collection collection) {
+        return CheckListCollection.builder()
+                .checkList(checkList)
+                .collection(collection)
+                .build();
+    }
 
 }

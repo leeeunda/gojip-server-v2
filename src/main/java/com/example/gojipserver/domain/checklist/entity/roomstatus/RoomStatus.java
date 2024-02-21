@@ -19,11 +19,8 @@ public class RoomStatus {
     private Boiler boiler; //보일러
 
     private boolean mold; //곰팡이
-
     private boolean wind; //옷풍
-
     private boolean bug; //벌레
-
     private boolean wallpaperPollution; //벽지오염
 
 }

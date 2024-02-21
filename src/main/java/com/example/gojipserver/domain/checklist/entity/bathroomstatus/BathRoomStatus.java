@@ -5,6 +5,7 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,5 +32,13 @@ public class BathRoomStatus {
     @Enumerated(EnumType.STRING)
     private Tile tile; //타일
 
-
+    @Builder
+    public BathRoomStatus(Toilet toilet, WashStand washstand, Sink sink, ShowerHead showerHead, HotWater hotWater, Tile tile) {
+        this.toilet = toilet;
+        this.washstand = washstand;
+        this.sink = sink;
+        this.showerHead = showerHead;
+        this.hotWater = hotWater;
+        this.tile = tile;
+    }
 }

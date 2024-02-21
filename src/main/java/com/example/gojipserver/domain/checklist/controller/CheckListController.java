@@ -36,7 +36,8 @@ public class CheckListController {
     //체크리스트 등록
     @PostMapping
     @Operation(summary = "체크리스트 등록", description = "체크리스트 등록 api")
-    @Parameter(name="checkListSaveDto", description = "")
+    @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
+    @Parameter(name="checkListSaveDto", description = "노션의 기능명세서를 참고해주세요")
     public ApiResponse<Long> saveCheckList(@AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CheckListSaveDto checkListSaveDto) {
 
         Long savedCheckListId = checkListService.saveCheckList(requestUser.getId(), checkListSaveDto);

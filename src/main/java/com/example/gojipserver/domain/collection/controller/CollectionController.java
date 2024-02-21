@@ -36,7 +36,7 @@ public class CollectionController {
     @DeleteMapping("/{id}")
     @Operation(summary = "컬렉션 단일 삭제", description = "컬렉션을 삭제, 삭제 요청을 한 유저가 해당 컬렉션의 주인인지 확인")
     @Parameter(name = "id", description = "삭제할 Collection의 id")
-    public ApiResponse<?> deleteCollection(@AuthenticationPrincipal UserPrincipal requestUser, @PathVariable Long id) {
+    public ApiResponse deleteCollection(@AuthenticationPrincipal UserPrincipal requestUser, @PathVariable Long id) {
 
         collectionService.deleteCollection(requestUser.getId(), id);
 

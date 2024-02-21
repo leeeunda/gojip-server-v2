@@ -38,7 +38,7 @@ public class Collection extends BaseTimeEntity {
 
     public void addCheckListCollection(CheckListCollection checkListCollection) {
         this.checkListCollections.add(checkListCollection);
-        checkListCollection.setCollection(this);
+        checkListCollection.addCollection(this);
     }
 
     @Builder

@@ -1,5 +1,5 @@
 jwt:
-  secret: gojipserverjwtsecurity
+  secret: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJzdWIiOiIxMjM0IiwibmFtZSI6ImdvamliIn0gX918fodPKoBbM0sONiqq5WW4jvNtCTlmV7ENqOZR34
   access:
     header: Authorization
   refresh:

@@ -73,6 +73,8 @@ public class CheckListService {
                 CheckListCollection checkListCollection = CheckListCollection.createCheckListCollection(savedCheckList, findCollection);
 
                 savedCheckList.addCheckListCollection(checkListCollection);
+                findCollection.addCheckListCollection(checkListCollection);
+                
                 checkListCollectionRepository.save(checkListCollection);
             }
         }

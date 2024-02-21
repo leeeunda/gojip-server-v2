@@ -14,4 +14,13 @@ public class ManagementCostIncludeOption {
     private boolean heatingCost; //난방비
     private boolean electricCost; //전기세
     private boolean internetCost; //인터넷비
+
+    public ManagementCostIncludeOption(boolean waterCost, boolean heatingCost, boolean electricCost, boolean internetCost) {
+        this.waterCost = waterCost;
+        this.heatingCost = heatingCost;
+        this.electricCost = electricCost;
+        this.internetCost = internetCost;
+    }
 }
+
+

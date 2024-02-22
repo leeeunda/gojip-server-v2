@@ -60,7 +60,7 @@ public class RoomImageController {
     // 이미지 업데이트
     @Operation(summary = "이미지 수정", description = "이미지를 삭제 후 다시 업로드")
     @PutMapping(value="/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ApiResponse<String> updateFile(@PathVariable Long id, @PathVariable String imgUrl, @RequestPart MultipartFile newFile) throws IOException{
+    public ApiResponse<String> updateFile(@PathVariable Long id, @RequestParam String imgUrl, @RequestPart MultipartFile newFile) throws IOException{
 
         String newImgUrl = imageService.updateImage(id, imgUrl, newFile);
         log.info("새로운 imageUrl = {}", newImgUrl);

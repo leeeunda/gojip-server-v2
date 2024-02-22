@@ -86,20 +86,16 @@ public class ImageService {
     @Transactional
     public String updateImage(Long id, String imgUrl, MultipartFile newFile) throws IOException{
 
-        // s3에서 삭제
+        // s3 & DB에서 삭제
         deleteImage(id, imgUrl);
 
-        // DB에서 삭제
-
-
-
+        // 새 파일로 업로드
         String newImgUrl = upload(newFile);
         RoomImageSaveDto roomImageSaveDto = new RoomImageSaveDto(newImgUrl);
         RoomImage newRoomImage= roomImageSaveDto.toEntity();
 
         roomImageRepository.save(newRoomImage);
 
-        //새 파일 업로드
         return newImgUrl;
     }
 

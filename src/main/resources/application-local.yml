@@ -34,7 +34,7 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-      location: /users/kim65/temp-file # 업로드된 파일이 임시로 저장되는 디스크 위치
+#      location: /users/kim65/temp-file # 업로드된 파일이 임시로 저장되는 디스크 위치
 
 
 server:

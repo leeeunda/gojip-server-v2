@@ -1,17 +1,13 @@
 package com.example.gojipserver.domain.roomimage.controller;
 
-import com.amazonaws.Response;
-import com.example.gojipserver.domain.roomimage.dto.RoomImageDto;
-import com.example.gojipserver.domain.roomimage.entity.RoomImage;
+import com.example.gojipserver.domain.roomimage.dto.RoomImageSaveDto;
 import com.example.gojipserver.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import com.example.gojipserver.domain.roomimage.service.ImageService;
-import com.example.gojipserver.domain.roomimage.repository.RoomImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +30,8 @@ public class RoomImageController {
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE } )
     public ApiResponse<String> execWrite(@RequestPart MultipartFile file) throws IOException{
         String imgPath = imageService.upload(file);
+        RoomImageSaveDto roomImageSaveDto = new RoomImageSaveDto(imgPath);
+        imageService.saveImageToDB(roomImageSaveDto); // 업로드 이후 DB 저장
         log.info("imagePath = {}", imgPath);
         return ApiResponse.createSuccess(imgPath);
     }
@@ -46,7 +44,10 @@ public class RoomImageController {
         final List<String> imgurl = file.stream()
                 .map(multipartFile -> {
                     try {
-                        return imageService.upload(multipartFile);
+                        String imgPath = imageService.upload(multipartFile);
+                        RoomImageSaveDto roomImageSaveDto = new RoomImageSaveDto(imgPath);
+                        imageService.saveImageToDB(roomImageSaveDto);
+                        return imgPath;
                     } catch (IOException e) {
                         log.error("이미지 업로드 오류", e);
                         return null;

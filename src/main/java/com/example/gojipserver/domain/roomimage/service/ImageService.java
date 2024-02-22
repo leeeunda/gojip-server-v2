@@ -1,30 +1,23 @@
 package com.example.gojipserver.domain.roomimage.service;
 
 import com.amazonaws.SdkClientException;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.checklist.repository.CheckListRepository;
-import com.example.gojipserver.domain.roomimage.dto.RoomImageDto;
+import com.example.gojipserver.domain.roomimage.dto.RoomImageSaveDto;
 import com.example.gojipserver.domain.roomimage.entity.RoomImage;
 import com.example.gojipserver.domain.roomimage.repository.RoomImageRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.Date;
 
@@ -68,13 +61,13 @@ public class ImageService {
         return new Date().getTime() + "-" + originalFilename;
     }
 
-    // 업로드 이후 RoomImage Entity를 DB에 저장
+    // 업로드 이후 RoomImage Entity를 DB에 저장 (imgUrl만 우선저장)
     @Transactional
-    public void saveImageToDB(RoomImageDto roomImageDto) throws IOException{
+    public void saveImageToDB(RoomImageSaveDto roomImageSaveDto) throws IOException{
 
-        CheckList checkList=checkListRepository.findById(roomImageDto.getCheckListId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 체크리스트를 찾을 수 없습니다. id= "+roomImageDto.getCheckListId()));
-        RoomImage roomImage = roomImageDto.toEntity(checkList);
+//        CheckList checkList=checkListRepository.findById(roomImageSaveDto.getCheckListId())
+//                .orElseThrow(() -> new IllegalArgumentException("해당 체크리스트를 찾을 수 없습니다. id= "+ roomImageSaveDto.getCheckListId()));
+        RoomImage roomImage = roomImageSaveDto.toEntity();
         roomImageRepository.save(roomImage);
 
     }
@@ -92,8 +85,8 @@ public class ImageService {
         deleteImage(id, fileName);
 
         String newImgUrl = upload(newFile);
-        RoomImageDto roomImageDto = new RoomImageDto(newImgUrl, roomImage.getCheckList().getId());
-        RoomImage newRoomImage=roomImageDto.toEntity(roomImage.getCheckList());
+        RoomImageSaveDto roomImageSaveDto = new RoomImageSaveDto(newImgUrl);
+        RoomImage newRoomImage= roomImageSaveDto.toEntity();
 
         roomImageRepository.save(newRoomImage);
 
@@ -121,5 +114,12 @@ public class ImageService {
         }
     }
 
+    // 체크리스트 생성 이후 연관관계 설정
+    @Transactional
+    public void setCheckListToRoomImage(Long roomImageId, CheckList checkList){
+        RoomImage roomImage = roomImageRepository.findById(roomImageId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이미지가 없습니다. id = "+ roomImageId));
+        roomImage.setCheckList(checkList);
+    }
 
 }

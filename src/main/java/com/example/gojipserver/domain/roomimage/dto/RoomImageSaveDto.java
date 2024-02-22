@@ -3,29 +3,23 @@ package com.example.gojipserver.domain.roomimage.dto;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.roomimage.entity.RoomImage;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RoomImageDto {
+public class RoomImageSaveDto {
 
     private String imgUrl;
-    private Long checkListId;
 
     // DTO 객체를 Entity로 변환
-    public RoomImage toEntity(CheckList checkList){
+    public RoomImage toEntity(){
         return RoomImage.builder()
                 .imgUrl(imgUrl)
-                .checkList(checkList)
                 .build();
     }
 
     @Builder
-    public RoomImageDto(String imgUrl, Long checkListId){
+    public RoomImageSaveDto(String imgUrl){
         this.imgUrl = imgUrl;
-        this.checkListId = checkListId;
     }
 }

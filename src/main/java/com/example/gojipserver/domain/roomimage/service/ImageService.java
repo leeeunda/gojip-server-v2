@@ -61,7 +61,7 @@ public class ImageService {
 
     // 이미지 이름 중복 방지 파일 이름 생성 -> UUID 방식으로 변경
     private String createFileName(String originalFilename) {
-        return UUID.randomUUID().toString().concat(getFileExtension(originalFilename))
+        return UUID.randomUUID().toString().concat(getFileExtension(originalFilename));
     }
 
     private String getFileExtension(String fileName){
@@ -75,7 +75,6 @@ public class ImageService {
     // 업로드 이후 RoomImage Entity를 DB에 저장 (imgUrl만 우선저장)
     @Transactional
     public void saveImageToDB(RoomImageSaveDto roomImageSaveDto) throws IOException{
-
 //        CheckList checkList=checkListRepository.findById(roomImageSaveDto.getCheckListId())
 //                .orElseThrow(() -> new IllegalArgumentException("해당 체크리스트를 찾을 수 없습니다. id= "+ roomImageSaveDto.getCheckListId()));
         RoomImage roomImage = roomImageSaveDto.toEntity();
@@ -85,15 +84,14 @@ public class ImageService {
 
     // 파일 수정
     @Transactional
-    public String updateImage(Long id, String fileName, MultipartFile newFile) throws IOException{
-
-        // DB에서 삭제
-        RoomImage roomImage = roomImageRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 이미지가 없습니다. id=" + id));
-        roomImageRepository.delete(roomImage);
+    public String updateImage(Long id, String imgUrl, MultipartFile newFile) throws IOException{
 
         // s3에서 삭제
-        deleteImage(id, fileName);
+        deleteImage(id, imgUrl);
+
+        // DB에서 삭제
+
+
 
         String newImgUrl = upload(newFile);
         RoomImageSaveDto roomImageSaveDto = new RoomImageSaveDto(newImgUrl);
@@ -112,14 +110,18 @@ public class ImageService {
 
     // 이미지 삭제
     @Transactional
-    public void deleteImage(Long id, String fileName) throws IOException{
-        log.info("file name: " + fileName);
+    public void deleteImage(Long id, String imgUrl) throws IOException{
 
         try{
             RoomImage roomImage = roomImageRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("해당 이미지가 없습니다. id=" + id));
+            String splitStr = ".com/";
+            String fileName = imgUrl.substring(imgUrl.lastIndexOf(splitStr) + splitStr.length());
+            log.info("file name: " + fileName);
+
             s3Client.deleteObject(bucket, fileName); //삭제할 버킷 및 객체의 이름 전달
             roomImageRepository.delete(roomImage); // db에서 삭제
+
         } catch (SdkClientException e){
             throw new IOException("S3부터 파일 제거 오류", e);
         }

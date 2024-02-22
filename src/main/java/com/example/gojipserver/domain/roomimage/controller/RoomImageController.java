@@ -59,10 +59,10 @@ public class RoomImageController {
 
     // 이미지 업데이트
     @Operation(summary = "이미지 수정", description = "이미지를 삭제 후 다시 업로드")
-    @PutMapping(value="/{id}/{fileName}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ApiResponse<String> updateFile(@PathVariable Long id, @PathVariable String fileName, @RequestPart MultipartFile newFile) throws IOException{
+    @PutMapping(value="/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ApiResponse<String> updateFile(@PathVariable Long id, @PathVariable String imgUrl, @RequestPart MultipartFile newFile) throws IOException{
 
-        String newImgUrl = imageService.updateImage(id, fileName, newFile);
+        String newImgUrl = imageService.updateImage(id, imgUrl, newFile);
         log.info("새로운 imageUrl = {}", newImgUrl);
 
         return ApiResponse.createSuccess(newImgUrl);
@@ -70,15 +70,14 @@ public class RoomImageController {
 
     // 이미지 삭제
     @Operation(summary = "이미지 삭제", description = "이미지 url을 DB에서 삭제")
-    @DeleteMapping(value = "{id}/{fileName}")
-    ApiResponse<String> deleteFile(@PathVariable Long id, @PathVariable String fileName) throws IOException{
+    @DeleteMapping(value = "{id}")
+    ApiResponse<String> deleteFile(@PathVariable Long id, @RequestParam String imgUrl) throws IOException{
         try {
-            // s3에서 이미지 원본 삭제
-            imageService.deleteImage(id, fileName);
-            log.info("Deleted image id: {}, fileName: {}", id, fileName);
+            imageService.deleteImage(id, imgUrl);
+            log.info("Deleted image id: {}, fileName: {}", id, imgUrl);
         } catch (IOException e) {
             log.error("파일 삭제 에러", e);
         }
-        return ApiResponse.createSuccess("파일 성공적으로 삭제 file name: " + fileName);
+        return ApiResponse.createSuccess("파일 성공적으로 삭제 imgUrl: " + imgUrl);
     }
 }

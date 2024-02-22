@@ -15,11 +15,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -56,9 +59,17 @@ public class ImageService {
         return s3Client.getUrl(bucket, fileName).toString();
     }
 
-    // 이미지 이름 중복 방지 파일 이름 생성
+    // 이미지 이름 중복 방지 파일 이름 생성 -> UUID 방식으로 변경
     private String createFileName(String originalFilename) {
-        return new Date().getTime() + "-" + originalFilename;
+        return UUID.randomUUID().toString().concat(getFileExtension(originalFilename))
+    }
+
+    private String getFileExtension(String fileName){
+        try{
+            return fileName.substring(fileName.lastIndexOf("."));
+        } catch(StringIndexOutOfBoundsException se){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일입니다.");
+        }
     }
 
     // 업로드 이후 RoomImage Entity를 DB에 저장 (imgUrl만 우선저장)

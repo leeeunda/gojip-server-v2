@@ -37,12 +37,31 @@ public class CheckListController {
     @PostMapping
     @Operation(summary = "체크리스트 등록", description = "체크리스트 등록 api")
     @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
-    @Parameter(name="checkListSaveDto", description = "노션의 기능명세서를 참고해주세요")
+    @Parameter(name="checkListSaveDto")
     public ApiResponse<Long> saveCheckList(@AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CheckListSaveDto checkListSaveDto) {
 
         Long savedCheckListId = checkListService.saveCheckList(requestUser.getId(), checkListSaveDto);
 
         return ApiResponse.createSuccess(savedCheckListId);
+    }
+
+    //    // 체크리스트 수정
+//    @PutMapping("/{checklist_id}")
+//    public String checkListCollectionGet(){
+//        return
+//    }
+//
+
+    // 체크리스트 삭제
+    @DeleteMapping("/{checkListId}")
+    @Operation(summary = "체크리스트 단일 삭제", description = "체크리스트를 삭제, 삭제 요청을 한 유저가 해당 체크리스트의 주인인지 확인")
+    @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
+    @Parameter(name = "id", description = "삭제할 CheckList의 id")
+    public ApiResponse deleteCheckList(@AuthenticationPrincipal UserPrincipal requestUser, @PathVariable Long checkListId) {
+
+        checkListService.deleteCheckList(requestUser.getId(), checkListId);
+
+        return ApiResponse.createSuccessWithNoContent();
     }
 
     @PostMapping("/test-images")
@@ -89,15 +108,5 @@ public class CheckListController {
 //        return
 //    }
 //
-//    // 체크리스트 수정
-//    @PutMapping("/{checklist_id}")
-//    public String checkListCollectionGet(){
-//        return
-//    }
-//
-//    // 체크리스트 삭제
-//    @DeleteMapping("/{checklist_id}")
-//    public String checkListDelete(){
-//        return
-//    }
+
 }

@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.gojipserver.domain.roomaddress.entity.RoomAddress.createRoomAddress;
 
@@ -82,5 +81,24 @@ public class CheckListService {
         return savedCheckList.getId();
     }
 
+    @Transactional
+    public void deleteCheckList(Long requestUserId, Long checkListId) {
+        CheckList findCheckList = checkListRepository.findById(checkListId)
+                .orElseThrow(() -> new IllegalArgumentException("체크리스트 찾기 실패!, 대상 체크리스트가 존재하지 않습니다."));
+
+        validCheckListOwner(requestUserId, findCheckList);
+
+        checkListCollectionRepository.deleteByCheckList(findCheckList);
+
+        checkListRepository.delete(findCheckList);
+
+    }
+
+    private static void validCheckListOwner(Long requestUserId, CheckList checkList) {
+        // 삭제 요청을 한 유저가 해당 컬렉션의 소유자가 맞는지 검증
+        if (!checkList.getUser().getId().equals(requestUserId)) {
+            throw new IllegalArgumentException("해당 리소스에 권한이 없습니다.");
+        }
+    }
 
 }

@@ -26,9 +26,8 @@ public class CheckListSaveDto {
     private List<Long> collectionIdList;
 
     // 주소 정보
-    private String addressName;
-    private double latitude;
-    private double longitude;
+    @Schema(description = "체크리스트의 주소 id")
+    private Long roomAddressId;
 
     // 이미지 PK 리스트
     @Schema(description = "체크리스트에 등록할 이미지의 id 리스트")

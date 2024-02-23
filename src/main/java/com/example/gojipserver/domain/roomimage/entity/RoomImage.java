@@ -3,15 +3,13 @@ package com.example.gojipserver.domain.roomimage.entity;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.global.auditing.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import static jakarta.persistence.FetchType.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RoomImage extends BaseTimeEntity {
 
@@ -28,11 +26,12 @@ public class RoomImage extends BaseTimeEntity {
     private CheckList checkList;
 
     @Builder
-    public RoomImage(String imgUrl) {
+    public RoomImage(String imgUrl, CheckList checkList) {
         this.imgUrl = imgUrl;
     }
 
-    public void registerToCheckList(CheckList checkList) {
+    public void registerToCheckList(CheckList checkList){
         this.checkList = checkList;
     }
+
 }

@@ -1,8 +1,8 @@
-package com.example.gojipserver.global.oauth2.userInfo;
+package com.example.gojipserver.domain.oauth2.userInfo;
 
 import java.util.Map;
 
-public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
+public class KakaoOAuth2UserInfo extends com.example.gojipserver.domain.oauth2.userInfo.OAuth2UserInfo {
 
     private Long id;
 

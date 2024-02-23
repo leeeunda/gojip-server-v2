@@ -35,6 +35,9 @@ dependencies {
     //AWS java sdk
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.180'
 
+    // json 라이브러리
+    implementation 'org.json:json:20210307'
+
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 

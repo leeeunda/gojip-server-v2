@@ -3,6 +3,7 @@ package com.example.gojipserver.global.config;
 import com.example.gojipserver.domain.oauth2.service.CustomUserDetailsService;
 import com.example.gojipserver.global.config.security.jwt.JwtAuthenticationFilter;
 import com.example.gojipserver.global.config.security.jwt.JwtTokenProvider;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
             "/oauth2/**", "/login", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
-            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html","/login/kakao"
+            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html","/login/kakao", "checklists/images/**",
     }; // 인증 필터를 거치지 않는 경로
 
 

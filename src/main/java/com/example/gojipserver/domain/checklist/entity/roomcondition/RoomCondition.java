@@ -21,6 +21,8 @@ public class RoomCondition {
 
     private int stationDistance; //역과의 거리
 
-    @Embedded
-    private Noise noise; //소음
+    private boolean floor; //층간소음
+    private boolean wall; //벽간소음
+    private boolean outside; //외부소음
+
 }

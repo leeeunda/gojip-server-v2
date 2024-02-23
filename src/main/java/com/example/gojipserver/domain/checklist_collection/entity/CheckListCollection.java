@@ -2,15 +2,15 @@ package com.example.gojipserver.domain.checklist_collection.entity;
 
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.collection.entity.Collection;
+import com.example.gojipserver.global.auditing.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 // 중간 테이블
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CheckListCollection {
+public class CheckListCollection extends BaseTimeEntity {
 
     //기본키 매핑
 
@@ -32,6 +32,19 @@ public class CheckListCollection {
         this.collection = collection;
     }
 
+    public void registerCheckList(CheckList checkList) {
+        this.checkList = checkList;
+    }
 
+    public void addCollection(Collection collection) {
+        this.collection = collection;
+    }
+
+    public static CheckListCollection createCheckListCollection(CheckList checkList, Collection collection) {
+        return CheckListCollection.builder()
+                .checkList(checkList)
+                .collection(collection)
+                .build();
+    }
 
 }

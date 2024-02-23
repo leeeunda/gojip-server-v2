@@ -40,9 +40,7 @@ public class CollectionService {
                 .orElseThrow(() -> new IllegalArgumentException("컬렉션 삭제 실패!, 대상 컬렉션이 없습니다."));
 
         // 삭제 요청을 한 유저가 해당 컬렉션의 소유자가 맞는지 검증
-        if (!findCollection.getUser().getId().equals(requestUserId)) {
-            throw new IllegalArgumentException("해당 리소스에 권한이 없습니다.");
-        }
+        validCollectionOwner(requestUserId, collectionId, findCollection);
 
         collectionRepository.delete(findCollection);
     }
@@ -55,6 +53,12 @@ public class CollectionService {
     private void validCollectionNameDuplicate(Long userId, CollectionSaveDto collectionSaveDto) {
         if (collectionRepository.existsCollectionNameByUserId(userId, collectionSaveDto.getCollectionName())) {
             throw new IllegalArgumentException("이미 존재하는 컬렉션 이름입니다. collectionName = " + collectionSaveDto.getCollectionName());
+        }
+    }
+
+    private static void validCollectionOwner(Long requestUserId, Long collectionId, Collection findCollection) {
+        if (!findCollection.getUser().getId().equals(requestUserId)) {
+            throw new IllegalArgumentException("해당 리소스에 권한이 없습니다. collectionId = " + collectionId);
         }
     }
 

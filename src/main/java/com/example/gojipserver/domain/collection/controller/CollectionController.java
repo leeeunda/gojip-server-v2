@@ -2,6 +2,7 @@ package com.example.gojipserver.domain.collection.controller;
 
 import com.example.gojipserver.domain.collection.dto.CollectionResponseDto;
 import com.example.gojipserver.domain.collection.dto.CollectionSaveDto;
+import com.example.gojipserver.domain.collection.dto.CollectionUpdateDto;
 import com.example.gojipserver.domain.collection.service.CollectionService;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
 import com.example.gojipserver.global.response.ApiResponse;
@@ -32,6 +33,18 @@ public class CollectionController {
 
         Long savedCollectionId = collectionService.saveCollection(requestUser.getId(), collectionSaveDto);
         return ApiResponse.createSuccess(savedCollectionId);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "컬렉션 등록", description = "요청한 유저의 정보를 받아 컬렉션을 등록")
+    @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
+    @Parameter(name = "id", description = "수정할 Collection의 id")
+    @Parameter(name = "collectionUpdateDto", description = "collectionName을 담은 DTO")
+    public ApiResponse updateCollection(@PathVariable("id") Long collectionId, @AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CollectionUpdateDto collectionUpdateDto) {
+
+        Long updatedCollection = collectionService.updateCollection(collectionId, requestUser.getId(), collectionUpdateDto);
+
+        return ApiResponse.createSuccess(updatedCollection);
     }
 
     @DeleteMapping("/{id}")

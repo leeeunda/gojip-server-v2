@@ -16,7 +16,7 @@ public interface CollectionRepository extends JpaRepository<Collection, Long> {
     List<CollectionResponseDto> findCollectionsByUserId(@Param("userId") Long userId);
 
 
-    @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Collection c WHERE c.user.id = :userId AND c.collectionName = :collectionName")
+    @Query("select case when count(c) > 0 then true else false end from Collection c where c.user.id = :userId and c.collectionName = :collectionName")
     boolean existsCollectionNameByUserId(@Param("userId") Long userId, @Param("collectionName") String collectionName);
 
 }

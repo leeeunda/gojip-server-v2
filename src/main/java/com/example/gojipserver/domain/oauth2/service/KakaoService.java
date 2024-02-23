@@ -24,7 +24,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
 public class KakaoService{
     private final UserRepository userRepository;
     private final WebClient webClient;
@@ -51,7 +50,6 @@ public class KakaoService{
         return userDto;
     }
 
-    @Transactional
     public void extracted(User newUser) {
         userRepository.save(newUser);
     }

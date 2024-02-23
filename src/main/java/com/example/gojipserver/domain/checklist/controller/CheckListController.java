@@ -46,15 +46,22 @@ public class CheckListController {
 //
 
     // 체크리스트 삭제
-    @DeleteMapping("/{checkListId}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "체크리스트 단일 삭제", description = "체크리스트를 삭제, 삭제 요청을 한 유저가 해당 체크리스트의 주인인지 확인")
     @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
     @Parameter(name = "id", description = "삭제할 CheckList의 id")
-    public ApiResponse deleteCheckList(@AuthenticationPrincipal UserPrincipal requestUser, @PathVariable Long checkListId) {
+    public ApiResponse deleteCheckList(@AuthenticationPrincipal UserPrincipal requestUser, @PathVariable("id") Long checkListId) {
 
         checkListService.deleteCheckList(requestUser.getId(), checkListId);
 
         return ApiResponse.createSuccessWithNoContent();
+    }
+
+    // 체크리스트 단일 조회
+    @GetMapping("/{id}")
+    public void checkListOneGet(){
+        checkListService.checkListOneGet();
+
     }
 
 
@@ -84,11 +91,7 @@ public class CheckListController {
 //        return new ResponseEntity<>(messageDto, headers,  )
 //    }
 
-//    // 체크리스트 단일 조회
-//    @GetMapping("/{id}")
-//    public String checkListOneGet(){
-//        return
-//    }
+
 //
 //    // 체크리스트 구별 조회 -> 수정 가능
 //    @GetMapping("/checklists?city=\"동작구\"")

@@ -11,16 +11,10 @@ spring:
 
 
   datasource:
-    url: jdbc:h2:tcp://localhost/~/gojip
-    username: sa
-    password: 1234
-    driver-class-name: org.h2.Driver
-
-  h2:
-    console:
-      enabled: true
-      settings:
-        web-allow-others: true
+    url: jdbc:mysql://gojip-db.c3meci0qgr05.ap-northeast-2.rds.amazonaws.com:3306/gojip
+    username: admin
+    password: Slow6562!
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
@@ -30,7 +24,7 @@ spring:
         default_batch_fetch_size: 100
         show_sql: true
         format_sql: true
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
 
   servlet:
     multipart:

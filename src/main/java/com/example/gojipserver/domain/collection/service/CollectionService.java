@@ -4,9 +4,11 @@ import com.example.gojipserver.domain.collection.dto.CollectionResponseDto;
 import com.example.gojipserver.domain.collection.dto.CollectionSaveDto;
 import com.example.gojipserver.domain.collection.dto.CollectionUpdateDto;
 import com.example.gojipserver.domain.collection.entity.Collection;
+import com.example.gojipserver.global.exception.DuplicateException;
 import com.example.gojipserver.domain.collection.repository.CollectionRepository;
 import com.example.gojipserver.domain.user.entity.User;
 import com.example.gojipserver.domain.user.repository.UserRepository;
+import com.example.gojipserver.global.exception.NotOwnerException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +41,7 @@ public class CollectionService {
         String collectionName = collectionUpdateDto.getCollectionName();
 
         // 검증
-        validCollectionOwner(requestUserId, collectionId, findCollection);
+        validCollectionOwner(requestUserId,findCollection);
         validCollectionNameDuplicate(requestUserId, collectionName);
 
         findCollection.updateCollectionName(collectionName);
@@ -52,7 +54,7 @@ public class CollectionService {
     public void deleteCollection(Long requestUserId , Long collectionId) {
         Collection findCollection = findCollectionById(collectionId);
 
-        validCollectionOwner(requestUserId, collectionId, findCollection);
+        validCollectionOwner(requestUserId, findCollection);
 
         collectionRepository.delete(findCollection);
     }
@@ -65,14 +67,14 @@ public class CollectionService {
     // 컬렉션 이름 중복 검증
     private void validCollectionNameDuplicate(Long userId, String collectionName) {
         if (collectionRepository.existsCollectionNameByUserId(userId, collectionName)) {
-            throw new IllegalArgumentException("이미 존재하는 컬렉션 이름입니다. collectionName = " + collectionName);
+            throw new DuplicateException("이미 존재하는 컬렉션 이름입니다. (" + collectionName + ")");
         }
     }
 
     // 삭제 요청을 한 유저가 해당 컬렉션의 소유자가 맞는지 검증
-    private static void validCollectionOwner(Long requestUserId, Long collectionId, Collection findCollection) {
-        if (!findCollection.getUser().getId().equals(requestUserId)) {
-            throw new IllegalArgumentException("해당 컬렉션에 권한이 없습니다. collectionId = " + collectionId);
+    private static void validCollectionOwner(Long requestUserId, Collection collection) {
+        if (!collection.getUser().getId().equals(requestUserId)) {
+            throw new NotOwnerException("해당 컬렉션에 권한이 없습니다. collectionId = " + collection.getId());
         }
     }
 

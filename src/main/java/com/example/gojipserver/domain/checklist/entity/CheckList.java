@@ -64,7 +64,7 @@ public class CheckList extends BaseTimeEntity {
     private int stationDistance; //역과의 거리
 
     private boolean floor; //층간소음
-    private boolean wall; //벽간소음
+    private boolean wall; //방간소음
     private boolean outside; //외부소음
 
     //방 상태

@@ -25,8 +25,12 @@ public class ApiResponse<T> {
 
 
     // 예외 발생으로 API 호출 실패시 반환
-    public static ApiResponse<?> createError(String message) {
+    public static ApiResponse<?> create400Error(String message) {
         return new ApiResponse<>(false, StatusEnum.BAD_REQUEST, null, message);
+    }
+
+    public static ApiResponse<?> create403Error(String message) {
+        return new ApiResponse<>(false, StatusEnum.FORBIDDEN, null, message);
     }
 
     @Builder

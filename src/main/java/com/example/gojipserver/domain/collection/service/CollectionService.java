@@ -4,7 +4,6 @@ import com.example.gojipserver.domain.collection.dto.CollectionResponseDto;
 import com.example.gojipserver.domain.collection.dto.CollectionSaveDto;
 import com.example.gojipserver.domain.collection.entity.Collection;
 import com.example.gojipserver.domain.collection.repository.CollectionRepository;
-import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
 import com.example.gojipserver.domain.user.entity.User;
 import com.example.gojipserver.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +27,11 @@ public class CollectionService {
         User findUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("회원 찾기 실패!, 대상 회원이 존재하지 않습니다."));
 
+        validCollectionNameDuplicate(userId, collectionSaveDto);
+
         return collectionRepository.save(collectionSaveDto.toEntity(findUser)).getId();
     }
+
 
     // TODO: Custom 예외 처리
     @Transactional
@@ -48,6 +50,12 @@ public class CollectionService {
     // TODO:
     public List<CollectionResponseDto> getCollections(Long requestUserId) {
         return collectionRepository.findCollectionsByUserId(requestUserId);
+    }
+
+    private void validCollectionNameDuplicate(Long userId, CollectionSaveDto collectionSaveDto) {
+        if (collectionRepository.existsCollectionNameByUserId(userId, collectionSaveDto.getCollectionName())) {
+            throw new IllegalArgumentException("이미 존재하는 컬렉션 이름입니다. collectionName = " + collectionSaveDto.getCollectionName());
+        }
     }
 
 }

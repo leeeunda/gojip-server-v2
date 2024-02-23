@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ./
+    ports:
+      - '8080:8080'
+    depends_on:
+      - redis
+    networks:
+      - network-tier
+    tty: true
+    restart: on-failure
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - network-tier
+
+networks:
+  network-tier:
+    driver: bridge

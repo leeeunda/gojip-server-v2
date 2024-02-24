@@ -1,5 +1,7 @@
 package com.example.gojipserver.domain.roomaddress.controller;
 
+import com.example.gojipserver.domain.roomaddress.dto.RoomAddressResponseDto;
+import com.example.gojipserver.domain.roomaddress.dto.RoomAddressSaveDto;
 import com.example.gojipserver.domain.roomaddress.entity.Coordinates;
 import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
 import com.example.gojipserver.domain.roomaddress.repository.RoomAddressRepository;
@@ -22,19 +24,20 @@ public class RoomAddressController {
     private final RoomAddressRepository roomAddressRepository;
 
     // 이 집 체크하러가기 버튼 클릭시 우선 주소만 저장하는 등록 API
-//    @PostMapping
-//    @Operation(summary = "주소 저장 API", description = "주소를 받아서 주소이름, x좌표, y좌표를 저장하는 API")
-//    public ApiResponse<> saveRoomAddress(@RequestBody String roomAdress){
-//        String coordinate = roomAddressService.getCoordinate(roomAdress);
-//
-//        RoomAddress roomAddress=roomAddressService.save()
-//        return roomAddressRepository.save(RoomAddress)
-//    }
+    @PostMapping()
+    @Operation(summary = "주소 저장 API", description = "주소를 받아서 주소이름, x좌표, y좌표를 저장하는 API")
+    public ApiResponse<RoomAddressResponseDto> saveRoomAddress(@RequestBody RoomAddressSaveDto roomAddressSaveDto){
+
+        RoomAddress roomAddress = roomAddressService.getCoordinateAndSave(roomAddressSaveDto.getAddressName());
+        RoomAddressResponseDto roomAddressResponseDto = new RoomAddressResponseDto(roomAddress.getAddressName(), String.valueOf(roomAddress.getLatitude()), String.valueOf(roomAddress.getLongitude()));
+
+        return ApiResponse.createSuccess(roomAddressResponseDto);
+    }
 
     //좌표 조회 테스트 API (따로 쓰실 필요 없어요!)
     @GetMapping()
     @Operation(summary="좌표 반환 테스트 API", description="주소를 받아서 x좌표,y좌표를 반환")
-    public Coordinates address(@RequestParam String RoomAddress){
+    public Coordinates Roomaddress(@RequestParam String RoomAddress){
         return roomAddressService.getCoordinate(RoomAddress);
     }
 }

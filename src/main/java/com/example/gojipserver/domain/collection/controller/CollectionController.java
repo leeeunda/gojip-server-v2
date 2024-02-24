@@ -2,6 +2,7 @@ package com.example.gojipserver.domain.collection.controller;
 
 import com.example.gojipserver.domain.collection.dto.CollectionResponseDto;
 import com.example.gojipserver.domain.collection.dto.CollectionSaveDto;
+import com.example.gojipserver.domain.collection.dto.CollectionUpdateDto;
 import com.example.gojipserver.domain.collection.service.CollectionService;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
 import com.example.gojipserver.global.response.ApiResponse;
@@ -34,13 +35,25 @@ public class CollectionController {
         return ApiResponse.createSuccess(savedCollectionId);
     }
 
+    @PutMapping("/{id}")
+    @Operation(summary = "컬렉션 수정", description = "컬렉션 이름 수정")
+    @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
+    @Parameter(name = "id", description = "수정할 Collection의 id")
+    @Parameter(name = "collectionUpdateDto", description = "collectionName을 담은 DTO")
+    public ApiResponse updateCollection(@PathVariable("id") Long collectionId, @AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CollectionUpdateDto collectionUpdateDto) {
+
+        Long updatedCollection = collectionService.updateCollection(collectionId, requestUser.getId(), collectionUpdateDto);
+
+        return ApiResponse.createSuccess(updatedCollection);
+    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "컬렉션 단일 삭제", description = "컬렉션을 삭제, 삭제 요청을 한 유저가 해당 컬렉션의 주인인지 확인")
     @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
     @Parameter(name = "id", description = "삭제할 Collection의 id")
-    public ApiResponse deleteCollection(@AuthenticationPrincipal UserPrincipal requestUser, @PathVariable Long id) {
+    public ApiResponse deleteCollection(@AuthenticationPrincipal UserPrincipal requestUser, @PathVariable("id") Long collectionId) {
 
-        collectionService.deleteCollection(requestUser.getId(), id);
+        collectionService.deleteCollection(requestUser.getId(), collectionId);
 
         return ApiResponse.createSuccessWithNoContent();
     }

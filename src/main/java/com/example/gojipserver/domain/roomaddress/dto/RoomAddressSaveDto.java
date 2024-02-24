@@ -13,7 +13,7 @@ public class RoomAddressSaveDto {
 
 
     @Builder
-    public RoomAddressSaveDto(String addressName, String latitude, String longitude) {
+    public RoomAddressSaveDto(String addressName) {
 
         this.addressName = addressName;
 

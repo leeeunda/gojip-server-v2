@@ -63,7 +63,7 @@ public class RoomAddressService {
 
         //주소를 통해 좌표를 조회한 후
         Coordinates coordinates = getCoordinate(addressName);
-        RoomAddressSaveDto roomAddressSaveDto= new RoomAddressSaveDto(addressName, coordinates.getX(), coordinates.getY());
+        RoomAddressSaveDto roomAddressSaveDto= new RoomAddressSaveDto(addressName);
         RoomAddress roomAddress = roomAddressSaveDto.toEntity(coordinates.getX(), coordinates.getY());
 
         //DB에 저장하고 RoomAddress 반환

@@ -1,4 +1,4 @@
-package com.example.gojipserver.global.config.security.jwt;
+package com.example.gojipserver.global.config.jwt;
 
 
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;

@@ -4,7 +4,7 @@ import com.example.gojipserver.domain.oauth2.dto.UserDto.*;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
 import com.example.gojipserver.domain.oauth2.service.KakaoService;
 import com.example.gojipserver.domain.oauth2.service.OAuthService;
-import com.example.gojipserver.global.config.security.jwt.JwtTokenProvider;
+import com.example.gojipserver.global.config.jwt.JwtTokenProvider;
 import com.example.gojipserver.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 

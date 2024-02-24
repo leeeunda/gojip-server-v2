@@ -2,19 +2,11 @@ package com.example.gojipserver.domain.oauth2.service;
 
 import com.example.gojipserver.domain.oauth2.dto.UserDto;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
-import com.example.gojipserver.domain.user.entity.User;
-import com.example.gojipserver.domain.user.repository.UserRepository;
-import com.example.gojipserver.global.config.security.jwt.JwtTokenProvider;
-import jakarta.servlet.http.HttpServletResponse;
+import com.example.gojipserver.global.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

@@ -1,5 +1,9 @@
 package com.example.gojipserver.domain.roomaddress.service;
 
+import com.example.gojipserver.domain.roomaddress.dto.RoomAddressSaveDto;
+import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
+import com.example.gojipserver.domain.roomaddress.repository.RoomAddressRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.json.JSONObject;
@@ -19,11 +23,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class RoomAddressService {
 
+    private final RoomAddressRepository roomAddressRepository;
     private final String uri = "https://dapi.kakao.com/v2/local/search/address.json";
 
     @Value("${kakao.local.key}")
     private String kakaoLocalKey;
 
+    @Transactional
     public Coordinates getCoordinate(String RoomAddress){
         RestTemplate restTemplate = new RestTemplate();
         String apiKey = "KakaoAK " + kakaoLocalKey;
@@ -52,4 +58,15 @@ public class RoomAddressService {
         return new Coordinates(x, y);
     }
 
+    @Transactional
+    public RoomAddress getCoordinateAndSave(String addressName){
+
+        //주소를 통해 좌표를 조회한 후
+        Coordinates coordinates = getCoordinate(addressName);
+        RoomAddressSaveDto roomAddressSaveDto= new RoomAddressSaveDto(addressName, coordinates.getX(), coordinates.getY());
+        RoomAddress roomAddress = roomAddressSaveDto.toEntity(coordinates.getX(), coordinates.getY());
+
+        //DB에 저장하고 RoomAddress 반환
+        return roomAddressRepository.save(roomAddress);
+    }
 }

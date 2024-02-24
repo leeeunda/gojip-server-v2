@@ -24,10 +24,9 @@ public class RoomAddressService {
     @Value("${kakao.local.key}")
     private String kakaoLocalKey;
 
-    public Coordinates getCoordinate(){
+    public Coordinates getCoordinate(String RoomAddress){
         RestTemplate restTemplate = new RestTemplate();
-        String apiKey = "KaKaoAK" + kakaoLocalKey;
-        String address = "서울시 강남구 테헤란로 131";
+        String apiKey = "KakaoAK " + kakaoLocalKey;
 
         // 요청 헤더에 만들기, Authorization 헤더 설정하기
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -36,7 +35,7 @@ public class RoomAddressService {
 
         UriComponents uriComponents = UriComponentsBuilder
                 .fromHttpUrl(uri)
-                .queryParam("query",address)
+                .queryParam("query",RoomAddress)
                 .build();
 
         ResponseEntity<String> response = restTemplate.exchange(uriComponents.toString(), HttpMethod.GET, entity, String.class);

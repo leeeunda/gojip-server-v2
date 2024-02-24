@@ -34,7 +34,7 @@ public class RoomAddressController {
     //좌표 조회 테스트 API (따로 쓰실 필요 없어요!)
     @GetMapping()
     @Operation(summary="좌표 반환 테스트 API", description="주소를 받아서 x좌표,y좌표를 반환")
-    public Coordinates address(){
-        return roomAddressService.getCoordinate();
+    public Coordinates address(@RequestParam String RoomAddress){
+        return roomAddressService.getCoordinate(RoomAddress);
     }
 }

@@ -6,8 +6,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Coordinates {
-    private String x; // x좌표
-    private String y; // y좌표
+    private String x; // 위도
+    private String y; // 경도
 
     @Builder
     public Coordinates(String x,String y) {

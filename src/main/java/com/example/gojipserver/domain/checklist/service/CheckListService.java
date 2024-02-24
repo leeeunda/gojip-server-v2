@@ -8,19 +8,19 @@ import com.example.gojipserver.domain.checklist_collection.repository.CheckListC
 import com.example.gojipserver.domain.collection.entity.Collection;
 import com.example.gojipserver.domain.collection.repository.CollectionRepository;
 import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
+import com.example.gojipserver.domain.roomaddress.repository.RoomAddressRepository;
 import com.example.gojipserver.domain.roomimage.entity.RoomImage;
 import com.example.gojipserver.domain.roomimage.repository.RoomImageRepository;
 import com.example.gojipserver.domain.user.entity.User;
 import com.example.gojipserver.domain.user.repository.UserRepository;
+import com.example.gojipserver.global.exception.NotOwnerException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
-import java.util.Optional;
 
-import static com.example.gojipserver.domain.roomaddress.entity.RoomAddress.createRoomAddress;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,6 +30,7 @@ public class CheckListService {
     private final CheckListRepository checkListRepository;
     private final UserRepository userRepository;
     private final RoomImageRepository roomImageRepository;
+    private final RoomAddressRepository roomAddressRepository;
     private final CollectionRepository collectionRepository;
     private final CheckListCollectionRepository checkListCollectionRepository;
 
@@ -39,15 +40,12 @@ public class CheckListService {
 
         // 체크리스트 등록 유저와 주소 세팅
         User findUser = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("회원 찾기 실패!, 대상 회원이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("회원 찾기 실패!, 대상 회원이 존재하지 않습니다. userId = " + userId));
 
-        RoomAddress roomAddress = createRoomAddress(
-                checkListSaveDto.getAddressName(),
-                checkListSaveDto.getLatitude(),
-                checkListSaveDto.getLongitude()
-        );
+        RoomAddress findRoomAddress = roomAddressRepository.findById(checkListSaveDto.getRoomAddressId())
+                .orElseThrow(() -> new IllegalArgumentException("회원 찾기 실패!, 대상 회원이 존재하지 않습니다. roomAddressId = " + checkListSaveDto.getRoomAddressId()));
 
-        CheckList savedCheckList = checkListRepository.save(checkListSaveDto.toEntity(findUser, roomAddress));
+        CheckList savedCheckList = checkListRepository.save(checkListSaveDto.toEntity(findUser, findRoomAddress));
 
 
         // 체크리스트와 이미지 연관관계 세팅
@@ -56,7 +54,7 @@ public class CheckListService {
         if (roomImageIdList != null) {
             for (Long roomImageId : roomImageIdList) {
                 RoomImage findRoomImage = roomImageRepository.findById(roomImageId)
-                        .orElseThrow(() -> new IllegalArgumentException("이미지 찾기 실패!, 대상 이미지가 존재하지 않습니다."));
+                        .orElseThrow(() -> new IllegalArgumentException("이미지 찾기 실패!, 대상 이미지가 존재하지 않습니다. roomImageId = " + roomImageId));
 
                 savedCheckList.addRoomImage(findRoomImage);
             }
@@ -68,7 +66,7 @@ public class CheckListService {
         if (collectionIdList != null) {
             for (Long collectionId : collectionIdList) {
                 Collection findCollection = collectionRepository.findById(collectionId)
-                        .orElseThrow(() -> new IllegalArgumentException("컬렉션 찾기 실패!, 대상 컬렉션이 존재하지 않습니다."));
+                        .orElseThrow(() -> new IllegalArgumentException("컬렉션 찾기 실패!, 대상 컬렉션이 존재하지 않습니다. collectionId = " + collectionId));
 
                 CheckListCollection checkListCollection = CheckListCollection.createCheckListCollection(savedCheckList, findCollection);
 
@@ -82,5 +80,28 @@ public class CheckListService {
         return savedCheckList.getId();
     }
 
+    @Transactional
+    public void deleteCheckList(Long requestUserId, Long checkListId) {
+        CheckList findCheckList = checkListRepository.findById(checkListId)
+                .orElseThrow(() -> new IllegalArgumentException("체크리스트 찾기 실패!, 대상 체크리스트가 존재하지 않습니다. checkListId + " + checkListId));
+
+        validCheckListOwner(requestUserId, findCheckList);
+
+        checkListCollectionRepository.deleteByCheckList(findCheckList);
+
+        checkListRepository.delete(findCheckList);
+
+    }
+
+    public void checkListOneGet() {
+
+    }
+
+    private static void validCheckListOwner(Long requestUserId, CheckList checkList) {
+        // 삭제 요청을 한 유저가 해당 컬렉션의 소유자가 맞는지 검증
+        if (!checkList.getUser().getId().equals(requestUserId)) {
+            throw new NotOwnerException("해당 체크리스트에 권한이 없습니다. checkListId = " + checkList.getId());
+        }
+    }
 
 }

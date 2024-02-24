@@ -34,6 +34,16 @@ public class Collection extends BaseTimeEntity {
     @Column(nullable = false)
     private String collectionName;
 
+    @Builder
+    public Collection(User user, String collectionName) {
+        this.user = user;
+        this.collectionName = collectionName;
+    }
+
+    public void updateCollectionName(String collectionName) {
+        this.collectionName = collectionName;
+    }
+
     //연관관계 편의 메서드
 
     public void addCheckListCollection(CheckListCollection checkListCollection) {
@@ -41,9 +51,6 @@ public class Collection extends BaseTimeEntity {
         checkListCollection.addCollection(this);
     }
 
-    @Builder
-    public Collection(User user, String collectionName) {
-        this.user = user;
-        this.collectionName = collectionName;
-    }
+
+
 }

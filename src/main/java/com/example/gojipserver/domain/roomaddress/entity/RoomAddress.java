@@ -17,10 +17,13 @@ public class RoomAddress extends BaseTimeEntity {
     @Column(name = "room_address_id")
     private Long id;
 
+    @Column
     private String addressName;
 
+    @Column
     private double latitude; //위도
 
+    @Column
     private double longitude; //경도
 
     @Builder

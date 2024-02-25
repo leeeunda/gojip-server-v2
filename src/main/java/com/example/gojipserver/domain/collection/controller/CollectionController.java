@@ -39,11 +39,11 @@ public class CollectionController {
     @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
     @Parameter(name = "id", description = "수정할 Collection의 id")
     @Parameter(name = "collectionUpdateDto", description = "collectionName을 담은 DTO")
-    public ApiResponse updateCollection(@PathVariable("id") Long collectionId, @AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CollectionUpdateDto collectionUpdateDto) {
+    public ApiResponse<Long> updateCollection(@PathVariable("id") Long collectionId, @AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CollectionUpdateDto collectionUpdateDto) {
 
-        Long updatedCollection = collectionService.updateCollection(collectionId, requestUser.getId(), collectionUpdateDto);
+        Long updatedCollectionId = collectionService.updateCollection(collectionId, requestUser.getId(), collectionUpdateDto);
 
-        return ApiResponse.createSuccess(updatedCollection);
+        return ApiResponse.createSuccess(updatedCollectionId);
     }
 
     @DeleteMapping("/{id}")

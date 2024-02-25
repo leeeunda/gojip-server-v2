@@ -35,9 +35,9 @@ public class RoomAddressController {
         return ApiResponse.createSuccess(roomAddressResponseDto);
     }
 
-//    //좌표 조회 테스트 API
+    //좌표 조회 테스트 API -> 주석처리
 //    @GetMapping()
-//    @Operation(summary="좌표 반환 테스트 API", description="주소를 받아서 x좌표,y좌표를 반환")
+//    @Operation(summary="좌표 반환 테스트 API", description="주소를 받아서 x좌표,y좌표를 반환 (프론트에서 쓰지 않아도 됨")
 //    public Coordinates Roomaddress(@RequestParam String RoomAddress){
 //        return roomAddressService.getCoordinate(RoomAddress);
 //    }

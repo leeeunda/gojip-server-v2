@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
             "/oauth2/**", "/login", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
-            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html","/login/kakao", "/checklists/images/**", "/roomAddresses/**"
+            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html","/login/kakao"
     }; // 인증 필터를 거치지 않는 경로
 
 

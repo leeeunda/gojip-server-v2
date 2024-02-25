@@ -9,10 +9,6 @@ spring:
       - classpath:application-jwt.yml
       - classpath:application-swagger.yml
 
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
 
   datasource:
     url: jdbc:h2:tcp://localhost/~/gojip
@@ -20,16 +16,22 @@ spring:
     password: 1234
     driver-class-name: org.h2.Driver
 
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         default_batch_fetch_size: 100
         show_sql: true
         format_sql: true
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.H2Dialect
 
   redis:
     host: localhost

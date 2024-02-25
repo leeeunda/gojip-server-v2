@@ -1,8 +1,10 @@
 package com.example.gojipserver.global.config;
 
 import com.example.gojipserver.domain.oauth2.service.CustomUserDetailsService;
-import com.example.gojipserver.global.config.security.jwt.JwtAuthenticationFilter;
-import com.example.gojipserver.global.config.security.jwt.JwtTokenProvider;
+import com.example.gojipserver.global.config.jwt.CustomAccessDeniedHandler;
+import com.example.gojipserver.global.config.jwt.CustomAuthenticationEntryPoint;
+import com.example.gojipserver.global.config.jwt.JwtAuthenticationFilter;
+import com.example.gojipserver.global.config.jwt.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +21,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
             "/oauth2/**", "/login", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
-            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html","/login/kakao"
+            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html","/login/kakao", "checklists/images/**","/refresh"
+
     }; // 인증 필터를 거치지 않는 경로
 
 
@@ -42,6 +45,8 @@ public class SecurityConfig {
         );
 
         http.userDetailsService(customUserDetailsService);
+        http.exceptionHandling(authentication -> authentication.authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .accessDeniedHandler(new CustomAccessDeniedHandler()));
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();

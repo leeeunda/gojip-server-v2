@@ -26,12 +26,11 @@ public class User extends BaseTimeEntity {
 
     private String email;
     private String nickname;
-    private LocalDate birthday;
-    private String phoneNumber;
+//    private LocalDate birthday;
+//    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     private Role role;
-    private String refreshToken;
 
     public void update(String email,String nickname) {
         this.email = email;

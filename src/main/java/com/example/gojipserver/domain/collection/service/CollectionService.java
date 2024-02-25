@@ -49,7 +49,6 @@ public class CollectionService {
         return findCollection.getId();
     }
 
-    // TODO: Custom 예외 처리
     @Transactional
     public void deleteCollection(Long requestUserId , Long collectionId) {
         Collection findCollection = findCollectionById(collectionId);
@@ -59,7 +58,7 @@ public class CollectionService {
         collectionRepository.delete(findCollection);
     }
 
-    // TODO:
+    // TODO: 요청한 유저의 권한 검증
     public List<CollectionResponseDto> getCollections(Long requestUserId) {
         return collectionRepository.findCollectionsByUserId(requestUserId);
     }

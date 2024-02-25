@@ -24,7 +24,6 @@ public class CollectionController {
 
     private final CollectionService collectionService;
 
-    // TODO: collectionName null, 중복 예외 처리
     @PostMapping
     @Operation(summary = "컬렉션 등록", description = "요청한 유저의 정보를 받아 컬렉션을 등록")
     @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")

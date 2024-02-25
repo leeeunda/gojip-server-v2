@@ -78,14 +78,10 @@ public class CheckListController {
 //    @GetMapping()
 //    public ApiResponse<> checkListAllGet(){
 //
-//        ApiResponse apiResponse = new ApiResponse();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//        apiResponse.setStatus(HttpStatus.OK.value());
-//        messageDto.setMessage("전체 조회 성공");
-//        messageDto.setData(CheckList);
-//        return new ResponseEntity<>(messageDto, headers,  )
+
 //    }
+
+    //이미지 조회
 
 //    일단 주석 처리
 //    @PostMapping("/test-images")

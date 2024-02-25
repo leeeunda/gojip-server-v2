@@ -2,6 +2,7 @@ package com.example.gojipserver.domain.checklist.controller;
 
 import com.example.gojipserver.domain.checklist.dto.CheckListOneGetDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListSaveDto;
+import com.example.gojipserver.domain.checklist.dto.CheckListUpdateDto;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.checklist.service.CheckListService;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
@@ -42,19 +43,24 @@ public class CheckListController {
         return ApiResponse.createSuccess(savedCheckListId);
     }
 
-    //    // 체크리스트 수정
-//    @PutMapping("/{checklist_id}")
-//    public String checkListCollectionGet(){
-//        return
-//    }
-//
+    // 체크리스트 수정
+    @PutMapping("/{id}")
+    @Operation(summary = "체크리스트 수정", description = "체크리스트 수정 api")
+    @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
+    @Parameter(name="checkListUpdateDto")
+    public ApiResponse<Long> updateCheckList(@PathVariable("id") Long checkListId, @AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CheckListUpdateDto checkListUpdateDto){
+        Long updatedCheckListId = checkListService.updateCheckList(checkListId, requestUser.getId(), checkListUpdateDto);
+
+        return ApiResponse.createSuccess(updatedCheckListId);
+    }
+
 
     // 체크리스트 삭제
     @DeleteMapping("/{id}")
     @Operation(summary = "체크리스트 단일 삭제", description = "체크리스트를 삭제, 삭제 요청을 한 유저가 해당 체크리스트의 주인인지 확인")
     @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
     @Parameter(name = "id", description = "삭제할 CheckList의 id")
-    public ApiResponse deleteCheckList(@AuthenticationPrincipal UserPrincipal requestUser, @PathVariable("id") Long checkListId) {
+    public ApiResponse deleteCheckList(@PathVariable("id") Long checkListId, @AuthenticationPrincipal UserPrincipal requestUser) {
 
         checkListService.deleteCheckList(requestUser.getId(), checkListId);
 

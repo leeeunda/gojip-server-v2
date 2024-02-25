@@ -33,6 +33,10 @@ public class ApiResponse<T> {
         return new ApiResponse<>(false, StatusEnum.FORBIDDEN, null, message);
     }
 
+    public static ApiResponse<?> create404Error(String message) {
+        return new ApiResponse<>(false, StatusEnum.NOT_FOUND, null, message);
+    }
+
     @Builder
     private ApiResponse(boolean isSuccess, StatusEnum status, T data, String message) {
         this.isSuccess = isSuccess;

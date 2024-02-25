@@ -4,33 +4,28 @@ import com.example.gojipserver.domain.checklist.entity.bathroomstatus.*;
 import com.example.gojipserver.domain.checklist.entity.roomcondition.Building;
 import com.example.gojipserver.domain.checklist.entity.roomstatus.Boiler;
 import com.example.gojipserver.domain.checklist.entity.roomstatus.Light;
-import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
-import com.example.gojipserver.domain.checklist.entity.CheckList;
-import com.example.gojipserver.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Schema(description = "체크리스트 저장 DTO")
+@Schema(description = "체크리스트 변경 DTO")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class CheckListSaveDto {
-
-    // 주소 정보
-    @Schema(description = "체크리스트의 주소 id")
-    private Long roomAddressId;
+@AllArgsConstructor
+public class CheckListUpdateDto {
 
     // 컬렉션 id의 리스트
     @Schema(description = "체크리스트를 등록할 컬렉션의 id 리스트")
     private List<Long> collectionIdList;
 
     // 이미지 PK 리스트
-    @Schema(description = "체크리스트에 등록할 이미지의 id 리스트")
+    @Schema(description = "체크리스트에 새로 등록할 이미지의 id 리스트")
     private List<Long> roomImageIdList;
 
     // 비용
@@ -189,60 +184,6 @@ public class CheckListSaveDto {
 
     @Schema(description = "이미지 설명")
     private String imgDescription;
-
-    public CheckList toEntity(User user, RoomAddress roomAddress) {
-        return CheckList.builder()
-                .roomAddress(roomAddress)
-                .user(user)
-                .deposit(deposit)
-                .monthlyCost(monthlyCost)
-                .managementCost(managementCost)
-                .waterCost(waterCost)
-                .heatingCost(heatingCost)
-                .electricCost(electricCost)
-                .internetCost(internetCost)
-                .area(area)
-                .building(building)
-                .stationDistance(stationDistance)
-                .floor(floor)
-                .wall(wall)
-                .outside(outside)
-                .light(light)
-                .boiler(boiler)
-                .mold(mold)
-                .wind(wind)
-                .bug(bug)
-                .wallpaperPollution(wallpaperPollution)
-                .toilet(toilet)
-                .washstand(washstand)
-                .sink(sink)
-                .showerHead(showerHead)
-                .hotWater(hotWater)
-                .tile(tile)
-                .airConditioner(airConditioner)
-                .refrigerator(refrigerator)
-                .washingMachine(washingMachine)
-                .microwave(microwave)
-                .gasRange(gasRange)
-                .induction(induction)
-                .bed(bed)
-                .desk(desk)
-                .closet(closet)
-                .tv(tv)
-                .wifiRouter(wifiRouter)
-                .computer(computer)
-                .doorLock(doorLock)
-                .ventilator(ventilator)
-                .parkingLot(parkingLot)
-                .cctv(cctv)
-                .elevator(elevator)
-                .managementOffice(managementOffice)
-                .commonEntrance(commonEntrance)
-                .separateDischargeSpace(separateDischargeSpace)
-                .note(note)
-                .imgDescription(imgDescription)
-                .build();
-    }
 
 
 }

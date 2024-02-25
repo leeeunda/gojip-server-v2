@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Slf4j
 public enum Boiler {
-    INDIVIDUAL("개별난방"), COMMON("공통난방"); //개별, 공동
+    INDIVIDUAL("개별난방"), COMMON("공동난방"); //개별, 공동
 
     String value;
 

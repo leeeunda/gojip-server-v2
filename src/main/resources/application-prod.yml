@@ -1,36 +1,24 @@
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: prod
     import:
       - classpath:application-aws.yml
       - classpath:application-credentials.yml
       - classpath:application-oauth.yml
       - classpath:application-jwt.yml
       - classpath:application-swagger.yml
-
-  datasource:
-    url: jdbc:h2:tcp://localhost/~/gojip
-    username: sa
-    password: 1234
-    driver-class-name: org.h2.Driver
-
-  h2:
-    console:
-      enabled: true
-      settings:
-        web-allow-others: true
-
+      - classpath:application-rds.yml
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         default_batch_fetch_size: 100
         show_sql: true
         format_sql: true
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
 
   redis:
     host: localhost
@@ -40,7 +28,6 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-#      location: /users/kim65/temp-file # 업로드된 파일이 임시로 저장되는 디스크 위치
 
 
 server:

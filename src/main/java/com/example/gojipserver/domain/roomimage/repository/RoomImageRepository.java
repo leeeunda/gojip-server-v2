@@ -1,5 +1,6 @@
 package com.example.gojipserver.domain.roomimage.repository;
 
+import com.example.gojipserver.domain.checklist.entity.CheckList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.gojipserver.domain.roomimage.entity.RoomImage;
 import org.springframework.data.jpa.repository.Query;
@@ -13,5 +14,7 @@ public interface RoomImageRepository extends JpaRepository<RoomImage, Long> {
     @Query("SELECT roomImage FROM RoomImage roomImage " +
             "WHERE roomImage.id in :list")
     List<RoomImage> findAllRoomImagesById(@Param("list") final List<Long> roomImageIds);
+
+    void deleteByCheckList(CheckList checkList);
 
 }

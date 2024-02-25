@@ -1,5 +1,6 @@
 package com.example.gojipserver.domain.checklist.entity;
 
+import com.example.gojipserver.domain.checklist.dto.CheckListUpdateDto;
 import com.example.gojipserver.domain.checklist.entity.bathroomstatus.*;
 import com.example.gojipserver.domain.checklist.entity.roomcondition.Building;
 import com.example.gojipserver.domain.checklist.entity.roomstatus.Boiler;
@@ -183,8 +184,55 @@ public class CheckList extends BaseTimeEntity {
         this.imgDescription = imgDescription;
     }
 
-    public void update() {
-
+    public void update(CheckListUpdateDto dto) {
+        this.checkListName = dto.getCheckListName();
+        this.deposit = dto.getDeposit();
+        this.monthlyCost = dto.getMonthlyCost();
+        this.managementCost = dto.getManagementCost();
+        this.waterCost = dto.isWaterCost();
+        this.heatingCost = dto.isHeatingCost();
+        this.electricCost = dto.isElectricCost();
+        this.internetCost = dto.isInternetCost();
+        this.area = dto.getArea();
+        this.building = dto.getBuilding();
+        this.stationDistance = dto.getStationDistance();
+        this.floor = dto.isFloor();
+        this.wall = dto.isWall();
+        this.outside = dto.isOutside();
+        this.light = dto.getLight();
+        this.boiler = dto.getBoiler();
+        this.mold = dto.isMold();
+        this.wind = dto.isWind();
+        this.bug = dto.isBug();
+        this.wallpaperPollution = dto.isWallpaperPollution();
+        this.toilet = dto.getToilet();
+        this.washstand = dto.getWashstand();
+        this.sink = dto.getSink();
+        this.showerHead = dto.getShowerHead();
+        this.hotWater = dto.getHotWater();
+        this.tile = dto.getTile();
+        this.airConditioner = dto.isAirConditioner();
+        this.refrigerator = dto.isRefrigerator();
+        this.washingMachine = dto.isWashingMachine();
+        this.microwave = dto.isMicrowave();
+        this.gasRange = dto.isGasRange();
+        this.induction = dto.isInduction();
+        this.bed = dto.isBed();
+        this.desk = dto.isDesk();
+        this.closet = dto.isCloset();
+        this.tv = dto.isTv();
+        this.wifiRouter = dto.isWifiRouter();
+        this.computer = dto.isComputer();
+        this.doorLock = dto.isDoorLock();
+        this.ventilator = dto.isVentilator();
+        this.parkingLot = dto.isParkingLot();
+        this.cctv = dto.isCctv();
+        this.elevator = dto.isElevator();
+        this.managementOffice = dto.isManagementOffice();
+        this.commonEntrance = dto.isCommonEntrance();
+        this.separateDischargeSpace = dto.isSeparateDischargeSpace();
+        this.note = dto.getNote();
+        this.imgDescription = dto.getImgDescription();
     }
 
     // 연관관계 편의 메서드

@@ -6,22 +6,18 @@ import com.example.gojipserver.domain.oauth2.service.KakaoService;
 import com.example.gojipserver.domain.oauth2.service.OAuthService;
 import com.example.gojipserver.global.config.jwt.JwtTokenProvider;
 import com.example.gojipserver.global.response.ApiResponse;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-
-import java.net.URL;
 
 @RestController
 @RequestMapping
@@ -33,47 +29,51 @@ public class KakaoController {
     private final OAuthService oauthService;
     private final JwtTokenProvider jwtTokenProvider;
 
+    // 카카오 로그인
     @PostMapping("/login/kakao")
+    @Operation(summary = "카카오 로그인", description = "카카오 로그인 api")
+    @Parameter(name = "token", description = "카카오에서 받은 AccessToken을 헤더에 넣습니다.")
     public ApiResponse<UserInfoDto> login(@RequestHeader String token,HttpServletResponse response) {
         UserInfoDto userInfo = kakaoService.getUserProfileByToken(token);
-        String refreshToken = oauthService.getRefreshToken(userInfo);
-        String accessToken = oauthService.getAccessToken(userInfo, refreshToken);
+        String refreshToken = oauthService.getRefreshToken(userInfo.getEmail());
+        String accessToken = oauthService.getAccessToken(userInfo.getEmail(), refreshToken);
         userInfo.setToken(accessToken,refreshToken);
         jwtTokenProvider.sendAccessAndRefreshToken(response,accessToken,refreshToken);
         return ApiResponse.createSuccess(userInfo);
     }
 
+    // 유저 테스트
+    @Hidden
     @GetMapping("/user-details")
     public ResponseEntity<UserDetails> getUserDetails(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         log.info("principal : {}", userPrincipal);
         return ResponseEntity.ok(userPrincipal);
     }
 
+    // 카카오 로그아웃
+    @Operation(summary = "카카오 로그아웃", description = "카카오 로그아웃 api")
+    @Parameter(name = "Authorization", description = "Bearer + accessToken을 헤더에 넣습니다.")
+    @Parameter(name = "Authorization-refresh", description = "Bearer + refreshToken을 헤더에 넣습니다.")
     @PostMapping("/logout/kakao")
-    public void logout(HttpSession session) {
-        String token = (String) session.getAttribute("access_token");
-        String reqURL = "https://kapi.kakao.com/v1/user/logout";
+    public ApiResponse<String> logout(HttpServletRequest request) {
+        String accessToken = jwtTokenProvider.getJwtFromRequest(request, "Authorization");
+        String refreshToken = jwtTokenProvider.getJwtFromRequest(request, "Authorization-refresh");
+        oauthService.logout(accessToken,refreshToken);
+        return ApiResponse.createSuccess("로그아웃 성공");
+    }
 
-        try {
-            URL url = new URL(reqURL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Authorization", "Bearer " + token);
-
-            int responseCode = conn.getResponseCode();
-            System.out.println("responseCode : " + responseCode);
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-            String result = "";
-            String line = "";
-
-            while ((line = br.readLine()) != null) {
-                result += line;
-            }
-            System.out.println(result);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    // 액세스토큰 갱신
+    @Operation(summary = "AccessToken 갱신", description = "RefreshToken을 이용하여 AccessToken을 갱신합니다.")
+    @Parameter(name = "Authorization-refresh", description = "Bearer + refreshToken을 헤더에 넣습니다.")
+    @GetMapping("/refresh")
+    public ApiResponse<?> refresh(HttpServletRequest request,HttpServletResponse response) {
+        String refreshToken = jwtTokenProvider.getJwtFromRequest(request,"Authorization-refresh");
+        try{
+            jwtTokenProvider.validateToken(request,refreshToken);
+            AccessTokenDto accessTokenDto = oauthService.updateAccessToken(refreshToken);
+            return ApiResponse.createSuccess(accessTokenDto);
+        }catch (Exception e) {
+            return ApiResponse.create400Error(e.getMessage());
         }
     }
 }

@@ -6,9 +6,11 @@ import com.example.gojipserver.domain.oauth2.dto.UserDto.*;
 import com.example.gojipserver.domain.user.entity.Role;
 import com.example.gojipserver.domain.user.entity.User;
 import com.example.gojipserver.domain.user.repository.UserRepository;
+import com.example.gojipserver.global.config.redis.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -26,6 +28,7 @@ import java.util.Optional;
 @Slf4j
 public class KakaoService{
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final WebClient webClient;
 
     public UserInfoDto getUserProfileByToken(String accessToken){
@@ -34,7 +37,7 @@ public class KakaoService{
                 .id(kakaoInfoDto.getId())
                 .email(kakaoInfoDto.getKakao_account().getEmail())
                 .nickname(kakaoInfoDto.getProperties().getNickname())
-                .role(Role.GUEST)
+                .role(Role.USER)
                 .build();
         User findUser = userRepository.findByEmail(newUser.getEmail()).orElse(null);
         if(findUser != null) {
@@ -46,6 +49,7 @@ public class KakaoService{
                 .id(newUser.getId())
                 .email(newUser.getEmail())
                 .nickname(newUser.getNickname())
+                .role(newUser.getRole())
                 .build();
         return userDto;
     }

@@ -21,17 +21,20 @@ import java.util.List;
 @Getter
 public class CheckListSaveDto {
 
-    // 컬렉션 id의 리스트
-    @Schema(description = "체크리스트를 등록할 컬렉션의 id 리스트")
-    private List<Long> collectionIdList;
-
     // 주소 정보
     @Schema(description = "체크리스트의 주소 id")
     private Long roomAddressId;
 
+    // 컬렉션 id의 리스트
+    @Schema(description = "체크리스트를 등록할 컬렉션의 id 리스트")
+    private List<Long> collectionIdList;
+
     // 이미지 PK 리스트
     @Schema(description = "체크리스트에 등록할 이미지의 id 리스트")
     private List<Long> roomImageIdList;
+
+    @Schema(description = "체크리스트 이름")
+    private String checkListName;
 
     // 비용
     @Schema(description = "비용 / 보증금")
@@ -194,6 +197,7 @@ public class CheckListSaveDto {
         return CheckList.builder()
                 .roomAddress(roomAddress)
                 .user(user)
+                .checkListName(checkListName)
                 .deposit(deposit)
                 .monthlyCost(monthlyCost)
                 .managementCost(managementCost)

@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ApiResponse illegalArgExHandle(IllegalArgumentException e) {
         log.error("[illegalArgExHandle]", e);
-        return ApiResponse.create400Error(e.getMessage());
+        return ApiResponse.create404Error(e.getMessage());
     }
 
     // @Valid 검증 예외 처리
@@ -30,16 +31,19 @@ public class GlobalExceptionHandler {
         BindingResult bindingResult = e.getBindingResult();
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 
-        Map<String, String> fieldErrorMap = new HashMap<>();
+//        Map<String, String> fieldErrorMap = new HashMap<>();
+        StringBuilder errorMessages = new StringBuilder();
 
         // 모든 필드 에러를 담기
         for (FieldError fieldError : fieldErrors) {
-            String fieldName = fieldError.getField();
+//            String fieldName = fieldError.getField();
             String errorMessage = fieldError.getDefaultMessage();
-            fieldErrorMap.put(fieldName, errorMessage);
+            errorMessages.append(errorMessage);
+
+//            fieldErrorMap.put(fieldName, errorMessage);
         }
 
-        return ApiResponse.create400Error(fieldErrorMap.toString());
+        return ApiResponse.create400Error(String.valueOf(errorMessages));
     }
 
     @ExceptionHandler(DuplicateException.class)

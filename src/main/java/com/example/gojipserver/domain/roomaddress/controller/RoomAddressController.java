@@ -8,6 +8,7 @@ import com.example.gojipserver.domain.roomaddress.repository.RoomAddressReposito
 import com.example.gojipserver.domain.roomaddress.service.RoomAddressService;
 import com.example.gojipserver.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +35,9 @@ public class RoomAddressController {
         return ApiResponse.createSuccess(roomAddressResponseDto);
     }
 
-//    //좌표 조회 테스트 API
+    //좌표 조회 테스트 API -> 주석처리
 //    @GetMapping()
-//    @Operation(summary="좌표 반환 테스트 API", description="주소를 받아서 x좌표,y좌표를 반환")
+//    @Operation(summary="좌표 반환 테스트 API", description="주소를 받아서 x좌표,y좌표를 반환 (프론트에서 쓰지 않아도 됨")
 //    public Coordinates Roomaddress(@RequestParam String RoomAddress){
 //        return roomAddressService.getCoordinate(RoomAddress);
 //    }

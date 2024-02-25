@@ -93,8 +93,21 @@ public class CheckListService {
 
     }
 
-    public void checkListOneGet() {
+    public CheckList getCheckListById(Long checkListId) {
+        return checkListRepository.findById(checkListId)
+                .orElseThrow(() -> new IllegalArgumentException("체크리스트 찾기 실패!, 대상 체크리스트가 존재하지 않습니다. checkListId + " + checkListId));
 
+    }
+
+    @Transactional
+    public RoomAddress getRoomAddressByCheckListId(Long checkListId){
+
+        // 체크리스트 id를 받아서 RoomAddress 엔티티의 addressName을 얻어오는 코드
+
+        CheckList checkList = checkListRepository.findById(checkListId)
+                .orElseThrow(() -> new IllegalArgumentException("CheckListId가 유효하지 않습니다: " + checkListId));
+
+        return checkList.getRoomAddress();
     }
 
     private static void validCheckListOwner(Long requestUserId, CheckList checkList) {

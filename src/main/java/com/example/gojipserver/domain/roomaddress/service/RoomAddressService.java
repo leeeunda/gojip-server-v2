@@ -26,7 +26,7 @@ public class RoomAddressService {
     private final RoomAddressRepository roomAddressRepository;
     private final String uri = "https://dapi.kakao.com/v2/local/search/address.json";
 
-    @Value("${kakao.local.key}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String kakaoLocalKey;
 
     @Transactional

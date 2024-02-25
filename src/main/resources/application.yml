@@ -1,5 +1,5 @@
 spring:
   profiles:
-    active: local, dev, credentials, kakao
+    active: local, dev, credentials
 
 

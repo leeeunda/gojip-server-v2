@@ -8,6 +8,7 @@ import com.example.gojipserver.domain.roomaddress.repository.RoomAddressReposito
 import com.example.gojipserver.domain.roomaddress.service.RoomAddressService;
 import com.example.gojipserver.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

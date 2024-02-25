@@ -1,8 +1,12 @@
 package com.example.gojipserver.domain.checklist.controller;
 
+import com.example.gojipserver.domain.checklist.dto.CheckListOneGetDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListSaveDto;
+import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.checklist.service.CheckListService;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
+import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
+import com.example.gojipserver.domain.roomaddress.service.RoomAddressService;
 import com.example.gojipserver.domain.roomimage.dto.RoomImageSaveDto;
 import com.example.gojipserver.domain.roomimage.entity.RoomImage;
 import com.example.gojipserver.domain.roomimage.repository.RoomImageRepository;
@@ -59,11 +63,29 @@ public class CheckListController {
 
     // 체크리스트 단일 조회
     @GetMapping("/{id}")
-    public void checkListOneGet(){
-        checkListService.checkListOneGet();
+    @Operation(summary = "체크리스트 단일 조회", description = "하나의 체크리스트를 조회")
+    @Parameter(name = "id", description = "조회할 CheckList의 id")
+    public ApiResponse<CheckListOneGetDto> checkListOneGet(@PathVariable("id") Long checkListId){
 
+        CheckList checkList=checkListService.getCheckListById(checkListId);
+        RoomAddress roomAddress = checkListService.getRoomAddressByCheckListId(checkListId);
+        CheckListOneGetDto checkListOneGetDto = new CheckListOneGetDto(checkList, roomAddress);
+
+        return ApiResponse.createSuccess(checkListOneGetDto);
     }
 
+//    //체크리스트 전체 조회
+//    @GetMapping()
+//    public ApiResponse<> checkListAllGet(){
+//
+//        ApiResponse apiResponse = new ApiResponse();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//        apiResponse.setStatus(HttpStatus.OK.value());
+//        messageDto.setMessage("전체 조회 성공");
+//        messageDto.setData(CheckList);
+//        return new ResponseEntity<>(messageDto, headers,  )
+//    }
 
 //    일단 주석 처리
 //    @PostMapping("/test-images")
@@ -76,20 +98,6 @@ public class CheckListController {
 //        return ApiResponse.createSuccess(savedRoomImage.getId());
 //    }
 
-
-
-    //체크리스트 전체 조회
-//    @GetMapping()
-//    public ResponseEntity<ApiResponse> checkListAllGet(){
-//
-//        ApiResponse apiResponse = new ApiResponse();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//        apiResponse.setStatus(HttpStatus.OK.value());
-//        messageDto.setMessage("전체 조회 성공");
-//        messageDto.setData(CheckList);
-//        return new ResponseEntity<>(messageDto, headers,  )
-//    }
 
 
 //

@@ -24,7 +24,7 @@ import static jakarta.persistence.FetchType.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class CheckList extends BaseTimeEntity {
+public class  CheckList extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

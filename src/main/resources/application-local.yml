@@ -9,7 +9,6 @@ spring:
       - classpath:application-jwt.yml
       - classpath:application-swagger.yml
 
-
   datasource:
     url: jdbc:h2:tcp://localhost/~/gojip
     username: sa

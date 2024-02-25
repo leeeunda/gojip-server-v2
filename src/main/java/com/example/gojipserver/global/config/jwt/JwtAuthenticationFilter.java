@@ -1,5 +1,11 @@
-package com.example.gojipserver.global.config.security.jwt;
+package com.example.gojipserver.global.config.jwt;
 
+import com.amazonaws.Response;
+import com.example.gojipserver.global.config.redis.repository.AccessTokenRepository;
+import com.example.gojipserver.global.response.ApiResponse;
+import com.example.gojipserver.global.response.ErrorCode;
+import com.example.gojipserver.global.response.StatusEnum;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,20 +27,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String jwt = getJwtFromRequest(request);
-
-        if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
-            Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtTokenProvider.getJwtFromRequest(request,"Authorization");
+        if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(request,jwt)) {
+            if (!jwtTokenProvider.isAccessToken(jwt)){
+                Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
         filterChain.doFilter(request, response);
     }
 
-    private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
 }

@@ -71,7 +71,7 @@ public class RoomImageController {
     // 이미지 삭제
     @Operation(summary = "이미지 삭제", description = "이미지 url을 DB에서 삭제")
     @DeleteMapping(value = "{id}")
-    ApiResponse<String> deleteFile(@PathVariable Long id, @RequestParam String imgUrl) throws IOException{
+    public ApiResponse<String> deleteFile(@PathVariable Long id, @RequestParam String imgUrl) throws IOException{
         try {
             imageService.deleteImage(id, imgUrl);
             log.info("Deleted image id: {}, fileName: {}", id, imgUrl);

@@ -33,9 +33,6 @@ public class CheckListSaveDto {
     @Schema(description = "체크리스트에 등록할 이미지의 id 리스트")
     private List<Long> roomImageIdList;
 
-    @Schema(description = "체크리스트 이름")
-    private String checkListName;
-
     // 비용
     @Schema(description = "비용 / 보증금")
     private int deposit; //보증금
@@ -197,7 +194,6 @@ public class CheckListSaveDto {
         return CheckList.builder()
                 .roomAddress(roomAddress)
                 .user(user)
-                .checkListName(checkListName)
                 .deposit(deposit)
                 .monthlyCost(monthlyCost)
                 .managementCost(managementCost)

@@ -28,9 +28,6 @@ public class CheckListUpdateDto {
     @Schema(description = "체크리스트에 새로 등록할 이미지의 id 리스트")
     private List<Long> roomImageIdList;
 
-    @Schema(description = "체크리스트 이름")
-    private String checkListName;
-
     // 비용
     @Schema(description = "비용 / 보증금")
     private int deposit; //보증금

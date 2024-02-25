@@ -73,13 +73,13 @@ public class CollectionService {
     // 삭제 요청을 한 유저가 해당 컬렉션의 소유자가 맞는지 검증
     private static void validCollectionOwner(Long requestUserId, Collection collection) {
         if (!collection.getUser().getId().equals(requestUserId)) {
-            throw new NotOwnerException("해당 컬렉션에 권한이 없습니다. collectionId = " + collection.getId());
+            throw new NotOwnerException("다른 회원의 컬렉션입니다. collectionId = " + collection.getId());
         }
     }
 
     private Collection findCollectionById(Long collectionId) {
         Collection findCollection = collectionRepository.findById(collectionId)
-                .orElseThrow(() -> new IllegalArgumentException("컬렉션 찾기 실패!, 대상 컬렉션이 없습니다. collectionId = " + collectionId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 컬렉션이 존재하지 않습니다. collectionId = " + collectionId));
         return findCollection;
     }
 

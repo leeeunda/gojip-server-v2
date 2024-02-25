@@ -161,7 +161,7 @@ public class CheckListService {
     // 삭제 요청을 한 유저가 해당 컬렉션의 소유자가 맞는지 검증
     private static void validCheckListOwner(Long requestUserId, CheckList checkList) {
         if (!checkList.getUser().getId().equals(requestUserId)) {
-            throw new NotOwnerException("다른 유저의 체크리스트입니다. checkListId = " + checkList.getId());
+            throw new NotOwnerException("다른 회원의 체크리스트입니다. checkListId = " + checkList.getId());
         }
     }
 

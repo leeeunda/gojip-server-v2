@@ -15,7 +15,6 @@ import com.example.gojipserver.domain.roomimage.repository.RoomImageRepository;
 import com.example.gojipserver.domain.user.entity.User;
 import com.example.gojipserver.domain.user.repository.UserRepository;
 import com.example.gojipserver.global.exception.NotOwnerException;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

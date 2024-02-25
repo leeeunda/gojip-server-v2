@@ -9,7 +9,6 @@ spring:
       - classpath:application-jwt.yml
       - classpath:application-swagger.yml
 
-
   datasource:
     url: jdbc:mysql://gojip-db.c3meci0qgr05.ap-northeast-2.rds.amazonaws.com:3306/gojip
     username: admin

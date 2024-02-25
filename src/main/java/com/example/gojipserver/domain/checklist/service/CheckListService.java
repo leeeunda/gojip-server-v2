@@ -1,5 +1,6 @@
 package com.example.gojipserver.domain.checklist.service;
 
+import com.example.gojipserver.domain.checklist.dto.CheckListAllGetDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListSaveDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListUpdateDto;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -101,15 +103,22 @@ public class CheckListService {
 
     }
 
-    @Transactional
-    public RoomAddress getRoomAddressByCheckListId(Long checkListId){
 
-        // 체크리스트 id를 받아서 RoomAddress 엔티티의 addressName을 얻어오는 코드
+    // 체크리스트 id를 받아서 RoomAddress 엔티티의 addressName을 얻어오는 코드
+    public RoomAddress getRoomAddressByCheckListId(Long checkListId){
 
         CheckList checkList = checkListRepository.findById(checkListId)
                 .orElseThrow(() -> new IllegalArgumentException("CheckListId가 유효하지 않습니다: " + checkListId));
 
         return checkList.getRoomAddress();
+    }
+
+    // user id를 받아서 checkList들의 List를 반환하는 코드
+    public List<CheckListAllGetDto> getAllCheckListByUserId(Long userId) {
+        List<CheckList> checkLists = checkListRepository.findByUserIdOrderByCreatedDateDesc(userId);
+        return checkLists.stream()
+                .map(checkList -> new CheckListAllGetDto(checkList, checkList.getRoomAddress()))
+                .collect(Collectors.toList());
     }
 
     private User findUserById(Long userId) {

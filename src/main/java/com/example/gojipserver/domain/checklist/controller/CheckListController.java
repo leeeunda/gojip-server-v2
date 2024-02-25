@@ -1,5 +1,6 @@
 package com.example.gojipserver.domain.checklist.controller;
 
+import com.example.gojipserver.domain.checklist.dto.CheckListAllGetDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListOneGetDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListSaveDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListUpdateDto;
@@ -20,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "CheckList API", description = "체크리스트 API")
 @RequiredArgsConstructor
@@ -70,6 +73,7 @@ public class CheckListController {
     // 체크리스트 단일 조회
     @GetMapping("/{id}")
     @Operation(summary = "체크리스트 단일 조회", description = "하나의 체크리스트를 조회")
+    @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
     @Parameter(name = "id", description = "조회할 CheckList의 id")
     public ApiResponse<CheckListOneGetDto> checkListOneGet(@PathVariable("id") Long checkListId){
 
@@ -80,13 +84,17 @@ public class CheckListController {
         return ApiResponse.createSuccess(checkListOneGetDto);
     }
 
-//    //체크리스트 전체 조회
-//    @GetMapping()
-//    public ApiResponse<> checkListAllGet(){
+    //체크리스트 전체 조회
+    @GetMapping()
+    @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
+    @Parameter(name="checkListAllGetDto")
+    public ApiResponse<List<CheckListAllGetDto>> checkListAllGet(@AuthenticationPrincipal UserPrincipal requestUser){
+
+        List<CheckListAllGetDto> checkListAll = checkListService.getAllCheckListByUserId(requestUser.getId());
+
+        return ApiResponse.createSuccess(checkListAll);
+    }
 //
-
-//    }
-
     //이미지 조회
 
 //    일단 주석 처리

@@ -31,14 +31,14 @@ public class RoomAddressController {
     public ApiResponse<RoomAddressResponseDto> saveRoomAddress(@RequestBody RoomAddressSaveDto roomAddressSaveDto){
 
         RoomAddress roomAddress = roomAddressService.getCoordinateAndSave(roomAddressSaveDto.getAddressName());
-        RoomAddressResponseDto roomAddressResponseDto = new RoomAddressResponseDto(roomAddress.getAddressName(), String.valueOf(roomAddress.getLatitude()), String.valueOf(roomAddress.getLongitude()));
+        RoomAddressResponseDto roomAddressResponseDto = new RoomAddressResponseDto(roomAddress.getId(), roomAddress.getAddressName(), String.valueOf(roomAddress.getLatitude()), String.valueOf(roomAddress.getLongitude()));
 
         return ApiResponse.createSuccess(roomAddressResponseDto);
     }
 
     //좌표 조회 테스트 API -> 주석처리
 //    @GetMapping()
-//    @Operation(summary="좌표 반환 테스트 API", description="주소를 받아서 x좌표,y좌표를 반환 (프론트에서 쓰지 않아도 됨")
+//    @Operation(summary="좌표 반환 테스트 API", description="주소를 받아서 x좌표,y좌표를 반환 (프론트에서 쓰지 않아도 됨)")
 //    public Coordinates Roomaddress(@RequestParam String RoomAddress){
 //        return roomAddressService.getCoordinate(RoomAddress);
 //    }

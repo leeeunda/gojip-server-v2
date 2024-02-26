@@ -26,10 +26,20 @@ public class CheckListAllGetDto {
     @Schema(description = "체크리스트의 주소 이름, Ex) 서울시 강남구 테헤란로 21")
     private String addressName;
 
+    // 경도
+    @Schema(description = "체크리스트의 위도")
+    private double latitude;
+
+    //위도
+    @Schema(description = "체크리스트의 경도")
+    private double longitude;
+
     @Builder
     public CheckListAllGetDto(CheckList checkList, RoomAddress roomAddress){
         this.addressName = roomAddress.getAddressName();
         this.deposit= checkList.getDeposit();
         this.monthlyCost = checkList.getMonthlyCost();
+        this.latitude = roomAddress.getLatitude();
+        this.longitude = roomAddress.getLongitude();
     }
 }

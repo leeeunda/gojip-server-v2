@@ -9,12 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RoomAddressResponseDto {
 
+    private Long id;
     private String addressName;
     private String latitude;
     private String longitude;
 
     @Builder
-    public RoomAddressResponseDto(String addressName, String latitude, String longitude) {
+    public RoomAddressResponseDto(Long id,String addressName, String latitude, String longitude) {
+        this.id=id;
         this.addressName = addressName;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -22,6 +24,7 @@ public class RoomAddressResponseDto {
 
     public static RoomAddressResponseDto of(RoomAddress roomAddress){
         return RoomAddressResponseDto.builder()
+                .id(roomAddress.getId())
                 .addressName(roomAddress.getAddressName())
                 .latitude(String.valueOf(roomAddress.getLatitude()))
                 .longitude(String.valueOf(roomAddress.getLongitude()))

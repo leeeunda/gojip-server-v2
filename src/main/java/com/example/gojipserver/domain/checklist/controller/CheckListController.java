@@ -81,7 +81,7 @@ public class CheckListController {
     }
 
     //체크리스트 전체 조회
-    @GetMapping("/all")
+    @GetMapping
     @Operation(summary = "유저가 보유한 체크리스트 조회", description = "유저가 작성한 체크리스트 전부를 조회")
     @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
     @Parameter(name="checkListAllGetDto")

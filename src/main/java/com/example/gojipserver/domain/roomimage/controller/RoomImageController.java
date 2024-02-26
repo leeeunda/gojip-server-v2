@@ -76,7 +76,7 @@ public class RoomImageController {
     // 이미지 조회 -> 체크리스트 관련 이미지 전부 반환
     @Operation(summary = "이미지 조회", description = "이미지 url을 반환하는 조회 API입니다.")
     @Parameter(name="id", description = "체크리스트의 id를 받아 그 체크리스트 id에 포함되어 있는 이미지 url들을 반환합니다.")
-    @GetMapping(value="{id}")
+    @GetMapping(value="/{id}")
     public ApiResponse<List<String>> getImages(@PathVariable Long id){
         List<String> imageUrls = imageService.getImagesByCheckListId(id);
         return ApiResponse.createSuccess(imageUrls);
@@ -85,7 +85,7 @@ public class RoomImageController {
     // 이미지 삭제
     @Operation(summary = "이미지 삭제", description = "이미지 url을 DB에서 삭제")
     @Parameter(name = "requestUser", description = "사용자가 삭제하려고 하는 이미지 Id를 받습니다.")
-    @DeleteMapping(value = "{id}")
+    @DeleteMapping(value = "/{id}")
     public ApiResponse<String> deleteFile(@PathVariable Long id, @RequestParam String imgUrl) throws IOException{
         try {
             imageService.deleteImage(id, imgUrl);

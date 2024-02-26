@@ -5,6 +5,7 @@ import com.example.gojipserver.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Getter;
 import org.springframework.http.MediaType;
 import com.example.gojipserver.domain.roomimage.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +73,14 @@ public class RoomImageController {
         return ApiResponse.createSuccess(newImgUrl);
     }
 
-    // 이미지 조회
+    // 이미지 조회 -> 체크리스트 관련 이미지 전부 반환
+    @Operation(summary = "이미지 조회", description = "이미지 url을 반환하는 조회 API입니다.")
+    @Parameter(name="id", description = "체크리스트의 id를 받아 그 체크리스트 id에 포함되어 있는 이미지 url들을 반환합니다.")
+    @GetMapping(value="{id}")
+    public ApiResponse<List<String>> getImages(@PathVariable Long id){
+        List<String> imageUrls = imageService.getImagesByCheckListId(id);
+        return ApiResponse.createSuccess(imageUrls);
+    }
 
     // 이미지 삭제
     @Operation(summary = "이미지 삭제", description = "이미지 url을 DB에서 삭제")

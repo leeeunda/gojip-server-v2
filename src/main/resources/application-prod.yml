@@ -21,7 +21,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
   redis:
-    host: localhost
+    host: 52.78.207.235
     port: 6379
 
   servlet:

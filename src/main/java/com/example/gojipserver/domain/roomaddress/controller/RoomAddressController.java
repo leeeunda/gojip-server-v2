@@ -26,6 +26,7 @@ public class RoomAddressController {
 
     // 이 집 체크하러가기 버튼 클릭시 우선 주소만 저장하는 등록 API
     @PostMapping()
+    @Parameter(name = "RoomAddressSaveDto")
     @Operation(summary = "주소 저장 API", description = "주소를 받아서 주소이름, x좌표, y좌표를 저장하는 API")
     public ApiResponse<RoomAddressResponseDto> saveRoomAddress(@RequestBody RoomAddressSaveDto roomAddressSaveDto){
 

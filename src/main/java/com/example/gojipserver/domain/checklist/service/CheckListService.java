@@ -117,9 +117,19 @@ public class CheckListService {
     // user id를 받아서 checkList들의 List를 반환하는 코드
     public List<CheckListAllGetDto> getAllCheckListByUserId(Long userId) {
         List<CheckList> checkLists = checkListRepository.findByUserIdOrderByCreatedDateDesc(userId);
-        return checkLists.stream()
-                .map(checkList -> new CheckListAllGetDto(checkList, checkList.getRoomAddress()))
-                .collect(Collectors.toList());
+
+        // 해당 userId에 대한 CheckList가 존재하지 않는 경우
+        if (checkLists.isEmpty()) {
+            throw new IllegalArgumentException("해당 사용자에 대한 체크리스트가 존재하지 않습니다: " + userId);
+        }
+
+        return checkLists.stream().map(checkList -> {
+            RoomAddress roomAddress = checkList.getRoomAddress();
+            if (roomAddress == null) {
+                throw new IllegalStateException("체크리스트에 연결된 RoomAddress가 존재하지 않습니다: " + checkList.getId());
+            }
+            return new CheckListAllGetDto(checkList, roomAddress);
+        }).collect(Collectors.toList());
     }
 
     // CollectionId를 받아서 collection에 들어있는 checkList들을 반환하는 코드

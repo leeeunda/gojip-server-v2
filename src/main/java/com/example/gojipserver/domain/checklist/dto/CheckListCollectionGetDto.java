@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Schema(description = "체크리스트 전체 조회 DTO")
+@Schema(description = "체크리스트 컬렉션별 조회 DTO")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class CheckListCollectionGetDto {

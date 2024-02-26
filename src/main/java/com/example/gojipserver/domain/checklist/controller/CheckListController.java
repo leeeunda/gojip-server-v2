@@ -70,7 +70,6 @@ public class CheckListController {
     // 체크리스트 단일 조회
     @GetMapping("/{id}")
     @Operation(summary = "체크리스트 단일 조회", description = "하나의 체크리스트를 조회")
-    @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
     @Parameter(name = "id", description = "조회할 CheckList의 id")
     public ApiResponse<CheckListOneGetDto> checkListOneGet(@PathVariable("id") Long checkListId){
 
@@ -82,7 +81,8 @@ public class CheckListController {
     }
 
     //체크리스트 전체 조회
-    @GetMapping()
+    @GetMapping("/all")
+    @Operation(summary = "유저가 보유한 체크리스트 조회", description = "유저가 작성한 체크리스트 전부를 조회")
     @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
     @Parameter(name="checkListAllGetDto")
     public ApiResponse<List<CheckListAllGetDto>> checkListAllGet(@AuthenticationPrincipal UserPrincipal requestUser){
@@ -93,7 +93,7 @@ public class CheckListController {
     }
 
     // 컬렉션별 체크리스트 조회
-    @GetMapping("/{collectionId}")
+    @GetMapping("/collections/{collectionId}")
     @Operation(summary = "컬렉션 별 체크리스트 조회", description = "컬렉션에 속한 체크리스트들을 조회")
     @Parameter(name="collectionId", description = "체크리스트들을 조회할 컬렉션의 ID")
     public ApiResponse<List<CheckListCollectionGetDto>> checkListCollectionGet(@PathVariable Long collectionId){
@@ -113,15 +113,5 @@ public class CheckListController {
 //        return ApiResponse.createSuccess(savedRoomImage.getId());
 //    }
 
-
-
-//
-//    // 체크리스트 구별 조회 -> 수정 가능
-//    @GetMapping("/checklists?city=\"동작구\"")
-//    public String checkListCityGet(){
-//
-//        return
-//    }
-//
 
 }

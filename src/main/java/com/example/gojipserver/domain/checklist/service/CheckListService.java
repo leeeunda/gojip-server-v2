@@ -1,6 +1,7 @@
 package com.example.gojipserver.domain.checklist.service;
 
 import com.example.gojipserver.domain.checklist.dto.CheckListAllGetDto;
+import com.example.gojipserver.domain.checklist.dto.CheckListCollectionGetDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListSaveDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListUpdateDto;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
@@ -119,6 +120,11 @@ public class CheckListService {
         return checkLists.stream()
                 .map(checkList -> new CheckListAllGetDto(checkList, checkList.getRoomAddress()))
                 .collect(Collectors.toList());
+    }
+
+    // CollectionId를 받아서 collection에 들어있는 checkList들을 반환하는 코드
+    public List<CheckListCollectionGetDto> getChecklistsByCollectionId(Long collectionId){
+        return checkListRepository.findByCollectionId(collectionId);
     }
 
     private User findUserById(Long userId) {

@@ -1,14 +1,8 @@
 package com.example.gojipserver.domain.checklist.dto;
 
 import com.example.gojipserver.domain.checklist.entity.CheckList;
-import com.example.gojipserver.domain.checklist.entity.bathroomstatus.*;
-import com.example.gojipserver.domain.checklist.entity.roomcondition.Building;
-import com.example.gojipserver.domain.checklist.entity.roomstatus.Boiler;
-import com.example.gojipserver.domain.checklist.entity.roomstatus.Light;
 import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

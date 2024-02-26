@@ -1,5 +1,7 @@
 package com.example.gojipserver.domain.checklist.service;
 
+import com.example.gojipserver.domain.checklist.dto.CheckListAllGetDto;
+import com.example.gojipserver.domain.checklist.dto.CheckListCollectionGetDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListSaveDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListUpdateDto;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -101,15 +104,37 @@ public class CheckListService {
 
     }
 
-    @Transactional
-    public RoomAddress getRoomAddressByCheckListId(Long checkListId){
 
-        // 체크리스트 id를 받아서 RoomAddress 엔티티의 addressName을 얻어오는 코드
+    // 체크리스트 id를 받아서 RoomAddress 엔티티의 addressName을 얻어오는 코드
+    public RoomAddress getRoomAddressByCheckListId(Long checkListId){
 
         CheckList checkList = checkListRepository.findById(checkListId)
                 .orElseThrow(() -> new IllegalArgumentException("CheckListId가 유효하지 않습니다: " + checkListId));
 
         return checkList.getRoomAddress();
+    }
+
+    // user id를 받아서 checkList들의 List를 반환하는 코드
+    public List<CheckListAllGetDto> getAllCheckListByUserId(Long userId) {
+        List<CheckList> checkLists = checkListRepository.findByUserIdOrderByCreatedDateDesc(userId);
+
+        // 해당 userId에 대한 CheckList가 존재하지 않는 경우
+        if (checkLists.isEmpty()) {
+            throw new IllegalArgumentException("해당 사용자에 대한 체크리스트가 존재하지 않습니다: " + userId);
+        }
+
+        return checkLists.stream().map(checkList -> {
+            RoomAddress roomAddress = checkList.getRoomAddress();
+            if (roomAddress == null) {
+                throw new IllegalStateException("체크리스트에 연결된 RoomAddress가 존재하지 않습니다: " + checkList.getId());
+            }
+            return new CheckListAllGetDto(checkList, roomAddress);
+        }).collect(Collectors.toList());
+    }
+
+    // CollectionId를 받아서 collection에 들어있는 checkList들을 반환하는 코드
+    public List<CheckListCollectionGetDto> getChecklistsByCollectionId(Long collectionId){
+        return checkListRepository.findByCollectionId(collectionId);
     }
 
     private User findUserById(Long userId) {

@@ -17,4 +17,5 @@ public interface RoomImageRepository extends JpaRepository<RoomImage, Long> {
 
     void deleteByCheckList(CheckList checkList);
 
+    List<RoomImage> findByCheckListId(Long checkListId);
 }

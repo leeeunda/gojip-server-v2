@@ -8,13 +8,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-@Schema(description = "체크리스트 전체 조회 DTO")
+@Schema(description = "체크리스트 컬렉션별 조회 DTO")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class CheckListAllGetDto {
-
+public class CheckListCollectionGetDto {
     // 비용
     @Schema(description = "비용 / 보증금")
     private int deposit; //보증금
@@ -27,7 +24,7 @@ public class CheckListAllGetDto {
     private String addressName;
 
     @Builder
-    public CheckListAllGetDto(CheckList checkList, RoomAddress roomAddress){
+    public CheckListCollectionGetDto(CheckList checkList, RoomAddress roomAddress){
         this.addressName = roomAddress.getAddressName();
         this.deposit= checkList.getDeposit();
         this.monthlyCost = checkList.getMonthlyCost();

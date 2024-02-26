@@ -1,8 +1,6 @@
 package com.example.gojipserver.domain.checklist.controller;
 
-import com.example.gojipserver.domain.checklist.dto.CheckListOneGetDto;
-import com.example.gojipserver.domain.checklist.dto.CheckListSaveDto;
-import com.example.gojipserver.domain.checklist.dto.CheckListUpdateDto;
+import com.example.gojipserver.domain.checklist.dto.*;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.checklist.service.CheckListService;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
@@ -20,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "CheckList API", description = "체크리스트 API")
 @RequiredArgsConstructor
@@ -80,14 +80,27 @@ public class CheckListController {
         return ApiResponse.createSuccess(checkListOneGetDto);
     }
 
-//    //체크리스트 전체 조회
-//    @GetMapping()
-//    public ApiResponse<> checkListAllGet(){
-//
+    //체크리스트 전체 조회
+    @GetMapping
+    @Operation(summary = "유저가 보유한 체크리스트 조회", description = "유저가 작성한 체크리스트 전부를 조회")
+    @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
+    @Parameter(name="checkListAllGetDto")
+    public ApiResponse<List<CheckListAllGetDto>> checkListAllGet(@AuthenticationPrincipal UserPrincipal requestUser){
 
-//    }
+        List<CheckListAllGetDto> checkListAll = checkListService.getAllCheckListByUserId(requestUser.getId());
 
-    //이미지 조회
+        return ApiResponse.createSuccess(checkListAll);
+    }
+
+    // 컬렉션별 체크리스트 조회
+    @GetMapping("/collections/{collectionId}")
+    @Operation(summary = "컬렉션 별 체크리스트 조회", description = "컬렉션에 속한 체크리스트들을 조회")
+    @Parameter(name="collectionId", description = "체크리스트들을 조회할 컬렉션의 ID")
+    public ApiResponse<List<CheckListCollectionGetDto>> checkListCollectionGet(@PathVariable Long collectionId){
+        List<CheckListCollectionGetDto> checkLists = checkListService.getChecklistsByCollectionId(collectionId);
+
+        return ApiResponse.createSuccess(checkLists);
+    }
 
 //    일단 주석 처리
 //    @PostMapping("/test-images")
@@ -100,21 +113,5 @@ public class CheckListController {
 //        return ApiResponse.createSuccess(savedRoomImage.getId());
 //    }
 
-
-
-//
-//    // 체크리스트 구별 조회 -> 수정 가능
-//    @GetMapping("/checklists?city=\"동작구\"")
-//    public String checkListCityGet(){
-//
-//        return
-//    }
-//
-//    // 체크리스트 컬렉션 별 조회
-//    @GetMapping("/{collection_id}")
-//    public String checkListCollectionGet(){
-//        return
-//    }
-//
 
 }

@@ -22,7 +22,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -102,6 +104,14 @@ public class ImageService {
     // s3로부터 이미지 찾기
     public String getUrl(String imgUrl){
         return s3Client.getUrl(bucket, imgUrl).toString();
+    }
+
+    // 체크리스트 Id로 관련 이미지들 찾기
+    public List<String> getImagesByCheckListId(Long checkListId){
+        return roomImageRepository.findByCheckListId(checkListId)
+                .stream()
+                .map(RoomImage::getImgUrl)
+                .collect(Collectors.toList());
     }
 
     // 이미지 삭제

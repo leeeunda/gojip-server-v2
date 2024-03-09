@@ -1,9 +1,6 @@
 package com.example.gojipserver.domain.checklist.service;
 
-import com.example.gojipserver.domain.checklist.dto.CheckListAllGetDto;
-import com.example.gojipserver.domain.checklist.dto.CheckListCollectionGetDto;
-import com.example.gojipserver.domain.checklist.dto.CheckListSaveDto;
-import com.example.gojipserver.domain.checklist.dto.CheckListUpdateDto;
+import com.example.gojipserver.domain.checklist.dto.*;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.checklist.repository.CheckListRepository;
 import com.example.gojipserver.domain.checklist_collection.entity.CheckListCollection;
@@ -24,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.example.gojipserver.domain.checklist.dto.CheckListResponseDto.*;
 
 
 @Service
@@ -203,4 +202,19 @@ public class CheckListService {
         }
     }
 
+    public List<CheckListRecentResponseDto> getRecentCheckListTop3(Long userId) {
+        List<CheckList> recentTop3ByUser = findRecentTop3ByUser(userId);
+        if (recentTop3ByUser.isEmpty()) {
+            throw new IllegalArgumentException("해당 사용자에 대한 체크리스트가 존재하지 않습니다: " + userId);
+        }
+        return recentTop3ByUser.stream().map(
+                checkList -> CheckListRecentResponseDto.builder()
+                        .checklistId(checkList.getId())
+                        .addressName(checkList.getRoomAddress().getAddressName())
+                        .mainImage(null)
+                        .build()).collect(Collectors.toList());
+    }
+    private List<CheckList> findRecentTop3ByUser(Long userId) {
+        return checkListRepository.findTop3ByUserIdOrderByLastModifiedDateDesc(userId);
+    }
 }

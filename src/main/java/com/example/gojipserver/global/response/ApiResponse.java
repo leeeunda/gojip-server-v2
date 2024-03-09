@@ -18,6 +18,9 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> createSuccess(T data) {
         return new ApiResponse<>(true, StatusEnum.OK, data, null);
     }
+    public static <T> ApiResponse<T> createSuccess(T data, String message) {
+        return new ApiResponse<>(true, StatusEnum.OK, data, message);
+    }
 
     public static ApiResponse<?> createSuccessWithNoContent() {
         return new ApiResponse<>(true, StatusEnum.OK, null, null);

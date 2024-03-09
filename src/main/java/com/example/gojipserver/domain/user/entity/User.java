@@ -26,8 +26,7 @@ public class User extends BaseTimeEntity {
 
     private String email;
     private String nickname;
-//    private LocalDate birthday;
-//    private String phoneNumber;
+    private String profileImage;
 
     @Enumerated(EnumType.STRING)
     private Role role;

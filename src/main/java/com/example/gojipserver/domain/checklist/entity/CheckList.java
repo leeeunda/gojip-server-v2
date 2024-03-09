@@ -6,6 +6,7 @@ import com.example.gojipserver.domain.checklist.entity.roomcondition.Building;
 import com.example.gojipserver.domain.checklist.entity.roomstatus.Boiler;
 import com.example.gojipserver.domain.checklist.entity.roomstatus.Light;
 import com.example.gojipserver.domain.checklist_collection.entity.CheckListCollection;
+import com.example.gojipserver.domain.like.entity.Like;
 import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
 import com.example.gojipserver.domain.roomimage.entity.RoomImage;
 import com.example.gojipserver.domain.user.entity.User;
@@ -44,6 +45,10 @@ public class  CheckList extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<RoomImage> roomImages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "checkList")
+    private List<Like> likes = new ArrayList<>();
+
 
     // 비용
     private int deposit; //보증금
@@ -240,6 +245,13 @@ public class  CheckList extends BaseTimeEntity {
     public void addRoomImage(RoomImage roomImage) {
         this.roomImages.add(roomImage);
         roomImage.registerToCheckList(this);
+    }
+    public void addLikeInCheckList(Like like){
+        this.likes.add(like);
+    }
+
+    public boolean hasLike(User user){
+        return likes.stream().anyMatch(like -> like.getUser().equals(user));
     }
 
 }

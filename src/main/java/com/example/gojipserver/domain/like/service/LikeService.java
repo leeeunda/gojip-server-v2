@@ -1,12 +1,9 @@
 package com.example.gojipserver.domain.like.service;
 
 import com.example.gojipserver.domain.checklist.entity.CheckList;
-import com.example.gojipserver.domain.checklist.service.CheckListService;
-import com.example.gojipserver.domain.like.dto.LikeResponseDto;
 import com.example.gojipserver.domain.like.entity.Like;
 import com.example.gojipserver.domain.like.repository.LikeRepository;
 import com.example.gojipserver.domain.user.entity.User;
-import com.example.gojipserver.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,15 +25,19 @@ public class LikeService {
                 .checkList(checkList)
                 .user(user)
                 .build();
-        checkList.addLikeInCheckList(newLike);
         likeRepository.save(newLike);
-        return likeEntityToDto(newLike, likeRepository.countByCheckList(checkList));
+        int likeCount = likeRepository.countByCheckList(checkList);
+        checkList.addLikeInCheckList(newLike);
+        checkList.updateLikeCount(likeCount);
+        return likeEntityToDto(newLike,likeCount);
     }
     @Transactional
     public LikeResponse deleteLike(CheckList checkList, User user) {
         Like like = likeRepository.findByCheckListAndUser(checkList, user).orElseThrow(() -> new IllegalArgumentException("해당 좋아요가 존재하지 않습니다."));
         deleteLike(like.getId());
-        return likeEntityToDto(like, likeRepository.countByCheckList(checkList));
+        int likeCount = likeRepository.countByCheckList(checkList);
+        checkList.updateLikeCount(likeCount);
+        return likeEntityToDto(like, likeCount);
     }
     public void deleteLike(Long likeId) {
         likeRepository.deleteById(likeId);

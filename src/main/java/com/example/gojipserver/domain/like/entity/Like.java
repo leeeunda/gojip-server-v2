@@ -25,4 +25,7 @@ public class Like {
     @JoinColumn(name = "check_list_id")
     private CheckList checkList;
 
+    public void registerCheckList(CheckList checkList) {
+        this.checkList = checkList;
+    }
 }

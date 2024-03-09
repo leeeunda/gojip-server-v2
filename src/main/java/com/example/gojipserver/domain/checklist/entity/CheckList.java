@@ -6,6 +6,7 @@ import com.example.gojipserver.domain.checklist.entity.roomcondition.Building;
 import com.example.gojipserver.domain.checklist.entity.roomstatus.Boiler;
 import com.example.gojipserver.domain.checklist.entity.roomstatus.Light;
 import com.example.gojipserver.domain.checklist_collection.entity.CheckListCollection;
+import com.example.gojipserver.domain.like.entity.Like;
 import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
 import com.example.gojipserver.domain.roomimage.entity.RoomImage;
 import com.example.gojipserver.domain.user.entity.User;
@@ -44,6 +45,10 @@ public class  CheckList extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<RoomImage> roomImages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "checkList")
+    private List<Like> likes = new ArrayList<>();
+
 
     // 비용
     private int deposit; //보증금
@@ -126,6 +131,7 @@ public class  CheckList extends BaseTimeEntity {
     //기타
     private String note; //추가 사항
     private String imgDescription; //이미지 설명
+    private int likeCount;
 
     @Builder
     public CheckList(RoomAddress roomAddress, User user, List<RoomImage> roomImages, int deposit, int monthlyCost, int managementCost, boolean waterCost, boolean heatingCost, boolean electricCost, boolean internetCost, int area, Building building, int stationDistance, boolean floor, boolean wall, boolean outside, Light light, Boiler boiler, boolean mold, boolean wind, boolean bug, boolean wallpaperPollution, Toilet toilet, WashStand washstand, Sink sink, ShowerHead showerHead, HotWater hotWater, Tile tile, boolean airConditioner, boolean refrigerator, boolean washingMachine, boolean microwave, boolean gasRange, boolean induction, boolean bed, boolean desk, boolean closet, boolean tv, boolean wifiRouter, boolean computer, boolean doorLock, boolean ventilator, boolean parkingLot, boolean cctv, boolean elevator, boolean managementOffice, boolean commonEntrance, boolean separateDischargeSpace, String note, String imgDescription) {
@@ -241,5 +247,11 @@ public class  CheckList extends BaseTimeEntity {
         this.roomImages.add(roomImage);
         roomImage.registerToCheckList(this);
     }
-
+    public void addLikeInCheckList(Like like){
+        this.likes.add(like);
+        like.registerCheckList(this);
+    }
+    public void updateLikeCount(int likeCount){
+        this.likeCount = likeCount;
+    }
 }

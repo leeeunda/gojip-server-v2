@@ -1,6 +1,7 @@
 package com.example.gojipserver.domain.user.entity;
 
 import com.example.gojipserver.domain.checklist.entity.CheckList;
+import com.example.gojipserver.domain.like.entity.Like;
 import com.example.gojipserver.global.auditing.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,16 +25,14 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user")
     private List<CheckList> checkLists = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<Like> likes = new ArrayList<>();
+
     private String email;
     private String nickname;
     private String profileImage;
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    public void update(String email,String nickname) {
-        this.email = email;
-        this.nickname = nickname;
-    }
 
 }

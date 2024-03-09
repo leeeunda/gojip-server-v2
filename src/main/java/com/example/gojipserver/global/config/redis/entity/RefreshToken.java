@@ -11,5 +11,10 @@ import org.springframework.data.redis.core.RedisHash;
 public class RefreshToken {
     @Id
     private String refreshToken;
-    private String email;
+    private Long userId;
+
+    public RefreshToken update(String refreshToken){
+        this.refreshToken = refreshToken;
+        return this;
+    }
 }

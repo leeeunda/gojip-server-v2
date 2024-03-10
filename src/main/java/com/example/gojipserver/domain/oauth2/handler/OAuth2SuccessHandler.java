@@ -40,13 +40,11 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.info("OAuth2SuccessHandler.onAuthenticationSuccess() 실행 - OAuth2 로그인 성공");
         UserPrincipal oAuth2User = (UserPrincipal) authentication.getPrincipal();
 
-        User user = userService.findByEmail(oAuth2User.getEmail());
-
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
-        saveRefreshToken(user.getId(), refreshToken);
+        String refreshToken = jwtTokenProvider.createRefreshToken(oAuth2User.getId());
+        saveRefreshToken(oAuth2User.getId(), refreshToken);
         addRefreshTokenToCookie(request, response, refreshToken);
 
-        String accessToken = jwtTokenProvider.createAccessToken(user.getId());
+        String accessToken = jwtTokenProvider.createAccessToken(oAuth2User.getId());
         String targetUrl = getTargetUrl(accessToken);
 
         clearAuthenticationAttributes(request, response);

@@ -74,18 +74,22 @@ public class JwtTokenProvider {
     }
 
     //토큰 정보를 검증하는 메서드
-    public boolean validateToken(String token) {
+    public boolean validateToken(HttpServletRequest request,String token) throws IOException {
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
+            request.setAttribute("exception", ErrorCode.INVALID_TOKEN);
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT Token", e);
+            request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token", e);
+            request.setAttribute("exception", ErrorCode.INVALID_TOKEN);
         } catch (IllegalArgumentException e) {
             log.info("JWT claims string is empty.", e);
+            request.setAttribute("exception", ErrorCode.INVALID_TOKEN);
         }
         return false;
     }

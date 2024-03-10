@@ -31,7 +31,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
         KakaoOAuth2UserInfoDto oAuth2UserInfo = new KakaoOAuth2UserInfoDto(oAuth2User.getAttributes());
-        System.out.println(oAuth2UserInfo.getEmail());
         if (!StringUtils.hasText(oAuth2UserInfo.getEmail())) {
             throw new RuntimeException("Email not found from OAuth2 provider");
         }

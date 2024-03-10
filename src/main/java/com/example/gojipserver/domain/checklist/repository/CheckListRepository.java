@@ -15,4 +15,6 @@ public interface CheckListRepository extends JpaRepository<CheckList, Long> {
             "FROM CheckListCollection clc INNER JOIN clc.checkList.roomAddress a " +
             "WHERE clc.collection.id = :collectionId")
     List<CheckListCollectionGetDto> findByCollectionId(@Param("collectionId") Long collectionId);
+
+    List<CheckList> findTop3ByUserIdOrderByLastModifiedDateDesc(long userId);
 }

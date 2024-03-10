@@ -4,6 +4,7 @@ import com.example.gojipserver.domain.oauth2.handler.OAuth2SuccessHandler;
 import com.example.gojipserver.domain.oauth2.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.example.gojipserver.domain.oauth2.service.CustomOAuth2UserService;
 import com.example.gojipserver.domain.user.service.UserService;
+import com.example.gojipserver.global.config.jwt.CustomAuthenticationEntryPoint;
 import com.example.gojipserver.global.config.jwt.JwtAuthenticationFilter;
 import com.example.gojipserver.global.config.jwt.JwtTokenProvider;
 
@@ -78,9 +79,9 @@ public class SecurityConfig {
         );
 
         http.exceptionHandling(authentication -> authentication
-                .defaultAuthenticationEntryPointFor(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),new AntPathRequestMatcher("/**")));
+                .defaultAuthenticationEntryPointFor(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),new AntPathRequestMatcher("/**"))
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
 
         return http.build();
     }
-
 }

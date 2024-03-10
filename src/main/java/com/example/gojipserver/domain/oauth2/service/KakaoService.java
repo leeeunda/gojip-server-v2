@@ -5,8 +5,11 @@ import com.example.gojipserver.domain.user.entity.User;
 import com.example.gojipserver.domain.user.repository.UserRepository;
 import com.example.gojipserver.global.config.jwt.JwtTokenProvider;
 import com.example.gojipserver.global.config.redis.repository.RefreshTokenRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 import static com.example.gojipserver.domain.oauth2.dto.UserResponseDto.*;
 
@@ -17,8 +20,8 @@ public class KakaoService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
 
-    public CreatedAccessTokenResponse createNewAccessToken(String refreshToken) {
-        if (!jwtTokenProvider.validateToken(refreshToken)) {
+    public CreatedAccessTokenResponse createNewAccessToken(HttpServletRequest request, String refreshToken) throws IOException {
+        if (!jwtTokenProvider.validateToken(request,refreshToken)) {
             throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
         }
 

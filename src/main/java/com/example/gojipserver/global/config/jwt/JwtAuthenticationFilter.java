@@ -30,8 +30,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("JwtAuthenticationFilter.doFilterInternal() 실행 - JWT 인증 필터");
         String jwt = jwtTokenProvider.getJwtFromRequest(request,"Authorization");
         if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(request,jwt)) {
-            Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (!jwtTokenProvider.isAccessToken(request,jwt)) {
+                Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
         filterChain.doFilter(request, response);
     }

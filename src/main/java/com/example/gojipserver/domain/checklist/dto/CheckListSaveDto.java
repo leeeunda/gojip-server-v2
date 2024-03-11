@@ -1,6 +1,5 @@
 package com.example.gojipserver.domain.checklist.dto;
 
-import com.example.gojipserver.domain.checklist.entity.bathroomstatus.*;
 import com.example.gojipserver.domain.checklist.entity.room.*;
 import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
@@ -96,21 +95,21 @@ public class CheckListSaveDto {
     private boolean wallpaperPollution; //벽지오염
 
     //화장실 상태
-    @Schema(description = "화장실 상태 / 변기")
-    @Enumerated(EnumType.STRING)
-    private Toilet toilet; //변기
-
-    @Schema(description = "화장실 상태 / 세면대")
-    @Enumerated(EnumType.STRING)
-    private WashStand washstand; //세면대
-
-    @Schema(description = "화장실 상태 / 싱크대")
-    @Enumerated(EnumType.STRING)
-    private Sink sink; //싱크대
-
-    @Schema(description = "화장실 상태 / 샤워기")
-    @Enumerated(EnumType.STRING)
-    private ShowerHead showerHead; //샤워기
+//    @Schema(description = "화장실 상태 / 변기")
+//    @Enumerated(EnumType.STRING)
+//    private Toilet toilet; //변기
+//
+//    @Schema(description = "화장실 상태 / 세면대")
+//    @Enumerated(EnumType.STRING)
+//    private WashStand washstand; //세면대
+//
+//    @Schema(description = "화장실 상태 / 싱크대")
+//    @Enumerated(EnumType.STRING)
+//    private Sink sink; //싱크대
+//
+//    @Schema(description = "화장실 상태 / 샤워기")
+//    @Enumerated(EnumType.STRING)
+//    private ShowerHead showerHead; //샤워기
 
     @Schema(description = "화장실 상태 / 온수")
     @Enumerated(EnumType.STRING)
@@ -188,6 +187,7 @@ public class CheckListSaveDto {
     @Schema(description = "이미지 설명")
     private String imgDescription;
 
+/*
     public CheckList toEntity(User user, RoomAddress roomAddress) {
         return CheckList.builder()
                 .roomAddress(roomAddress)
@@ -241,6 +241,7 @@ public class CheckListSaveDto {
                 .imgDescription(imgDescription)
                 .build();
     }
+*/
 
 
 }

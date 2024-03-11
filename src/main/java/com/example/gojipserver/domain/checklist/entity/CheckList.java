@@ -108,7 +108,7 @@ public class  CheckList extends BaseTimeEntity {
     private int likeCount;
 
     private String checkListName;
-    private double rating; // TODO: enum으로 만들 수도 있음
+    private int rating; // TODO: enum으로 만들 수도 있음
 
 
     // 연관관계 편의 메서드

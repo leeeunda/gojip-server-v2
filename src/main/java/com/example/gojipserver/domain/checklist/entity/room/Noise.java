@@ -21,7 +21,8 @@ public class Noise extends BaseTimeEntity {
     @JoinColumn(name = "check_list_id", nullable = false)
     private CheckList checkList;
 
-    private NoiseMeasure noiseMeasure;
+    @Column(name = "type")
+    private NoiseType type;
 
 
 }

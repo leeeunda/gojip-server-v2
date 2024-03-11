@@ -22,7 +22,7 @@ public class ManagementCostOption extends BaseTimeEntity {
     @JoinColumn(name = "check_list_id", nullable = false)
     private CheckList checkList;
 
-    @Column(name = "option_name")
-    private ManagementCostOptionName optionName;
+    @Column(name = "type")
+    private ManagementCostOptionType type;
 
 }

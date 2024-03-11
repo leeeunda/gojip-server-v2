@@ -21,6 +21,7 @@ public class RoomStatus extends BaseTimeEntity {
     @JoinColumn(name = "check_list_id", nullable = false)
     private CheckList checkList;
 
-    private RoomStatusMeasure roomStatusMeasure;
+    @Column(name = "type")
+    private RoomStatusType type;
 
 }

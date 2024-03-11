@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Slf4j
-public enum ManagementCostOptionName {
+public enum ManagementCostOptionType {
 
     수도세("수도세"),
     난방비("난방비"),
@@ -15,18 +15,18 @@ public enum ManagementCostOptionName {
 
     private final String value;
 
-    ManagementCostOptionName(String value) {
+    ManagementCostOptionType(String value) {
         this.value = value;
     }
 
     @JsonCreator // Json -> Object, 역직렬화 수행하는 메서드
-    public static ManagementCostOptionName from(String param) {
-        for (ManagementCostOptionName managementCostOptionName : ManagementCostOptionName.values()) {
-            if (managementCostOptionName.getValue().equals(param)) {
-                return managementCostOptionName;
+    public static ManagementCostOptionType from(String param) {
+        for (ManagementCostOptionType managementCostOptionType : ManagementCostOptionType.values()) {
+            if (managementCostOptionType.getValue().equals(param)) {
+                return managementCostOptionType;
             }
         }
-        log.debug("ManagementCostOptionName.from() exception occur param: {}", param);
+        log.debug("ManagementCostOptionType.from() exception occur param: {}", param);
         return null;
     }
 }

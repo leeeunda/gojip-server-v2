@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 // 소음척도
 @Getter
 @Slf4j
-public enum NoiseMeasure {
+public enum NoiseType {
 
     층간소음("층간소음"),
     외부소음("외부소음"),
@@ -15,18 +15,18 @@ public enum NoiseMeasure {
 
     private final String value;
 
-    NoiseMeasure(String value) {
+    NoiseType(String value) {
         this.value = value;
     }
 
     @JsonCreator // Json -> Object, 역직렬화 수행하는 메서드
-    public static NoiseMeasure from(String param) {
-        for (NoiseMeasure noiseMeasure : NoiseMeasure.values()) {
-            if (noiseMeasure.getValue().equals(param)) {
-                return noiseMeasure;
+    public static NoiseType from(String param) {
+        for (NoiseType noiseType : NoiseType.values()) {
+            if (noiseType.getValue().equals(param)) {
+                return noiseType;
             }
         }
-        log.debug("NoiseMeasure.from() exception occur param: {}", param);
+        log.debug("NoiseType.from() exception occur param: {}", param);
         return null;
     }
 }

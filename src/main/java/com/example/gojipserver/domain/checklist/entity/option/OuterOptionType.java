@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Slf4j
-public enum OuterOptionName {
+public enum OuterOptionType {
 
     주차장("주차장"),
     CCTV("CCTV"),
@@ -17,18 +17,18 @@ public enum OuterOptionName {
 
     private final String value;
 
-    OuterOptionName(String value) {
+    OuterOptionType(String value) {
         this.value = value;
     }
 
     @JsonCreator // Json -> Object, 역직렬화 수행하는 메서드
-    public static OuterOptionName from(String param) {
-        for (OuterOptionName outerOption : OuterOptionName.values()) {
-            if (outerOption.getValue().equals(param)) {
-                return outerOption;
+    public static OuterOptionType from(String param) {
+        for (OuterOptionType outerOptionType : OuterOptionType.values()) {
+            if (outerOptionType.getValue().equals(param)) {
+                return outerOptionType;
             }
         }
-        log.debug("OuterOption.from() exception occur param: {}", param);
+        log.debug("OuterOptionType.from() exception occur param: {}", param);
         return null;
     }
 }

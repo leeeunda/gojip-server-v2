@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Slf4j
-public enum InnerOptionName {
+public enum InnerOptionType {
 
     에어컨("에어컨"),
     냉장고("냉장고"),
@@ -25,18 +25,18 @@ public enum InnerOptionName {
 
     private final String value;
 
-    InnerOptionName(String value) {
+    InnerOptionType(String value) {
         this.value = value;
     }
 
     @JsonCreator // Json -> Object, 역직렬화 수행하는 메서드
-    public static InnerOptionName from(String param) {
-        for (InnerOptionName innerOption : InnerOptionName.values()) {
-            if (innerOption.getValue().equals(param)) {
-                return innerOption;
+    public static InnerOptionType from(String param) {
+        for (InnerOptionType innerOptionType : InnerOptionType.values()) {
+            if (innerOptionType.getValue().equals(param)) {
+                return innerOptionType;
             }
         }
-        log.debug("InnerOption.from() exception occur param: {}", param);
+        log.debug("InnerOptionType.from() exception occur param: {}", param);
         return null;
     }
 }

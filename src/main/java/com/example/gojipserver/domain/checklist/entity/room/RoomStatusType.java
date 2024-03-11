@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 // 방 상태 척도
 @Getter
 @Slf4j
-public enum RoomStatusMeasure {
+public enum RoomStatusType {
 
     곰팡이("곰팡이"),
     벌레("벌레"),
@@ -20,18 +20,18 @@ public enum RoomStatusMeasure {
 
     private final String value;
 
-    RoomStatusMeasure(String value) {
+    RoomStatusType(String value) {
         this.value = value;
     }
 
     @JsonCreator // Json -> Object, 역직렬화 수행하는 메서드
-    public static RoomStatusMeasure from(String param) {
-        for (RoomStatusMeasure roomStatusMeasure : RoomStatusMeasure.values()) {
-            if (roomStatusMeasure.getValue().equals(param)) {
-                return roomStatusMeasure;
+    public static RoomStatusType from(String param) {
+        for (RoomStatusType roomStatusType : RoomStatusType.values()) {
+            if (roomStatusType.getValue().equals(param)) {
+                return roomStatusType;
             }
         }
-        log.debug("RoomStatusMeasure.from() exception occur param: {}", param);
+        log.debug("RoomStatusType.from() exception occur param: {}", param);
         return null;
     }
 }

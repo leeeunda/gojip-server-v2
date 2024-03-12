@@ -1,4 +1,4 @@
-package com.example.gojipserver.domain.checklist.entity.roomstatus;
+package com.example.gojipserver.domain.checklist.entity.room;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
@@ -8,9 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public enum Light {
 
-    SOUTH("남향"), NORTH("북향"), WEST("서향"), EAST("동향"); // 남, 북, 서, 동
+    남향("남향"),
+    북향("북향"),
+    서향("서향"),
+    동향("동향");
 
-    String value;
+    private final String value;
 
     Light(String value) {
         this.value = value;

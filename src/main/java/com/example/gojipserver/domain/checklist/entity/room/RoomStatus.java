@@ -1,4 +1,4 @@
-package com.example.gojipserver.domain.checklist.entity.option;
+package com.example.gojipserver.domain.checklist.entity.room;
 
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.global.auditing.BaseTimeEntity;
@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class InnerOption extends BaseTimeEntity {
+public class RoomStatus extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "inner_option_id")
+    @Column(name = "room_status_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -22,5 +22,6 @@ public class InnerOption extends BaseTimeEntity {
     private CheckList checkList;
 
     @Column(name = "type")
-    private InnerOptionType type;
+    private RoomStatusType type;
+
 }

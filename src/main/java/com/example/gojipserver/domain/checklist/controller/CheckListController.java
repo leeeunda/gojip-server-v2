@@ -77,9 +77,10 @@ public class CheckListController {
 
         CheckList checkList=checkListService.getCheckListById(checkListId);
         RoomAddress roomAddress = checkListService.getRoomAddressByCheckListId(checkListId);
-        CheckListOneGetDto checkListOneGetDto = new CheckListOneGetDto(checkList, roomAddress);
+//        CheckListOneGetDto checkListOneGetDto = new CheckListOneGetDto(checkList, roomAddress);
 
-        return ApiResponse.createSuccess(checkListOneGetDto);
+//        return ApiResponse.createSuccess(checkListOneGetDto);
+        return null;
     }
 
     //체크리스트 전체 조회

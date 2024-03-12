@@ -1,12 +1,8 @@
 package com.example.gojipserver.domain.checklist.dto;
 
 import com.example.gojipserver.domain.checklist.entity.CheckList;
-import com.example.gojipserver.domain.checklist.entity.bathroomstatus.*;
-import com.example.gojipserver.domain.checklist.entity.roomcondition.Building;
-import com.example.gojipserver.domain.checklist.entity.roomstatus.Boiler;
-import com.example.gojipserver.domain.checklist.entity.roomstatus.Light;
+import com.example.gojipserver.domain.checklist.entity.room.*;
 import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
-import com.example.gojipserver.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -70,7 +66,7 @@ public class CheckListOneGetDto {
 
     @Schema(description = "집 조건 / 건물상태")
     @Enumerated(EnumType.STRING)
-    private Building building; //건물상태
+    private BuildingStatus building; //건물상태
 
     @Schema(description = "집 조건 / 역과의 거리")
     private int stationDistance; //역과의 거리
@@ -91,7 +87,7 @@ public class CheckListOneGetDto {
 
     @Schema(description = "방 상태 / 보일러")
     @Enumerated(EnumType.STRING)
-    private Boiler boiler; //보일러
+    private BoilerType boiler; //보일러
 
     @Schema(description = "방 상태 / 곰팡이")
     private boolean mold; //곰팡이
@@ -106,29 +102,29 @@ public class CheckListOneGetDto {
     private boolean wallpaperPollution; //벽지오염
 
     //화장실 상태
-    @Schema(description = "화장실 상태 / 변기")
-    @Enumerated(EnumType.STRING)
-    private Toilet toilet; //변기
+//    @Schema(description = "화장실 상태 / 변기")
+//    @Enumerated(EnumType.STRING)
+//    private Toilet toilet; //변기
+//
+//    @Schema(description = "화장실 상태 / 세면대")
+//    @Enumerated(EnumType.STRING)
+//    private WashStand washstand; //세면대
 
-    @Schema(description = "화장실 상태 / 세면대")
-    @Enumerated(EnumType.STRING)
-    private WashStand washstand; //세면대
-
-    @Schema(description = "화장실 상태 / 싱크대")
-    @Enumerated(EnumType.STRING)
-    private Sink sink; //싱크대
-
-    @Schema(description = "화장실 상태 / 샤워기")
-    @Enumerated(EnumType.STRING)
-    private ShowerHead showerHead; //샤워기
+//    @Schema(description = "화장실 상태 / 싱크대")
+//    @Enumerated(EnumType.STRING)
+//    private Sink sink; //싱크대
+//
+//    @Schema(description = "화장실 상태 / 샤워기")
+//    @Enumerated(EnumType.STRING)
+//    private ShowerHead showerHead; //샤워기
 
     @Schema(description = "화장실 상태 / 온수")
     @Enumerated(EnumType.STRING)
-    private HotWater hotWater; //온수
+    private HotWaterStatus hotWater; //온수
 
     @Schema(description = "화장실 상태 / 타일")
     @Enumerated(EnumType.STRING)
-    private Tile tile; //타일
+    private TileStatus tile; //타일
 
     //내부 옵션
     @Schema(description = "내부 옵션 / 에어컨")
@@ -198,57 +194,57 @@ public class CheckListOneGetDto {
     @Schema(description = "이미지 설명")
     private String imgDescription;
 
-    @Builder
-    public CheckListOneGetDto(CheckList checkList, RoomAddress roomAddress) {
-        this.id = checkList.getId();
-        this.addressName = roomAddress.getAddressName();
-        this.deposit = checkList.getDeposit();
-        this.monthlyCost = checkList.getMonthlyCost();
-        this.managementCost= checkList.getManagementCost();
-        this.waterCost = checkList.isWaterCost();
-        this.heatingCost = checkList.isHeatingCost();
-        this.electricCost = checkList.isElectricCost();
-        this.internetCost = checkList.isInternetCost();
-        this.area = checkList.getArea();
-        this.building = checkList.getBuilding();
-        this.stationDistance = checkList.getStationDistance();
-        this.floor = checkList.isFloor();
-        this.wall = checkList.isWall();
-        this.outside = checkList.isOutside();
-        this.light = checkList.getLight();
-        this.boiler = checkList.getBoiler();
-        this.mold = checkList.isMold();
-        this.wind = checkList.isWind();
-        this.bug = checkList.isBug();
-        this.wallpaperPollution = checkList.isWallpaperPollution();
-        this.toilet = checkList.getToilet();
-        this.washstand = checkList.getWashstand();
-        this.sink = checkList.getSink();
-        this.showerHead = checkList.getShowerHead();
-        this.hotWater = checkList.getHotWater();
-        this.tile = checkList.getTile();
-        this.airConditioner = checkList.isAirConditioner();
-        this.refrigerator = checkList.isRefrigerator();
-        this.washingMachine = checkList.isWashingMachine();
-        this.microwave = checkList.isMicrowave();
-        this.gasRange = checkList.isGasRange();
-        this.induction = checkList.isInduction();
-        this.bed = checkList.isBed();
-        this.desk = checkList.isDesk();
-        this.closet = checkList.isCloset();
-        this.tv = checkList.isTv();
-        this.wifiRouter = checkList.isWifiRouter();
-        this.computer = checkList.isComputer();
-        this.doorLock = checkList.isDoorLock();
-        this.ventilator = checkList.isParkingLot();
-        this.parkingLot = checkList.isParkingLot();
-        this.cctv = checkList.isCctv();
-        this.elevator = checkList.isElevator();
-        this.managementOffice = checkList.isManagementOffice();
-        this.commonEntrance = checkList.isCommonEntrance();
-        this.separateDischargeSpace = checkList.isSeparateDischargeSpace();
-        this.note = checkList.getNote();
-        this.imgDescription = checkList.getImgDescription();
-    }
+//    @Builder
+//    public CheckListOneGetDto(CheckList checkList, RoomAddress roomAddress) {
+//        this.id = checkList.getId();
+//        this.addressName = roomAddress.getAddressName();
+//        this.deposit = checkList.getDeposit();
+//        this.monthlyCost = checkList.getMonthlyCost();
+//        this.managementCost= checkList.getManagementCost();
+//        this.waterCost = checkList.isWaterCost();
+//        this.heatingCost = checkList.isHeatingCost();
+//        this.electricCost = checkList.isElectricCost();
+//        this.internetCost = checkList.isInternetCost();
+//        this.area = checkList.getArea();
+//        this.building = checkList.getBuilding();
+//        this.stationDistance = checkList.getStationDistance();
+//        this.floor = checkList.isFloor();
+//        this.wall = checkList.isWall();
+//        this.outside = checkList.isOutside();
+//        this.light = checkList.getLight();
+//        this.boiler = checkList.getBoilerType();
+//        this.mold = checkList.isMold();
+//        this.wind = checkList.isWind();
+//        this.bug = checkList.isBug();
+//        this.wallpaperPollution = checkList.isWallpaperPollution();
+//        this.toilet = checkList.getToilet();
+//        this.washstand = checkList.getWashstand();
+//        this.sink = checkList.getSink();
+//        this.showerHead = checkList.getShowerHead();
+//        this.hotWater = checkList.getHotWaterStatus();
+//        this.tile = checkList.getTileStatus();
+//        this.airConditioner = checkList.isAirConditioner();
+//        this.refrigerator = checkList.isRefrigerator();
+//        this.washingMachine = checkList.isWashingMachine();
+//        this.microwave = checkList.isMicrowave();
+//        this.gasRange = checkList.isGasRange();
+//        this.induction = checkList.isInduction();
+//        this.bed = checkList.isBed();
+//        this.desk = checkList.isDesk();
+//        this.closet = checkList.isCloset();
+//        this.tv = checkList.isTv();
+//        this.wifiRouter = checkList.isWifiRouter();
+//        this.computer = checkList.isComputer();
+//        this.doorLock = checkList.isDoorLock();
+//        this.ventilator = checkList.isParkingLot();
+//        this.parkingLot = checkList.isParkingLot();
+//        this.cctv = checkList.isCctv();
+//        this.elevator = checkList.isElevator();
+//        this.managementOffice = checkList.isManagementOffice();
+//        this.commonEntrance = checkList.isCommonEntrance();
+//        this.separateDischargeSpace = checkList.isSeparateDischargeSpace();
+//        this.note = checkList.getNote();
+//        this.imgDescription = checkList.getImgDescription();
+//    }
 
 }

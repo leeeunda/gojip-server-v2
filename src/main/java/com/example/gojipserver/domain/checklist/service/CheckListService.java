@@ -46,18 +46,19 @@ public class CheckListService {
 
         RoomAddress findRoomAddress = findRoomAddressById(checkListSaveDto.getRoomAddressId());
 
-        CheckList savedCheckList = checkListRepository.save(checkListSaveDto.toEntity(findUser, findRoomAddress));
+//        CheckList savedCheckList = checkListRepository.save(checkListSaveDto.toEntity(findUser, findRoomAddress));
 
 
         // 체크리스트와 이미지 연관관계 세팅
         List<Long> roomImageIdList = checkListSaveDto.getRoomImageIdList();
-        setRoomImageOfCheckList(savedCheckList, roomImageIdList);
+//        setRoomImageOfCheckList(savedCheckList, roomImageIdList);
 
         // 체크리스트를 등록할 컬렉션이 존재하는 경우
         List<Long> collectionIdList = checkListSaveDto.getCollectionIdList();
-        setCollectionOfCheckList(savedCheckList, collectionIdList);
+//        setCollectionOfCheckList(savedCheckList, collectionIdList);
 
-        return savedCheckList.getId();
+//        return savedCheckList.getId();
+        return null;
     }
 
 
@@ -79,7 +80,7 @@ public class CheckListService {
         setCollectionOfCheckList(findCheckList, collectionIdList);
 
 
-        findCheckList.update(checkListUpdateDto);
+//        findCheckList.update(checkListUpdateDto);
 
         return findCheckList.getId();
     }

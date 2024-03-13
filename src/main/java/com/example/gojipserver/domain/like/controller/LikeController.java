@@ -2,6 +2,7 @@ package com.example.gojipserver.domain.like.controller;
 
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.checklist.service.CheckListService;
+import com.example.gojipserver.domain.like.dto.LikeGetResponseDto;
 import com.example.gojipserver.domain.like.dto.LikePreviewResponseDto;
 import com.example.gojipserver.domain.like.service.LikeService;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
@@ -17,8 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.gojipserver.domain.like.dto.LikeResponseDto.*;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/checklists")
@@ -29,19 +28,19 @@ public class LikeController {
     private final UserService userService;
     @PostMapping("/{checkListId}/like")
     @Operation(summary = "좋아요 추가", description = "체크리스트에 좋아요를 추가합니다.")
-    public ApiResponse<LikeResponse> addLike (@PathVariable Long checkListId, @AuthenticationPrincipal UserPrincipal userPrincipal){
+    public ApiResponse<LikeGetResponseDto> addLike (@PathVariable Long checkListId, @AuthenticationPrincipal UserPrincipal userPrincipal){
         CheckList checkList = checkListService.getCheckListById(checkListId);
         User user = userService.findById(userPrincipal.getId());
-        LikeResponse likeResponse = likeService.addLike(checkList, user);
+        LikeGetResponseDto likeResponse = likeService.addLike(checkList, user);
         return ApiResponse.createSuccess(likeResponse);
     }
 
     @DeleteMapping("/{checkListId}/like")
     @Operation(summary = "좋아요 삭제", description = "체크리스트에 좋아요를 삭제합니다.")
-    public ApiResponse<LikeResponse> deleteLike (@PathVariable Long checkListId, @AuthenticationPrincipal UserPrincipal userPrincipal){
+    public ApiResponse<LikeGetResponseDto> deleteLike (@PathVariable Long checkListId, @AuthenticationPrincipal UserPrincipal userPrincipal){
         CheckList checkList = checkListService.getCheckListById(checkListId);
         User user = userService.findById(userPrincipal.getId());
-        LikeResponse likeResponse = likeService.deleteLike(checkList, user);
+        LikeGetResponseDto likeResponse = likeService.deleteLike(checkList, user);
         return ApiResponse.createSuccess(likeResponse);
     }
 

@@ -49,13 +49,27 @@ public class RoomAddressService {
         // API Response로부터 body 추출하기
         String body = response.getBody();
         JSONObject json = new JSONObject(body);
+        try {
+            // body에서 좌표 추출하기
+            JSONArray documents = json.getJSONArray("documents");
+            String x = documents.getJSONObject(0).getString("x");
+            String y = documents.getJSONObject(0).getString("y");
+            String city = null;
 
-        // body에서 좌표 추출하기
-        JSONArray documents = json.getJSONArray("documents");
-        String x = documents.getJSONObject(0).getString("x");
-        String y = documents.getJSONObject(0).getString("y");
-
-        return new Coordinates(x, y);
+            JSONObject document = documents.getJSONObject(0);
+            if (document.has("road_address")) {
+                JSONObject roadAddress = document.getJSONObject("road_address");
+                city = roadAddress.getString("region_2depth_name");
+            } else if (document.has("address")) {
+                JSONObject address = document.getJSONObject("address");
+                city = address.getString("region_2depth_name");
+            } else {
+                city = "Unknown";
+            }
+            return new Coordinates(x, y, city);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("주소를 찾을 수 없습니다.");
+        }
     }
 
     @Transactional
@@ -64,7 +78,7 @@ public class RoomAddressService {
         //주소를 통해 좌표를 조회한 후
         Coordinates coordinates = getCoordinate(addressName);
         RoomAddressSaveDto roomAddressSaveDto= new RoomAddressSaveDto(addressName);
-        RoomAddress roomAddress = roomAddressSaveDto.toEntity(coordinates.getX(), coordinates.getY());
+        RoomAddress roomAddress = roomAddressSaveDto.toEntity(coordinates.getX(), coordinates.getY(),coordinates.getCity());
 
         //DB에 저장하고 RoomAddress 반환
         return roomAddressRepository.save(roomAddress);

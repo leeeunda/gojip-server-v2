@@ -17,6 +17,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,17 +55,17 @@ public class  CheckList extends BaseTimeEntity {
     // 비용
     @Enumerated(EnumType.STRING)
     private PropertyType propertyType; //매물형태
-    private int deposit; //보증금
-    private int monthlyCost; //월세비용
-    private int charterCost; //전세비용
-    private int tradingCost; //매매비용
+    private Integer deposit; //보증금
+    private Integer monthlyCost; //월세비용
+    private Integer charterCost; //전세비용
+    private Integer tradingCost; //매매비용
 
     // 관리비 포함 옵션
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ManagementCostOption> managementCostOptions = new ArrayList<>();
 
     // 집 조건
-    private int area; //평수
+    private Integer area; //평수
 
     @Enumerated(EnumType.STRING)
     private Structure structure; // 구조
@@ -74,7 +76,7 @@ public class  CheckList extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private BuildingStatus buildingStatus; //건물상태
 
-    private int stationDistance; //역과의 거리
+    private Integer stationDistance; //역과의 거리, null 허용 X
 
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Noise> noises = new ArrayList<>();
@@ -107,12 +109,48 @@ public class  CheckList extends BaseTimeEntity {
 
     //기타
     private String note; //추가 사항
-    private int likeCount;
+    private Integer likeCount;
 
     private String checkListName;
-    private int rating; // TODO: enum으로 만들 수도 있음
+    private Integer rating; // TODO: enum으로 만들 수도 있음
 
     private boolean isPublic; // 공개여부
+
+    @Builder
+    public CheckList(RoomAddress roomAddress, User user, PropertyType propertyType, int deposit, int monthlyCost, int charterCost, int tradingCost, int area, Structure structure, Floor floor, BuildingStatus buildingStatus, int stationDistance, Light light, BoilerType boilerType, WaterPressureStatus waterPressureStatus, HotWaterStatus hotWaterStatus, TileStatus tileStatus, String note, String checkListName, int rating) {
+        this.roomAddress = roomAddress;
+        this.user = user;
+        this.propertyType = propertyType;
+        this.deposit = deposit;
+        this.monthlyCost = monthlyCost;
+        this.charterCost = charterCost;
+        this.tradingCost = tradingCost;
+        this.area = area;
+        this.structure = structure;
+        this.floor = floor;
+        this.buildingStatus = buildingStatus;
+        this.stationDistance = stationDistance;
+        this.light = light;
+        this.boilerType = boilerType;
+        this.waterPressureStatus = waterPressureStatus;
+        this.hotWaterStatus = hotWaterStatus;
+        this.tileStatus = tileStatus;
+        this.note = note;
+        this.checkListName = checkListName;
+        this.rating = rating;
+    }
+
+    // 엔티티 생성 시 필드 기본값 설정
+    @PrePersist
+    public void prePersist() {
+        this.deposit = (this.deposit == null) ? 0 : this.deposit; // null이면(클라이언트에서 값을 입력하지 않으면) 0
+        this.monthlyCost = (this.monthlyCost == null) ? 0 : this.monthlyCost;
+        this.charterCost = (this.charterCost == null) ? 0 : this.charterCost;
+        this.tradingCost = (this.tradingCost == null) ? 0 : this.tradingCost;
+        this.likeCount = 0; // 초기값 무조건 0
+        this.isPublic = true; // 초기값 무조건 true
+
+    }
 
 
     // 연관관계 편의 메서드

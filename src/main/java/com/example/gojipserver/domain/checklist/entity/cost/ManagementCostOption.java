@@ -4,6 +4,7 @@ import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.global.auditing.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,4 +26,9 @@ public class ManagementCostOption extends BaseTimeEntity {
     @Column(name = "type")
     private ManagementCostOptionType type;
 
+    @Builder
+    public ManagementCostOption(CheckList checkList, ManagementCostOptionType type) {
+        this.checkList = checkList;
+        this.type = type;
+    }
 }

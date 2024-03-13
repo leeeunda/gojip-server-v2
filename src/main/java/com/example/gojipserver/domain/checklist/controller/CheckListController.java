@@ -38,9 +38,9 @@ public class CheckListController {
     @Operation(summary = "체크리스트 등록", description = "체크리스트 등록 api")
     @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
     @Parameter(name="checkListSaveDto")
-    public ApiResponse<Long> saveCheckList(@AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CheckListSaveDto checkListSaveDto) {
+    public ApiResponse<Long> saveCheckList(@AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CheckListRequestDto.CheckListSaveDto requestDto) {
 
-        Long savedCheckListId = checkListService.saveCheckList(requestUser.getId(), checkListSaveDto);
+        Long savedCheckListId = checkListService.saveCheckList(requestUser.getId(), requestDto);
 
         return ApiResponse.createSuccess(savedCheckListId);
     }

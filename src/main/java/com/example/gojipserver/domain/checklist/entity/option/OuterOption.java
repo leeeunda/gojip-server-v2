@@ -4,6 +4,7 @@ import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.global.auditing.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,10 @@ public class OuterOption extends BaseTimeEntity {
 
     @Column(name = "type")
     private OuterOptionType type;
+
+    @Builder
+    public OuterOption(CheckList checkList, OuterOptionType type) {
+        this.checkList = checkList;
+        this.type = type;
+    }
 }

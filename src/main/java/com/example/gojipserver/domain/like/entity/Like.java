@@ -2,6 +2,7 @@ package com.example.gojipserver.domain.like.entity;
 
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.user.entity.User;
+import com.example.gojipserver.global.auditing.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "likes")
-public class Like {
+public class Like extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "like_id")

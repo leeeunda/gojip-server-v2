@@ -2,7 +2,7 @@ package com.example.gojipserver.domain.like.controller;
 
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.checklist.service.CheckListService;
-import com.example.gojipserver.domain.like.dto.LikeResponseDto;
+import com.example.gojipserver.domain.like.dto.LikePreviewResponseDto;
 import com.example.gojipserver.domain.like.service.LikeService;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
 import com.example.gojipserver.domain.user.entity.User;
@@ -11,6 +11,9 @@ import com.example.gojipserver.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,5 +43,16 @@ public class LikeController {
         User user = userService.findById(userPrincipal.getId());
         LikeResponse likeResponse = likeService.deleteLike(checkList, user);
         return ApiResponse.createSuccess(likeResponse);
+    }
+
+    @GetMapping("/like")
+    @Operation(summary = "좋아요한 체크리스트 조회", description = "좋아요한 체크리스트를 조회합니다.")
+    public ApiResponse<Page<LikePreviewResponseDto>> getLikeCheckLists(
+             @AuthenticationPrincipal UserPrincipal userPrincipal,
+             @RequestParam(defaultValue = "0") int page){
+        User user = userService.findById(userPrincipal.getId());
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<LikePreviewResponseDto> likeCheckList = likeService.getLikeCheckList(user, pageable);
+        return ApiResponse.createSuccess(likeCheckList);
     }
 }

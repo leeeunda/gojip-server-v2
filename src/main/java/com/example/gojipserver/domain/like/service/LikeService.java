@@ -1,13 +1,22 @@
 package com.example.gojipserver.domain.like.service;
 
+import com.example.gojipserver.domain.checklist.dto.CheckListResponseDto;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
+import com.example.gojipserver.domain.checklist.repository.CheckListRepository;
+import com.example.gojipserver.domain.like.dto.LikePreviewResponseDto;
 import com.example.gojipserver.domain.like.entity.Like;
 import com.example.gojipserver.domain.like.repository.LikeRepository;
 import com.example.gojipserver.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.example.gojipserver.domain.checklist.dto.CheckListResponseDto.*;
 import static com.example.gojipserver.domain.like.dto.LikeResponseDto.*;
 
 @Service
@@ -47,5 +56,9 @@ public class LikeService {
                 .checkListId(like.getCheckList().getId())
                 .count(count)
                 .build();
+    }
+    public Page<LikePreviewResponseDto> getLikeCheckList(User user, Pageable pageable) {
+        Page<LikePreviewResponseDto> likeByUserOrderByCreatedDateDesc = likeRepository.findLikePreviewResponseDto(user, pageable);
+        return likeByUserOrderByCreatedDateDesc;
     }
 }

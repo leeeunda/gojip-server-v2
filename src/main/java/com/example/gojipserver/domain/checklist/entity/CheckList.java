@@ -19,9 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static jakarta.persistence.FetchType.*;
 
@@ -56,17 +54,22 @@ public class  CheckList extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private PropertyType propertyType; //매물형태
     private int deposit; //보증금
-    // TODO: 3가지 필드가 아닌 cost라는 하나의 필드로 관리할수도 있음
     private int monthlyCost; //월세비용
     private int charterCost; //전세비용
     private int tradingCost; //매매비용
 
     // 관리비 포함 옵션
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<ManagementCostOption> managementCostOptions = new HashSet<>();
+    private List<ManagementCostOption> managementCostOptions = new ArrayList<>();
 
     // 집 조건
     private int area; //평수
+
+    @Enumerated(EnumType.STRING)
+    private Structure structure; // 구조
+
+    @Enumerated(EnumType.STRING)
+    private Floor floor; // 층
 
     @Enumerated(EnumType.STRING)
     private BuildingStatus buildingStatus; //건물상태
@@ -74,7 +77,7 @@ public class  CheckList extends BaseTimeEntity {
     private int stationDistance; //역과의 거리
 
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<Noise> noises = new HashSet<>();
+    private List<Noise> noises = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Light light; //채광
@@ -83,7 +86,7 @@ public class  CheckList extends BaseTimeEntity {
     private BoilerType boilerType; //보일러
 
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<RoomStatus> roomStatuses = new HashSet<>();
+    private List<RoomStatus> roomStatuses = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private WaterPressureStatus waterPressureStatus; //수압
@@ -96,19 +99,20 @@ public class  CheckList extends BaseTimeEntity {
 
     //내부 옵션
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<InnerOption> innerOptions = new HashSet<>();
+    private List<InnerOption> innerOptions = new ArrayList<>();
 
     //외부 옵션
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<OuterOption> outerOptions = new HashSet<>();
+    private List<OuterOption> outerOptions = new ArrayList<>();
 
     //기타
     private String note; //추가 사항
-    private String imgDescription; //이미지 설명
     private int likeCount;
 
     private String checkListName;
     private int rating; // TODO: enum으로 만들 수도 있음
+
+    private boolean isPublic; // 공개여부
 
 
     // 연관관계 편의 메서드

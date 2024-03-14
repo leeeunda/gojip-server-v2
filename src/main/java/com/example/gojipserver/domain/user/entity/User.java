@@ -14,7 +14,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 @Table(name = "users")
 public class User extends BaseTimeEntity {
     @Id
@@ -34,5 +33,13 @@ public class User extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Builder
+    public User(String email, String nickname, String profileImage, Role role) {
+        this.email = email;
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+        this.role = role;
+    }
 
 }

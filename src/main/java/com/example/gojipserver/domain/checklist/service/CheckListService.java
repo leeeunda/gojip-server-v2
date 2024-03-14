@@ -219,4 +219,9 @@ public class CheckListService {
     public List<CheckListCityCountGetDto> getCityCountTop7() {
         return checkListRepository.findCityCountTop7();
     }
+
+    public List<CheckListCityAllGetDto> getCheckListsByCity(String city) {
+        List<CheckListCityAllGetDto> checkListCityAllGetDtos = checkListRepository.findAllCity(city);
+        return checkListCityAllGetDtos;
+    }
 }

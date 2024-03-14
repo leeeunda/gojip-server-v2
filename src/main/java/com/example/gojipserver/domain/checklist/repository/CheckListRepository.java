@@ -1,5 +1,6 @@
 package com.example.gojipserver.domain.checklist.repository;
 
+import com.example.gojipserver.domain.checklist.dto.CheckListCityAllGetDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListCityCountGetDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListCollectionGetDto;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
@@ -25,4 +26,11 @@ public interface CheckListRepository extends JpaRepository<CheckList, Long> {
             "ORDER BY count(a.city) DESC " +
             "limit 7")
     List<CheckListCityCountGetDto> findCityCountTop7();
+
+    @Query("SELECT new com.example.gojipserver.domain.checklist.dto.CheckListCityAllGetDto(a.addressName,'이미지 준비중',0,count(a.addressName)) " +
+            "FROM CheckList cl INNER JOIN cl.roomAddress a " +
+            "WHERE a.city = :city " +
+            "group by a.addressName")
+    List<CheckListCityAllGetDto> findAllCity(String city);
+
 }

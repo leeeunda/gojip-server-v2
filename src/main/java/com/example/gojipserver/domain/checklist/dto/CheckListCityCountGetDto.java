@@ -3,7 +3,7 @@ package com.example.gojipserver.domain.checklist.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
-@Schema(description = "체크리스트 구별 조회 DTO")
+@Schema(description = "체크리스트 구별 개수 조회 DTO")
 @AllArgsConstructor
 @Builder
 @Getter

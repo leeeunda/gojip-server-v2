@@ -121,11 +121,18 @@ public class CheckListController {
     }
 
     // 리뷰가 많은 구 상위 7개
-    @GetMapping("/city")
+    @GetMapping("/city/count")
     @Operation(summary = "리뷰가 많은 구 조회", description = "리뷰가 많은 구 상위 7개를 조회")
     public ApiResponse<List<CheckListCityCountGetDto>> checkListcityCountGet(){
         List<CheckListCityCountGetDto> checkListCityCountGetDtos = checkListService.getCityCountTop7();
         return ApiResponse.createSuccess(checkListCityCountGetDtos);
+    }
+
+    @GetMapping("/city")
+    @Operation(summary = "구별 체크리스트 조회", description = "구별 체크리스트 조회")
+    public ApiResponse<List<CheckListCityAllGetDto>> checkListCityAllGet(@RequestParam String city) {
+        List<CheckListCityAllGetDto> checkListsByCity = checkListService.getCheckListsByCity(city);
+        return ApiResponse.createSuccess(checkListsByCity);
     }
 
 }

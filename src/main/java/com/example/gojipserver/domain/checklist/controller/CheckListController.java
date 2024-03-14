@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.example.gojipserver.domain.checklist.dto.CheckListResponseDto.*;
-
 @Tag(name = "CheckList API", description = "체크리스트 API")
 @RequiredArgsConstructor
 @RestController
@@ -117,8 +115,8 @@ public class CheckListController {
 
     @GetMapping("/recent")
     @Operation(summary = "최근 체크리스트 조회", description = "최근에 작성한 체크리스트 3개를 조회")
-    public ApiResponse<List<CheckListResponseDto.CheckListRecentResponseDto>> getRecentCheckListTop3(@AuthenticationPrincipal UserPrincipal requestUser) {
-        List<CheckListResponseDto.CheckListRecentResponseDto> recentCheckListTop3 = checkListService.getRecentCheckListTop3(requestUser.getId());
+    public ApiResponse<List<CheckListRecentResponseDto>> getRecentCheckListTop3(@AuthenticationPrincipal UserPrincipal requestUser) {
+        List<CheckListRecentResponseDto> recentCheckListTop3 = checkListService.getRecentCheckListTop3(requestUser.getId());
         return ApiResponse.createSuccess(recentCheckListTop3);
     }
 

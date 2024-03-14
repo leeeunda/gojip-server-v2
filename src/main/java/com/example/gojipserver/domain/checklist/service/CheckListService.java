@@ -217,4 +217,8 @@ public class CheckListService {
     private List<CheckList> findRecentTop3ByUser(Long userId) {
         return checkListRepository.findTop3ByUserIdOrderByLastModifiedDateDesc(userId);
     }
+
+    public List<CheckListCityCountGetDto> getCityCountTop7() {
+        return checkListRepository.findCityCountTop7();
+    }
 }

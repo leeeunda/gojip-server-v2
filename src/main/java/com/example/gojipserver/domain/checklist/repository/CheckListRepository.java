@@ -1,5 +1,6 @@
 package com.example.gojipserver.domain.checklist.repository;
 
+import com.example.gojipserver.domain.checklist.dto.CheckListCityCountGetDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListCollectionGetDto;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,11 @@ public interface CheckListRepository extends JpaRepository<CheckList, Long> {
     List<CheckListCollectionGetDto> findByCollectionId(@Param("collectionId") Long collectionId);
 
     List<CheckList> findTop3ByUserIdOrderByLastModifiedDateDesc(long userId);
+
+    @Query("SELECT new com.example.gojipserver.domain.checklist.dto.CheckListCityCountGetDto(a.city, count(a.city)) " +
+            "FROM CheckList cl INNER JOIN cl.roomAddress a " +
+            "GROUP BY a.city " +
+            "ORDER BY count(a.city) DESC " +
+            "limit 7")
+    List<CheckListCityCountGetDto> findCityCountTop7();
 }

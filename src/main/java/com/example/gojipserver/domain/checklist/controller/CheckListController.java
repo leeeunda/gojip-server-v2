@@ -117,9 +117,17 @@ public class CheckListController {
 
     @GetMapping("/recent")
     @Operation(summary = "최근 체크리스트 조회", description = "최근에 작성한 체크리스트 3개를 조회")
-    public ApiResponse<List<CheckListRecentResponseDto>> getRecentCheckListTop3(@AuthenticationPrincipal UserPrincipal requestUser) {
-        List<CheckListRecentResponseDto> recentCheckListTop3 = checkListService.getRecentCheckListTop3(requestUser.getId());
+    public ApiResponse<List<CheckListResponseDto.CheckListRecentResponseDto>> getRecentCheckListTop3(@AuthenticationPrincipal UserPrincipal requestUser) {
+        List<CheckListResponseDto.CheckListRecentResponseDto> recentCheckListTop3 = checkListService.getRecentCheckListTop3(requestUser.getId());
         return ApiResponse.createSuccess(recentCheckListTop3);
+    }
+
+    // 리뷰가 많은 구 상위 7개
+    @GetMapping("/city")
+    @Operation(summary = "리뷰가 많은 구 조회", description = "리뷰가 많은 구 상위 7개를 조회")
+    public ApiResponse<List<CheckListCityCountGetDto>> checkListcityCountGet(){
+        List<CheckListCityCountGetDto> checkListCityCountGetDtos = checkListService.getCityCountTop7();
+        return ApiResponse.createSuccess(checkListCityCountGetDtos);
     }
 
 }

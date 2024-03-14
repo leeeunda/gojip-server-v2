@@ -15,6 +15,8 @@ import com.example.gojipserver.domain.user.entity.User;
 import com.example.gojipserver.domain.user.repository.UserRepository;
 import com.example.gojipserver.global.exception.NotOwnerException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -220,8 +222,8 @@ public class CheckListService {
         return checkListRepository.findCityCountTop7();
     }
 
-    public List<CheckListCityAllGetDto> getCheckListsByCity(String city) {
-        List<CheckListCityAllGetDto> checkListCityAllGetDtos = checkListRepository.findAllCity(city);
+    public Page<CheckListCityAllGetDto> getCheckListsByCity(String city, Pageable pageable) {
+        Page<CheckListCityAllGetDto> checkListCityAllGetDtos = checkListRepository.findAllCity(city,pageable);
         return checkListCityAllGetDtos;
     }
 }

@@ -16,6 +16,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -130,8 +132,9 @@ public class CheckListController {
 
     @GetMapping("/city")
     @Operation(summary = "구별 체크리스트 조회", description = "구별 체크리스트 조회")
-    public ApiResponse<List<CheckListCityAllGetDto>> checkListCityAllGet(@RequestParam String city) {
-        List<CheckListCityAllGetDto> checkListsByCity = checkListService.getCheckListsByCity(city);
+    public ApiResponse<Page<CheckListCityAllGetDto>> checkListCityAllGet(@RequestParam String city, @RequestParam(defaultValue = "0") int page) {
+        PageRequest pageable = PageRequest.of(page, 5);
+        Page<CheckListCityAllGetDto> checkListsByCity = checkListService.getCheckListsByCity(city,pageable);
         return ApiResponse.createSuccess(checkListsByCity);
     }
 

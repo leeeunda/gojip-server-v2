@@ -4,6 +4,8 @@ import com.example.gojipserver.domain.checklist.dto.CheckListCityAllGetDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListCityCountGetDto;
 import com.example.gojipserver.domain.checklist.dto.CheckListCollectionGetDto;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,6 +33,6 @@ public interface CheckListRepository extends JpaRepository<CheckList, Long> {
             "FROM CheckList cl INNER JOIN cl.roomAddress a " +
             "WHERE a.city = :city " +
             "group by a.addressName")
-    List<CheckListCityAllGetDto> findAllCity(String city);
+    Page<CheckListCityAllGetDto> findAllCity(String city, Pageable pageable);
 
 }

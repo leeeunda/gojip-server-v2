@@ -3,6 +3,7 @@ package com.example.gojipserver.domain.roomimage.service;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
@@ -16,11 +17,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -32,10 +36,7 @@ import java.util.stream.Collectors;
 public class ImageService {
 
     private final AmazonS3 s3Client;
-
     private final RoomImageRepository roomImageRepository;
-
-    private final CheckListRepository checkListRepository;
 
 
     // 버킷 이름
@@ -131,6 +132,25 @@ public class ImageService {
         } catch (SdkClientException e){
             throw new IOException("S3부터 파일 제거 오류", e);
         }
+    }
+
+    // 이미지 스케줄링
+    @Scheduled
+    @Transactional
+    public void deleteUnNecessaryImage(Long id, String imgUrl) throws IOException{
+        try{
+            final List<RoomImage> images = RoomImageRepository.findAllRoomImagesByNull();
+            images.stream()
+                    .filter(image -> Duration.between(image.getCreatedDate(), LocalDateTime.now()).toHours() >= 24)
+                    .forEach(image -> {
+                        final DeleteObjectRequest deleteRequest = new DeleteObjectRequest(bucket, image.getImgUrl());
+                        s3Client.deleteObject(deleteRequest);
+                        roomImageRepository.delete(image);
+                    });
+        } catch (SdkClientException e){
+            throw new IOException("S3로부터 파일 제거 오류", e);
+        }
+
     }
 
     // 체크리스트 생성 이후 연관관계 설정

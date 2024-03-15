@@ -26,11 +26,15 @@ public class RoomAddress extends BaseTimeEntity {
     @Column
     private double longitude; //경도
 
+    @Column
+    private String city;
+
     @Builder
-    public RoomAddress(String addressName, double latitude, double longitude) {
+    public RoomAddress(String addressName, double latitude, double longitude,String city) {
         this.addressName = addressName;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.city = city;
     }
 
     public static RoomAddress createRoomAddress(String addressName, double latitude, double longitude) {

@@ -16,12 +16,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static com.example.gojipserver.domain.checklist.dto.CheckListResponseDto.*;
 
 @Tag(name = "CheckList API", description = "체크리스트 API")
 @RequiredArgsConstructor
@@ -121,6 +121,22 @@ public class CheckListController {
     public ApiResponse<List<CheckListRecentResponseDto>> getRecentCheckListTop3(@AuthenticationPrincipal UserPrincipal requestUser) {
         List<CheckListRecentResponseDto> recentCheckListTop3 = checkListService.getRecentCheckListTop3(requestUser.getId());
         return ApiResponse.createSuccess(recentCheckListTop3);
+    }
+
+    // 리뷰가 많은 구 상위 7개
+    @GetMapping("/city/count")
+    @Operation(summary = "리뷰가 많은 구 조회", description = "리뷰가 많은 구 상위 7개를 조회")
+    public ApiResponse<List<CheckListCityCountGetDto>> checkListcityCountGet(){
+        List<CheckListCityCountGetDto> checkListCityCountGetDtos = checkListService.getCityCountTop7();
+        return ApiResponse.createSuccess(checkListCityCountGetDtos);
+    }
+
+    @GetMapping("/city")
+    @Operation(summary = "구별 체크리스트 조회", description = "구별 체크리스트 조회")
+    public ApiResponse<Page<CheckListCityAllGetDto>> checkListCityAllGet(@RequestParam String city, @RequestParam(defaultValue = "0") int page) {
+        PageRequest pageable = PageRequest.of(page, 5);
+        Page<CheckListCityAllGetDto> checkListsByCity = checkListService.getCheckListsByCity(city,pageable);
+        return ApiResponse.createSuccess(checkListsByCity);
     }
 
 }

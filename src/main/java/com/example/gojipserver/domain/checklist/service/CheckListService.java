@@ -15,14 +15,14 @@ import com.example.gojipserver.domain.user.entity.User;
 import com.example.gojipserver.domain.user.repository.UserRepository;
 import com.example.gojipserver.global.exception.NotOwnerException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.example.gojipserver.domain.checklist.dto.CheckListResponseDto.*;
 
 
 @Service
@@ -217,5 +217,14 @@ public class CheckListService {
     }
     private List<CheckList> findRecentTop3ByUser(Long userId) {
         return checkListRepository.findTop3ByUserIdOrderByLastModifiedDateDesc(userId);
+    }
+
+    public List<CheckListCityCountGetDto> getCityCountTop7() {
+        return checkListRepository.findCityCountTop7();
+    }
+
+    public Page<CheckListCityAllGetDto> getCheckListsByCity(String city, Pageable pageable) {
+        Page<CheckListCityAllGetDto> checkListCityAllGetDtos = checkListRepository.findAllCity(city,pageable);
+        return checkListCityAllGetDtos;
     }
 }

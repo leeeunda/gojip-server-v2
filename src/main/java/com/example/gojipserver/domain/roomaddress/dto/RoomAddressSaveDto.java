@@ -19,11 +19,12 @@ public class RoomAddressSaveDto {
 
     }
 
-    public RoomAddress toEntity(String latitude, String longitude){
+    public RoomAddress toEntity(String latitude, String longitude, String city){
         return RoomAddress.builder()
                 .addressName(addressName)
                 .latitude(Double.parseDouble(latitude))
                 .longitude(Double.parseDouble(longitude))
+                .city(city)
                 .build();
     }
 }

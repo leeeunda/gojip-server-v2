@@ -4,6 +4,9 @@ import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.global.auditing.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.*;
 
@@ -24,6 +27,10 @@ public class RoomImage extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "check_list_id")
     private CheckList checkList;
+
+    @CreatedDate
+    @Column(name="created_at", nullable = false, updatable=false)
+    private LocalDateTime createdDate;
 
     @Builder
     public RoomImage(String imgUrl, CheckList checkList) {

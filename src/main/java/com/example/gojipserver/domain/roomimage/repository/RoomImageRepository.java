@@ -15,7 +15,9 @@ public interface RoomImageRepository extends JpaRepository<RoomImage, Long> {
             "WHERE roomImage.id in :list")
     List<RoomImage> findAllRoomImagesById(@Param("list") final List<Long> roomImageIds);
 
-    void deleteByCheckList(CheckList checkList);
+    @Query("SELECT ri FROM RoomImage ri WHERE ri.checkList = null")
+    List<RoomImage> findAllRoomImagesByNull();
 
+    void deleteByCheckList(CheckList checkList);
     List<RoomImage> findByCheckListId(Long checkListId);
 }

@@ -139,7 +139,7 @@ public class ImageService {
     @Transactional
     public void deleteUnNecessaryImage(Long id, String imgUrl) throws IOException{
         try{
-            final List<RoomImage> images = RoomImageRepository.findAllRoomImagesByNull();
+            final List<RoomImage> images = roomImageRepository.findAllRoomImagesByNull();
             images.stream()
                     .filter(image -> Duration.between(image.getCreatedDate(), LocalDateTime.now()).toHours() >= 24)
                     .forEach(image -> {

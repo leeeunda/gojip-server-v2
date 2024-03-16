@@ -24,6 +24,7 @@ public class ManagementCostOption extends BaseTimeEntity {
     private CheckList checkList;
 
     @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private ManagementCostOptionType type;
 
     @Builder

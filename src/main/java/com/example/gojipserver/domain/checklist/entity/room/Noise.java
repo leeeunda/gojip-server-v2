@@ -23,6 +23,7 @@ public class Noise extends BaseTimeEntity {
     private CheckList checkList;
 
     @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private NoiseType type;
 
     @Builder

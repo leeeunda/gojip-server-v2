@@ -1,6 +1,7 @@
 package com.example.gojipserver.domain.checklist.entity.room;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,6 +14,7 @@ public enum Light {
     서향("서향"),
     동향("동향");
 
+    @JsonValue
     private final String value;
 
     Light(String value) {

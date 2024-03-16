@@ -28,7 +28,7 @@ import static jakarta.persistence.FetchType.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class  CheckList extends BaseTimeEntity {
+public class CheckList extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,7 +58,7 @@ public class  CheckList extends BaseTimeEntity {
     private Integer deposit; //보증금
     private Integer monthlyCost; //월세비용
     private Integer charterCost; //전세비용
-    private Integer tradingCost; //매매비용
+    private Integer tradingCost ; //매매비용
 
     // 관리비 포함 옵션
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
@@ -117,7 +117,7 @@ public class  CheckList extends BaseTimeEntity {
     private boolean isPublic; // 공개여부
 
     @Builder
-    public CheckList(RoomAddress roomAddress, User user, PropertyType propertyType, int deposit, int monthlyCost, int charterCost, int tradingCost, int area, Structure structure, Floor floor, BuildingStatus buildingStatus, int stationDistance, Light light, BoilerType boilerType, WaterPressureStatus waterPressureStatus, HotWaterStatus hotWaterStatus, TileStatus tileStatus, String note, String checkListName, int rating) {
+    public CheckList(RoomAddress roomAddress, User user, PropertyType propertyType, Integer deposit, Integer monthlyCost, Integer charterCost, Integer tradingCost, Integer area, Structure structure, Floor floor, BuildingStatus buildingStatus, Integer stationDistance, Light light, BoilerType boilerType, WaterPressureStatus waterPressureStatus, HotWaterStatus hotWaterStatus, TileStatus tileStatus, String note, String checkListName, Integer rating) {
         this.roomAddress = roomAddress;
         this.user = user;
         this.propertyType = propertyType;

@@ -1,6 +1,7 @@
 package com.example.gojipserver.domain.checklist.entity.option;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,6 +16,7 @@ public enum OuterOptionType {
     공동현관("공동현관"),
     분리배출공간("분리배출공간");
 
+    @JsonValue
     private final String value;
 
     OuterOptionType(String value) {

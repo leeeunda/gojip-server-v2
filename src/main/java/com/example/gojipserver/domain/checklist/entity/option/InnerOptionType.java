@@ -1,6 +1,7 @@
 package com.example.gojipserver.domain.checklist.entity.option;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +24,7 @@ public enum InnerOptionType {
     환풍기("환풍기"),
     소파("소파");
 
+    @JsonValue
     private final String value;
 
     InnerOptionType(String value) {
@@ -37,6 +39,6 @@ public enum InnerOptionType {
             }
         }
         log.debug("InnerOptionType.from() exception occur param: {}", param);
-        return null;
+        throw new IllegalArgumentException("올바른 내부 옵션을 선택해주세요.");
     }
 }

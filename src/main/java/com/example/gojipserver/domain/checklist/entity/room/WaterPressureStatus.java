@@ -7,9 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Slf4j
 public enum WaterPressureStatus {
-    BAD("노후되었어요"),
-    SOSO("평범해요"),
-    GOOD("신축같아요");
+    BAD("수압이 약해요"),
+    SOSO("그냥그래요"),
+    GOOD("수압이 좋아요");
 
     private final String value;
 

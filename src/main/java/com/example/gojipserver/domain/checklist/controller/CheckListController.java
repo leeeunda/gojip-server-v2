@@ -2,12 +2,10 @@ package com.example.gojipserver.domain.checklist.controller;
 
 import com.example.gojipserver.domain.checklist.dto.*;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
+import com.example.gojipserver.domain.checklist.repository.CheckListRepository;
 import com.example.gojipserver.domain.checklist.service.CheckListService;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
 import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
-import com.example.gojipserver.domain.roomaddress.service.RoomAddressService;
-import com.example.gojipserver.domain.roomimage.dto.RoomImageSaveDto;
-import com.example.gojipserver.domain.roomimage.entity.RoomImage;
 import com.example.gojipserver.domain.roomimage.repository.RoomImageRepository;
 import com.example.gojipserver.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.gojipserver.domain.checklist.dto.CheckListResponseDto.*;
 
@@ -42,7 +41,7 @@ public class CheckListController {
 
         Long savedCheckListId = checkListService.saveCheckList(requestUser.getId(), requestDto);
 
-        return ApiResponse.createSuccess(savedCheckListId);
+        return ApiResponse.response201Success(savedCheckListId, "체크리스트 등록 성공!");
     }
 
     // 체크리스트 수정
@@ -53,7 +52,7 @@ public class CheckListController {
     public ApiResponse<Long> updateCheckList(@PathVariable("id") Long checkListId, @AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CheckListUpdateDto checkListUpdateDto){
         Long updatedCheckListId = checkListService.updateCheckList(checkListId, requestUser.getId(), checkListUpdateDto);
 
-        return ApiResponse.createSuccess(updatedCheckListId);
+        return ApiResponse.responseSuccess(updatedCheckListId);
     }
 
 
@@ -66,7 +65,7 @@ public class CheckListController {
 
         checkListService.deleteCheckList(requestUser.getId(), checkListId);
 
-        return ApiResponse.createSuccessWithNoContent();
+        return ApiResponse.responseSuccessWithNoContent();
     }
 
     // 체크리스트 단일 조회
@@ -78,7 +77,6 @@ public class CheckListController {
         CheckList checkList=checkListService.getCheckListById(checkListId);
         RoomAddress roomAddress = checkListService.getRoomAddressByCheckListId(checkListId);
 //        CheckListOneGetDto checkListOneGetDto = new CheckListOneGetDto(checkList, roomAddress);
-
 //        return ApiResponse.createSuccess(checkListOneGetDto);
         return null;
     }
@@ -92,7 +90,7 @@ public class CheckListController {
 
         List<CheckListAllGetDto> checkListAll = checkListService.getAllCheckListByUserId(requestUser.getId());
 
-        return ApiResponse.createSuccess(checkListAll);
+        return ApiResponse.responseSuccess(checkListAll);
     }
 
     // 컬렉션별 체크리스트 조회
@@ -102,7 +100,7 @@ public class CheckListController {
     public ApiResponse<List<CheckListCollectionGetDto>> checkListCollectionGet(@PathVariable Long collectionId){
         List<CheckListCollectionGetDto> checkLists = checkListService.getChecklistsByCollectionId(collectionId);
 
-        return ApiResponse.createSuccess(checkLists);
+        return ApiResponse.responseSuccess(checkLists);
     }
 
 //    일단 주석 처리
@@ -120,7 +118,7 @@ public class CheckListController {
     @Operation(summary = "최근 체크리스트 조회", description = "최근에 작성한 체크리스트 3개를 조회")
     public ApiResponse<List<CheckListRecentResponseDto>> getRecentCheckListTop3(@AuthenticationPrincipal UserPrincipal requestUser) {
         List<CheckListRecentResponseDto> recentCheckListTop3 = checkListService.getRecentCheckListTop3(requestUser.getId());
-        return ApiResponse.createSuccess(recentCheckListTop3);
+        return ApiResponse.responseSuccess(recentCheckListTop3);
     }
 
 }

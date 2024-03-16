@@ -23,6 +23,7 @@ public class InnerOption extends BaseTimeEntity {
     private CheckList checkList;
 
     @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private InnerOptionType type;
 
     @Builder

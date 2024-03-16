@@ -23,6 +23,7 @@ public class OuterOption extends BaseTimeEntity {
     private CheckList checkList;
 
     @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private OuterOptionType type;
 
     @Builder

@@ -1,6 +1,7 @@
 package com.example.gojipserver.domain.checklist.entity.room;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,6 +13,7 @@ public enum Floor {
     저층("1~3층"),
     고층("4층이상");
 
+    @JsonValue
     private final String value;
 
     Floor(String value) {

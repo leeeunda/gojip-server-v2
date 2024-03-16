@@ -23,6 +23,7 @@ public class RoomStatus extends BaseTimeEntity {
     private CheckList checkList;
 
     @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private RoomStatusType type;
 
     @Builder

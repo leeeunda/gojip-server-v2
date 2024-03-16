@@ -149,6 +149,23 @@ public class CheckListService {
         return checkListRepository.findByCollectionId(collectionId);
     }
 
+
+    public List<CheckListRecentResponseDto> getRecentCheckListTop3(Long userId) {
+        List<CheckList> recentTop3ByUser = findRecentTop3ByUser(userId);
+        if (recentTop3ByUser.isEmpty()) {
+            throw new IllegalArgumentException("해당 사용자에 대한 체크리스트가 존재하지 않습니다: " + userId);
+        }
+        return recentTop3ByUser.stream().map(
+                checkList -> CheckListRecentResponseDto.builder()
+                        .checklistId(checkList.getId())
+                        .addressName(checkList.getRoomAddress().getAddressName())
+                        .mainImage(null)
+                        .build()).collect(Collectors.toList());
+    }
+    private List<CheckList> findRecentTop3ByUser(Long userId) {
+        return checkListRepository.findTop3ByUserIdOrderByLastModifiedDateDesc(userId);
+    }
+
     private User findUserById(Long userId) {
         User findUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다. userId = " + userId));
@@ -290,21 +307,5 @@ public class CheckListService {
         if (!checkList.getUser().getId().equals(requestUserId)) {
             throw new NotOwnerException("다른 회원의 체크리스트입니다. checkListId = " + checkList.getId());
         }
-    }
-
-    public List<CheckListRecentResponseDto> getRecentCheckListTop3(Long userId) {
-        List<CheckList> recentTop3ByUser = findRecentTop3ByUser(userId);
-        if (recentTop3ByUser.isEmpty()) {
-            throw new IllegalArgumentException("해당 사용자에 대한 체크리스트가 존재하지 않습니다: " + userId);
-        }
-        return recentTop3ByUser.stream().map(
-                checkList -> CheckListRecentResponseDto.builder()
-                        .checklistId(checkList.getId())
-                        .addressName(checkList.getRoomAddress().getAddressName())
-                        .mainImage(null)
-                        .build()).collect(Collectors.toList());
-    }
-    private List<CheckList> findRecentTop3ByUser(Long userId) {
-        return checkListRepository.findTop3ByUserIdOrderByLastModifiedDateDesc(userId);
     }
 }

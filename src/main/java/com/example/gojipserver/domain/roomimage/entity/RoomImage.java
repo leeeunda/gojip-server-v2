@@ -24,6 +24,9 @@ public class RoomImage extends BaseTimeEntity {
     @Column(nullable = false)
     private String imgUrl;
 
+    @Column(nullable=false)
+    private Boolean isThumbnail;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "check_list_id")
     private CheckList checkList;
@@ -33,8 +36,13 @@ public class RoomImage extends BaseTimeEntity {
     private LocalDateTime createdDate;
 
     @Builder
-    public RoomImage(String imgUrl, CheckList checkList) {
+    public RoomImage(String imgUrl, CheckList checkList, Boolean isThumbnail) {
         this.imgUrl = imgUrl;
+        this.isThumbnail = isThumbnail;
+    }
+
+    public Long getCheckListId(){
+        return checkList != null ? checkList.getId() : null;
     }
 
     public void registerToCheckList(CheckList checkList){

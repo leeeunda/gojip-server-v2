@@ -153,6 +153,24 @@ public class ImageService {
 
     }
 
+    // 썸네일 이미지 설정
+    public void setThumbnailImage(Long roomImageId){
+
+        RoomImage thumbnailImage = roomImageRepository.findById(roomImageId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이미지가 없습니다. id = " + roomImageId));
+        Long checkListId = thumbnailImage.getCheckListId();
+
+        List<RoomImage> roomImages = roomImageRepository.findByCheckListId(checkListId);
+        for (RoomImage roomImage : roomImages){
+            roomImage.setIsThumbnail(false);
+        }
+        roomImageRepository.saveAll(roomImages);
+
+        // 선택된 이미지를 썸네일 이미지로 지정
+        thumbnailImage.setIsThumbnail(true);
+        roomImageRepository.save(thumbnailImage);
+    }
+
     // 체크리스트 생성 이후 연관관계 설정
     @Transactional
     public void setCheckListToRoomImage(Long roomImageId, CheckList checkList){

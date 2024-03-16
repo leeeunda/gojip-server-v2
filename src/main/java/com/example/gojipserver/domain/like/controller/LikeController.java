@@ -2,7 +2,6 @@ package com.example.gojipserver.domain.like.controller;
 
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.checklist.service.CheckListService;
-import com.example.gojipserver.domain.like.dto.LikeResponseDto;
 import com.example.gojipserver.domain.like.service.LikeService;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
 import com.example.gojipserver.domain.user.entity.User;
@@ -30,7 +29,7 @@ public class LikeController {
         CheckList checkList = checkListService.getCheckListById(checkListId);
         User user = userService.findById(userPrincipal.getId());
         LikeResponse likeResponse = likeService.addLike(checkList, user);
-        return ApiResponse.createSuccess(likeResponse);
+        return ApiResponse.responseSuccess(likeResponse);
     }
 
     @DeleteMapping("/{checkListId}/like")
@@ -39,6 +38,6 @@ public class LikeController {
         CheckList checkList = checkListService.getCheckListById(checkListId);
         User user = userService.findById(userPrincipal.getId());
         LikeResponse likeResponse = likeService.deleteLike(checkList, user);
-        return ApiResponse.createSuccess(likeResponse);
+        return ApiResponse.responseSuccess(likeResponse);
     }
 }

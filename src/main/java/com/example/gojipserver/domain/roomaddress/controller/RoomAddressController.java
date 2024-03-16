@@ -2,7 +2,6 @@ package com.example.gojipserver.domain.roomaddress.controller;
 
 import com.example.gojipserver.domain.roomaddress.dto.RoomAddressResponseDto;
 import com.example.gojipserver.domain.roomaddress.dto.RoomAddressSaveDto;
-import com.example.gojipserver.domain.roomaddress.entity.Coordinates;
 import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
 import com.example.gojipserver.domain.roomaddress.repository.RoomAddressRepository;
 import com.example.gojipserver.domain.roomaddress.service.RoomAddressService;
@@ -33,7 +32,7 @@ public class RoomAddressController {
         RoomAddress roomAddress = roomAddressService.getCoordinateAndSave(roomAddressSaveDto.getAddressName());
         RoomAddressResponseDto roomAddressResponseDto = new RoomAddressResponseDto(roomAddress.getId(), roomAddress.getAddressName(), String.valueOf(roomAddress.getLatitude()), String.valueOf(roomAddress.getLongitude()));
 
-        return ApiResponse.createSuccess(roomAddressResponseDto);
+        return ApiResponse.responseSuccess(roomAddressResponseDto);
     }
 
     //좌표 조회 테스트 API -> 주석처리

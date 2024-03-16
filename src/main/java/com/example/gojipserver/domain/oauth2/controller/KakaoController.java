@@ -31,7 +31,7 @@ public class KakaoController {
     @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "리프레시 토큰을 담은 DTO")
     public ApiResponse<CreatedAccessTokenResponse >  createNewAccessToken(@RequestBody CreateAccessTokenRequest createAccessTokenRequest, HttpServletRequest request) throws IOException {
         CreatedAccessTokenResponse newAccessToken = kakaoService.createNewAccessToken(request, createAccessTokenRequest.getRefreshToken());
-        return ApiResponse.createSuccess(newAccessToken, "새로운 액세스 토큰 발급 성공");
+        return ApiResponse.responseSuccess(newAccessToken, "새로운 액세스 토큰 발급 성공");
     }
 
     @PostMapping("/kakao/logout")
@@ -40,7 +40,7 @@ public class KakaoController {
         String accessToken = jwtTokenProvider.getJwtFromRequest(request, "Authorization");
         kakaoService.saveAccessToken(accessToken);
         CookieUtil.deleteCookie(request, response, REFRESH_TOKEN_COOKIE_NAME);
-        return ApiResponse.createSuccess(null,"로그아웃 성공");
+        return ApiResponse.responseSuccess(null,"로그아웃 성공");
     }
 
 }

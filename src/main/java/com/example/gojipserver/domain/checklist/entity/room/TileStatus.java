@@ -1,6 +1,7 @@
 package com.example.gojipserver.domain.checklist.entity.room;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,6 +12,7 @@ public enum TileStatus {
     SOSO("그냥그래요"),
     GOOD("상태가 좋아요");
 
+    @JsonValue
     private final String value;
 
     TileStatus(String value) {

@@ -1,6 +1,7 @@
 package com.example.gojipserver.domain.checklist.entity.cost;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,6 +14,7 @@ public enum PropertyType {
     전세("전세"),
     매매("매매");
 
+    @JsonValue
     private final String value;
 
     PropertyType(String value) {

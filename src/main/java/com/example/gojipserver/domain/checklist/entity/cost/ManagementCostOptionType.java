@@ -1,6 +1,7 @@
 package com.example.gojipserver.domain.checklist.entity.cost;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,6 +14,7 @@ public enum ManagementCostOptionType {
     전기세("전기세"),
     인터넷비("인터넷비");
 
+    @JsonValue
     private final String value;
 
     ManagementCostOptionType(String value) {
@@ -27,7 +29,7 @@ public enum ManagementCostOptionType {
             }
         }
         log.debug("ManagementCostOptionType.from() exception occur param: {}", param);
-        return null;
+        throw new IllegalArgumentException("올바른 관리비 옵션을 선택해주세요.");
     }
 }
 

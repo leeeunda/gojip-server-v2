@@ -1,6 +1,7 @@
 package com.example.gojipserver.domain.checklist.entity.room;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,6 +11,7 @@ public enum BoilerType {
     개별난방("개별난방"),
     공동난방("공동난방");
 
+    @JsonValue
     private final String value;
 
     BoilerType(String value) {

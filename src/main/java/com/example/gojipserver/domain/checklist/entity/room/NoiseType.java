@@ -1,6 +1,7 @@
 package com.example.gojipserver.domain.checklist.entity.room;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,6 +14,7 @@ public enum NoiseType {
     외부소음("외부소음"),
     방간소음("방간소음");
 
+    @JsonValue
     private final String value;
 
     NoiseType(String value) {
@@ -27,6 +29,6 @@ public enum NoiseType {
             }
         }
         log.debug("NoiseType.from() exception occur param: {}", param);
-        return null;
+        throw new IllegalArgumentException("올바른 소음 종류를 선택해주세요.");
     }
 }

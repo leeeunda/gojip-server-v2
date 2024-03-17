@@ -31,7 +31,7 @@ public class CollectionController {
     public ApiResponse<Long> saveCollection(@AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CollectionSaveDto collectionSaveDto) {
 
         Long savedCollectionId = collectionService.saveCollection(requestUser.getId(), collectionSaveDto);
-        return ApiResponse.createSuccess(savedCollectionId);
+        return ApiResponse.responseSuccess(savedCollectionId);
     }
 
     @PutMapping("/{id}")
@@ -43,7 +43,7 @@ public class CollectionController {
 
         Long updatedCollectionId = collectionService.updateCollection(collectionId, requestUser.getId(), collectionUpdateDto);
 
-        return ApiResponse.createSuccess(updatedCollectionId);
+        return ApiResponse.responseSuccess(updatedCollectionId);
     }
 
     @DeleteMapping("/{id}")
@@ -54,7 +54,7 @@ public class CollectionController {
 
         collectionService.deleteCollection(requestUser.getId(), collectionId);
 
-        return ApiResponse.createSuccessWithNoContent();
+        return ApiResponse.responseSuccessWithNoContent();
     }
 
     @GetMapping
@@ -64,7 +64,7 @@ public class CollectionController {
 
         List<CollectionResponseDto> collectionList = collectionService.getCollections(requestUser.getId());
 
-        return ApiResponse.createSuccess(collectionList);
+        return ApiResponse.responseSuccess(collectionList);
     }
 
 }

@@ -2,7 +2,17 @@ package com.example.gojipserver.domain.checklist.service;
 
 import com.example.gojipserver.domain.checklist.dto.*;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
-import com.example.gojipserver.domain.checklist.repository.CheckListRepository;
+import com.example.gojipserver.domain.checklist.entity.cost.ManagementCostOption;
+import com.example.gojipserver.domain.checklist.entity.cost.ManagementCostOptionType;
+import com.example.gojipserver.domain.checklist.entity.option.InnerOption;
+import com.example.gojipserver.domain.checklist.entity.option.InnerOptionType;
+import com.example.gojipserver.domain.checklist.entity.option.OuterOption;
+import com.example.gojipserver.domain.checklist.entity.option.OuterOptionType;
+import com.example.gojipserver.domain.checklist.entity.room.Noise;
+import com.example.gojipserver.domain.checklist.entity.room.NoiseType;
+import com.example.gojipserver.domain.checklist.entity.room.RoomStatus;
+import com.example.gojipserver.domain.checklist.entity.room.RoomStatusType;
+import com.example.gojipserver.domain.checklist.repository.*;
 import com.example.gojipserver.domain.checklist_collection.entity.CheckListCollection;
 import com.example.gojipserver.domain.checklist_collection.repository.CheckListCollectionRepository;
 import com.example.gojipserver.domain.collection.entity.Collection;
@@ -36,29 +46,31 @@ public class CheckListService {
     private final RoomAddressRepository roomAddressRepository;
     private final CollectionRepository collectionRepository;
     private final CheckListCollectionRepository checkListCollectionRepository;
-
+    private final ManagementCostOptionRepository managementCostOptionRepository;
+    private final NoiseRepository noiseRepository;
+    private final RoomStatusRepository roomStatusRepository;
+    private final InnerOptionRepository innerOptionRepository;
+    private final OuterOptionRepository outerOptionRepository;
 
     @Transactional
-    public Long saveCheckList(Long userId, CheckListSaveDto checkListSaveDto) {
+    public Long saveCheckList(Long userId, CheckListRequestDto.CheckListSaveDto requestDto) {
 
         // 체크리스트 등록 유저와 주소 세팅
         User findUser = findUserById(userId);
+        RoomAddress findRoomAddress = findRoomAddressById(requestDto.getRoomAddressId());
 
-        RoomAddress findRoomAddress = findRoomAddressById(checkListSaveDto.getRoomAddressId());
+        CheckList savedCheckList = checkListRepository.save(requestDto.toEntity(findUser, findRoomAddress));
 
-//        CheckList savedCheckList = checkListRepository.save(checkListSaveDto.toEntity(findUser, findRoomAddress));
+        // 양방향 연관관계 세팅
+        setManagementCostOptionOfCheckList(savedCheckList, requestDto.getManagementCostOptionTypes());
+        setNoiseOfCheckList(savedCheckList, requestDto.getNoiseTypes());
+        setRoomStatusOfCheckList(savedCheckList, requestDto.getRoomStatusTypes());
+        setInnerOptionOfCheckList(savedCheckList, requestDto.getInnerOptionTypes());
+        setOuterOptionOfCheckList(savedCheckList, requestDto.getOuterOptionTypes());
+        setRoomImageOfCheckList(savedCheckList, requestDto.getRoomImageIdList());
+        setCollectionOfCheckList(savedCheckList, requestDto.getCollectionIdList());
 
-
-        // 체크리스트와 이미지 연관관계 세팅
-        List<Long> roomImageIdList = checkListSaveDto.getRoomImageIdList();
-//        setRoomImageOfCheckList(savedCheckList, roomImageIdList);
-
-        // 체크리스트를 등록할 컬렉션이 존재하는 경우
-        List<Long> collectionIdList = checkListSaveDto.getCollectionIdList();
-//        setCollectionOfCheckList(savedCheckList, collectionIdList);
-
-//        return savedCheckList.getId();
-        return null;
+        return savedCheckList.getId();
     }
 
 
@@ -137,6 +149,23 @@ public class CheckListService {
         return checkListRepository.findByCollectionId(collectionId);
     }
 
+
+    public List<CheckListRecentResponseDto> getRecentCheckListTop3(Long userId) {
+        List<CheckList> recentTop3ByUser = findRecentTop3ByUser(userId);
+        if (recentTop3ByUser.isEmpty()) {
+            throw new IllegalArgumentException("해당 사용자에 대한 체크리스트가 존재하지 않습니다: " + userId);
+        }
+        return recentTop3ByUser.stream().map(
+                checkList -> CheckListRecentResponseDto.builder()
+                        .checklistId(checkList.getId())
+                        .addressName(checkList.getRoomAddress().getAddressName())
+                        .mainImage(null)
+                        .build()).collect(Collectors.toList());
+    }
+    private List<CheckList> findRecentTop3ByUser(Long userId) {
+        return checkListRepository.findTop3ByUserIdOrderByLastModifiedDateDesc(userId);
+    }
+
     private User findUserById(Long userId) {
         User findUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다. userId = " + userId));
@@ -170,7 +199,7 @@ public class CheckListService {
     // CheckList <-> RoomImage 양방향 연관관계 설정
     @Transactional
     public void setRoomImageOfCheckList(CheckList checkList, List<Long> roomImageIdList) {
-        if (roomImageIdList != null) {
+        if (!roomImageIdList.isEmpty()) {
             for (Long roomImageId : roomImageIdList) {
                 RoomImage findRoomImage = findRoomImageById(roomImageId);
 
@@ -182,7 +211,7 @@ public class CheckListService {
     // CheckList <-> CheckListCollection, Collection <-> CheckListCollection 양방향 연관관계 설정
     @Transactional
     public void setCollectionOfCheckList(CheckList checkList, List<Long> collectionIdList) {
-        if (collectionIdList != null) {
+        if (!collectionIdList.isEmpty()) {
             for (Long collectionId : collectionIdList) {
                 Collection findCollection = findCollectionById(collectionId);
 
@@ -196,27 +225,88 @@ public class CheckListService {
         }
     }
 
+    public void setManagementCostOptionOfCheckList(CheckList checkList, List<ManagementCostOptionType> typeList) {
+        if (!typeList.isEmpty()) {
+            for (ManagementCostOptionType type : typeList) {
+                ManagementCostOption option = ManagementCostOption.builder()
+                        .checkList(checkList)
+                        .type(type)
+                        .build();
+
+                ManagementCostOption savedOption = managementCostOptionRepository.save(option);
+
+                checkList.getManagementCostOptions().add(savedOption);
+            }
+        }
+    }
+
+    public void setNoiseOfCheckList(CheckList checkList, List<NoiseType> typeList) {
+        if (!typeList.isEmpty()) {
+            for (NoiseType type : typeList) {
+                Noise noise = Noise.builder()
+                        .checkList(checkList)
+                        .type(type)
+                        .build();
+
+                Noise savedNoise = noiseRepository.save(noise);
+
+                checkList.getNoises().add(savedNoise);
+            }
+        }
+    }
+
+    public void setRoomStatusOfCheckList(CheckList checkList, List<RoomStatusType> typeList) {
+        if (!typeList.isEmpty()) {
+            for (RoomStatusType type : typeList) {
+                RoomStatus roomStatus = RoomStatus.builder()
+                        .checkList(checkList)
+                        .type(type)
+                        .build();
+
+                RoomStatus savedRoomStatus = roomStatusRepository.save(roomStatus);
+
+                checkList.getRoomStatuses().add(savedRoomStatus);
+            }
+        }
+    }
+
+    public void setInnerOptionOfCheckList(CheckList checkList, List<InnerOptionType> typeList) {
+        if (!typeList.isEmpty()) {
+            for (InnerOptionType type : typeList) {
+                InnerOption innerOption = InnerOption.builder()
+                        .checkList(checkList)
+                        .type(type)
+                        .build();
+
+                InnerOption savedInnerOption = innerOptionRepository.save(innerOption);
+
+                checkList.getInnerOptions().add(savedInnerOption);
+            }
+        }
+    }
+
+    public void setOuterOptionOfCheckList(CheckList checkList, List<OuterOptionType> typeList) {
+        if (!typeList.isEmpty()) {
+            for (OuterOptionType type : typeList) {
+                OuterOption outerOption = OuterOption.builder()
+                        .checkList(checkList)
+                        .type(type)
+                        .build();
+
+                OuterOption savedOuterOption = outerOptionRepository.save(outerOption);
+
+                checkList.getOuterOptions().add(savedOuterOption);
+            }
+        }
+    }
+
+
+
     // 삭제 요청을 한 유저가 해당 컬렉션의 소유자가 맞는지 검증
     private static void validCheckListOwner(Long requestUserId, CheckList checkList) {
         if (!checkList.getUser().getId().equals(requestUserId)) {
             throw new NotOwnerException("다른 회원의 체크리스트입니다. checkListId = " + checkList.getId());
         }
-    }
-
-    public List<CheckListRecentResponseDto> getRecentCheckListTop3(Long userId) {
-        List<CheckList> recentTop3ByUser = findRecentTop3ByUser(userId);
-        if (recentTop3ByUser.isEmpty()) {
-            throw new IllegalArgumentException("해당 사용자에 대한 체크리스트가 존재하지 않습니다: " + userId);
-        }
-        return recentTop3ByUser.stream().map(
-                checkList -> CheckListRecentResponseDto.builder()
-                        .checklistId(checkList.getId())
-                        .addressName(checkList.getRoomAddress().getAddressName())
-                        .mainImage(null)
-                        .build()).collect(Collectors.toList());
-    }
-    private List<CheckList> findRecentTop3ByUser(Long userId) {
-        return checkListRepository.findTop3ByUserIdOrderByLastModifiedDateDesc(userId);
     }
 
     public List<CheckListCityCountGetDto> getCityCountTop7() {

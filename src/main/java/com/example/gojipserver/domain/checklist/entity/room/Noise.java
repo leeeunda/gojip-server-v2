@@ -4,6 +4,7 @@ import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.global.auditing.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +23,12 @@ public class Noise extends BaseTimeEntity {
     private CheckList checkList;
 
     @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private NoiseType type;
 
-
+    @Builder
+    public Noise(CheckList checkList, NoiseType type) {
+        this.checkList = checkList;
+        this.type = type;
+    }
 }

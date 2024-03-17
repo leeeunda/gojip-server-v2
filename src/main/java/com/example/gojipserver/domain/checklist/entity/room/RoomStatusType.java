@@ -1,8 +1,11 @@
 package com.example.gojipserver.domain.checklist.entity.room;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 // 방 상태 척도
 @Getter
@@ -18,6 +21,7 @@ public enum RoomStatusType {
     가스문제("가스문제"),
     창틀오염("창틀오염");
 
+    @JsonValue
     private final String value;
 
     RoomStatusType(String value) {
@@ -32,6 +36,6 @@ public enum RoomStatusType {
             }
         }
         log.debug("RoomStatusType.from() exception occur param: {}", param);
-        return null;
+        throw new IllegalArgumentException("올바른 방 상태 종류를 선택해주세요.");
     }
 }

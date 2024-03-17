@@ -17,18 +17,18 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static jakarta.persistence.FetchType.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class  CheckList extends BaseTimeEntity {
+public class CheckList extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,26 +55,31 @@ public class  CheckList extends BaseTimeEntity {
     // 비용
     @Enumerated(EnumType.STRING)
     private PropertyType propertyType; //매물형태
-    private int deposit; //보증금
-    // TODO: 3가지 필드가 아닌 cost라는 하나의 필드로 관리할수도 있음
-    private int monthlyCost; //월세비용
-    private int charterCost; //전세비용
-    private int tradingCost; //매매비용
+    private Integer deposit; //보증금
+    private Integer monthlyCost; //월세비용
+    private Integer charterCost; //전세비용
+    private Integer tradingCost ; //매매비용
 
     // 관리비 포함 옵션
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<ManagementCostOption> managementCostOptions = new HashSet<>();
+    private List<ManagementCostOption> managementCostOptions = new ArrayList<>();
 
     // 집 조건
-    private int area; //평수
+    private Integer area; //평수
+
+    @Enumerated(EnumType.STRING)
+    private Structure structure; // 구조
+
+    @Enumerated(EnumType.STRING)
+    private Floor floor; // 층
 
     @Enumerated(EnumType.STRING)
     private BuildingStatus buildingStatus; //건물상태
 
-    private int stationDistance; //역과의 거리
+    private Integer stationDistance; //역과의 거리, null 허용 X
 
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<Noise> noises = new HashSet<>();
+    private List<Noise> noises = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Light light; //채광
@@ -83,7 +88,7 @@ public class  CheckList extends BaseTimeEntity {
     private BoilerType boilerType; //보일러
 
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<RoomStatus> roomStatuses = new HashSet<>();
+    private List<RoomStatus> roomStatuses = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private WaterPressureStatus waterPressureStatus; //수압
@@ -96,19 +101,56 @@ public class  CheckList extends BaseTimeEntity {
 
     //내부 옵션
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<InnerOption> innerOptions = new HashSet<>();
+    private List<InnerOption> innerOptions = new ArrayList<>();
 
     //외부 옵션
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<OuterOption> outerOptions = new HashSet<>();
+    private List<OuterOption> outerOptions = new ArrayList<>();
 
     //기타
     private String note; //추가 사항
-    private String imgDescription; //이미지 설명
-    private int likeCount;
+    private Integer likeCount;
 
     private String checkListName;
-    private int rating; // TODO: enum으로 만들 수도 있음
+    private Integer rating; // TODO: enum으로 만들 수도 있음
+
+    private boolean isPublic; // 공개여부
+
+    @Builder
+    public CheckList(RoomAddress roomAddress, User user, PropertyType propertyType, Integer deposit, Integer monthlyCost, Integer charterCost, Integer tradingCost, Integer area, Structure structure, Floor floor, BuildingStatus buildingStatus, Integer stationDistance, Light light, BoilerType boilerType, WaterPressureStatus waterPressureStatus, HotWaterStatus hotWaterStatus, TileStatus tileStatus, String note, String checkListName, Integer rating) {
+        this.roomAddress = roomAddress;
+        this.user = user;
+        this.propertyType = propertyType;
+        this.deposit = deposit;
+        this.monthlyCost = monthlyCost;
+        this.charterCost = charterCost;
+        this.tradingCost = tradingCost;
+        this.area = area;
+        this.structure = structure;
+        this.floor = floor;
+        this.buildingStatus = buildingStatus;
+        this.stationDistance = stationDistance;
+        this.light = light;
+        this.boilerType = boilerType;
+        this.waterPressureStatus = waterPressureStatus;
+        this.hotWaterStatus = hotWaterStatus;
+        this.tileStatus = tileStatus;
+        this.note = note;
+        this.checkListName = checkListName;
+        this.rating = rating;
+    }
+
+    // 엔티티 생성 시 필드 기본값 설정
+    @PrePersist
+    public void prePersist() {
+        this.deposit = (this.deposit == null) ? 0 : this.deposit; // null이면(클라이언트에서 값을 입력하지 않으면) 0
+        this.monthlyCost = (this.monthlyCost == null) ? 0 : this.monthlyCost;
+        this.charterCost = (this.charterCost == null) ? 0 : this.charterCost;
+        this.tradingCost = (this.tradingCost == null) ? 0 : this.tradingCost;
+        this.likeCount = 0; // 초기값 무조건 0
+        this.isPublic = true; // 초기값 무조건 true
+
+    }
 
 
     // 연관관계 편의 메서드

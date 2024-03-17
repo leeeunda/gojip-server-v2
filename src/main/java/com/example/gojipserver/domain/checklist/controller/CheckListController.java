@@ -2,7 +2,6 @@ package com.example.gojipserver.domain.checklist.controller;
 
 import com.example.gojipserver.domain.checklist.dto.*;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
-import com.example.gojipserver.domain.checklist.repository.CheckListRepository;
 import com.example.gojipserver.domain.checklist.service.CheckListService;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
 import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
@@ -20,7 +19,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Tag(name = "CheckList API", description = "체크리스트 API")
 @RequiredArgsConstructor
@@ -37,22 +35,28 @@ public class CheckListController {
     @Operation(summary = "체크리스트 등록", description = "체크리스트 등록 api")
     @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
     @Parameter(name="checkListSaveDto")
-    public ApiResponse<Long> saveCheckList(@AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CheckListRequestDto.CheckListSaveDto requestDto) {
-
+    public ApiResponse<Long> saveCheckList(@AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CheckListRequestDto.SaveDto requestDto) {
         Long savedCheckListId = checkListService.saveCheckList(requestUser.getId(), requestDto);
-
-        return ApiResponse.response201Success(savedCheckListId, "체크리스트 등록 성공!");
+        return ApiResponse.response201Success(savedCheckListId, "체크리스트 등록 완료!");
     }
 
     // 체크리스트 수정
     @PutMapping("/{id}")
     @Operation(summary = "체크리스트 수정", description = "체크리스트 수정 api")
     @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
-    @Parameter(name="checkListUpdateDto")
-    public ApiResponse<Long> updateCheckList(@PathVariable("id") Long checkListId, @AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CheckListUpdateDto checkListUpdateDto){
-        Long updatedCheckListId = checkListService.updateCheckList(checkListId, requestUser.getId(), checkListUpdateDto);
+    @Parameter(name="requestDto")
+    public ApiResponse<Long> updateCheckList(@PathVariable("id") Long checkListId, @AuthenticationPrincipal UserPrincipal requestUser, @RequestBody @Valid CheckListRequestDto.UpdateDto requestDto){
+        Long updatedCheckListId = checkListService.updateCheckList(checkListId, requestUser.getId(), requestDto);
+        return ApiResponse.responseSuccess(updatedCheckListId, "체크리스트 수정 완료!");
+    }
 
-        return ApiResponse.responseSuccess(updatedCheckListId);
+    @PutMapping("/public/{id}")
+    @Operation(summary = "체크리스트 공개 범위 수정", description = "체크리스트 공개 범위 수정 api")
+    @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
+    @Parameter(name="requestDto")
+    public ApiResponse updatePublic(@PathVariable("id") Long checkListId, @AuthenticationPrincipal UserPrincipal requestUser){
+        checkListService.updatePublic(requestUser.getId(), checkListId);
+        return ApiResponse.responseSuccessWithNoContent("공개 범위 수정 완료!");
     }
 
 
@@ -62,10 +66,8 @@ public class CheckListController {
     @Parameter(name = "requestUser", description = "요청을 보내는 회원의 정보를 UserPrincipal 타입으로 받습니다.")
     @Parameter(name = "id", description = "삭제할 CheckList의 id")
     public ApiResponse deleteCheckList(@PathVariable("id") Long checkListId, @AuthenticationPrincipal UserPrincipal requestUser) {
-
         checkListService.deleteCheckList(requestUser.getId(), checkListId);
-
-        return ApiResponse.responseSuccessWithNoContent();
+        return ApiResponse.responseSuccessWithNoContent("체크리스트 삭제 완료!");
     }
 
     // 체크리스트 단일 조회
@@ -126,7 +128,7 @@ public class CheckListController {
     @Operation(summary = "리뷰가 많은 구 조회", description = "리뷰가 많은 구 상위 7개를 조회")
     public ApiResponse<List<CheckListCityCountGetDto>> checkListcityCountGet(){
         List<CheckListCityCountGetDto> checkListCityCountGetDtos = checkListService.getCityCountTop7();
-        return ApiResponse.createSuccess(checkListCityCountGetDtos);
+        return ApiResponse.responseSuccess(checkListCityCountGetDtos);
     }
 
     @GetMapping("/city")
@@ -134,7 +136,7 @@ public class CheckListController {
     public ApiResponse<Page<CheckListCityAllGetDto>> checkListCityAllGet(@RequestParam String city, @RequestParam(defaultValue = "0") int page) {
         PageRequest pageable = PageRequest.of(page, 5);
         Page<CheckListCityAllGetDto> checkListsByCity = checkListService.getCheckListsByCity(city,pageable);
-        return ApiResponse.createSuccess(checkListsByCity);
+        return ApiResponse.responseSuccess(checkListsByCity);
     }
 
 }

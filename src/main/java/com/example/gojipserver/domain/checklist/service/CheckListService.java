@@ -40,20 +40,20 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CheckListService {
 
-    private final CheckListRepository checkListRepository;
     private final UserRepository userRepository;
     private final RoomImageRepository roomImageRepository;
     private final RoomAddressRepository roomAddressRepository;
-    private final CollectionRepository collectionRepository;
-    private final CheckListCollectionRepository checkListCollectionRepository;
     private final ManagementCostOptionRepository managementCostOptionRepository;
     private final NoiseRepository noiseRepository;
     private final RoomStatusRepository roomStatusRepository;
     private final InnerOptionRepository innerOptionRepository;
     private final OuterOptionRepository outerOptionRepository;
+    private final CollectionRepository collectionRepository;
+    private final CheckListRepository checkListRepository;
+    private final CheckListCollectionRepository checkListCollectionRepository;
 
     @Transactional
-    public Long saveCheckList(Long userId, CheckListRequestDto.CheckListSaveDto requestDto) {
+    public Long saveCheckList(Long userId, CheckListRequestDto.SaveDto requestDto) {
 
         // 체크리스트 등록 유저와 주소 세팅
         User findUser = findUserById(userId);
@@ -75,26 +75,39 @@ public class CheckListService {
 
 
     @Transactional
-    public Long updateCheckList(Long checkListId, Long requestUserId, CheckListUpdateDto checkListUpdateDto) {
+    public Long updateCheckList(Long checkListId, Long requestUserId, CheckListRequestDto.UpdateDto requestDto) {
         CheckList findCheckList = findCheckListById(checkListId);
 
         validCheckListOwner(requestUserId, findCheckList);
 
-        // 연관관계 세팅
-        roomImageRepository.deleteByCheckList(findCheckList);
-        // doLogic TODO: 실제 s3 스토리지에서도 이미지 삭제
-
-        List<Long> roomImageIdList = checkListUpdateDto.getRoomImageIdList();
-        setRoomImageOfCheckList(findCheckList, roomImageIdList);
-
+        // 기존 데이터 delete
+        managementCostOptionRepository.deleteByCheckList(findCheckList);
+        noiseRepository.deleteByCheckList(findCheckList);
+        roomStatusRepository.deleteByCheckList(findCheckList);
+        innerOptionRepository.deleteByCheckList(findCheckList);
+        outerOptionRepository.deleteByCheckList(findCheckList);
+        roomImageRepository.deleteByCheckList(findCheckList); // TODO: 이미 DB에 등록된 ID가 넘어오면 예외 발생 -> 이미 존재하는 것을 삭제한 후 다시 세팅해주려고 하므로 찾을 수 없음
         checkListCollectionRepository.deleteByCheckList(findCheckList);
-        List<Long> collectionIdList = checkListUpdateDto.getCollectionIdList();
-        setCollectionOfCheckList(findCheckList, collectionIdList);
 
+        // 새로운 데이터 insert
+        setManagementCostOptionOfCheckList(findCheckList, requestDto.getManagementCostOptionTypes());
+        setNoiseOfCheckList(findCheckList, requestDto.getNoiseTypes());
+        setRoomStatusOfCheckList(findCheckList, requestDto.getRoomStatusTypes());
+        setInnerOptionOfCheckList(findCheckList, requestDto.getInnerOptionTypes());
+        setOuterOptionOfCheckList(findCheckList, requestDto.getOuterOptionTypes());
+        setRoomImageOfCheckList(findCheckList, requestDto.getRoomImageIdList());
+        setCollectionOfCheckList(findCheckList, requestDto.getCollectionIdList());
 
-//        findCheckList.update(checkListUpdateDto);
+        findCheckList.update(requestDto);
 
         return findCheckList.getId();
+    }
+
+    @Transactional
+    public void updatePublic(Long requestUserId,Long checkListId) {
+        CheckList findCheckList = findCheckListById(checkListId);
+        validCheckListOwner(requestUserId, findCheckList);
+        findCheckList.updatePublic();
     }
 
 
@@ -104,16 +117,12 @@ public class CheckListService {
 
         validCheckListOwner(requestUserId, findCheckList);
 
-        checkListCollectionRepository.deleteByCheckList(findCheckList);
-
         checkListRepository.delete(findCheckList);
-
     }
 
     public CheckList getCheckListById(Long checkListId) {
         return checkListRepository.findById(checkListId)
                 .orElseThrow(() -> new IllegalArgumentException("체크리스트 찾기 실패!, 대상 체크리스트가 존재하지 않습니다. checkListId + " + checkListId));
-
     }
 
 
@@ -166,6 +175,15 @@ public class CheckListService {
         return checkListRepository.findTop3ByUserIdOrderByLastModifiedDateDesc(userId);
     }
 
+    public List<CheckListCityCountGetDto> getCityCountTop7() {
+        return checkListRepository.findCityCountTop7();
+    }
+
+    public Page<CheckListCityAllGetDto> getCheckListsByCity(String city, Pageable pageable) {
+        Page<CheckListCityAllGetDto> checkListCityAllGetDtos = checkListRepository.findAllCity(city,pageable);
+        return checkListCityAllGetDtos;
+    }
+
     private User findUserById(Long userId) {
         User findUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다. userId = " + userId));
@@ -202,7 +220,6 @@ public class CheckListService {
         if (!roomImageIdList.isEmpty()) {
             for (Long roomImageId : roomImageIdList) {
                 RoomImage findRoomImage = findRoomImageById(roomImageId);
-
                 checkList.addRoomImage(findRoomImage);
             }
         }
@@ -219,12 +236,11 @@ public class CheckListService {
 
                 checkList.addCheckListCollection(checkListCollection);
                 findCollection.addCheckListCollection(checkListCollection);
-
-                checkListCollectionRepository.save(checkListCollection);
             }
         }
     }
 
+    @Transactional
     public void setManagementCostOptionOfCheckList(CheckList checkList, List<ManagementCostOptionType> typeList) {
         if (!typeList.isEmpty()) {
             for (ManagementCostOptionType type : typeList) {
@@ -233,13 +249,12 @@ public class CheckListService {
                         .type(type)
                         .build();
 
-                ManagementCostOption savedOption = managementCostOptionRepository.save(option);
-
-                checkList.getManagementCostOptions().add(savedOption);
+                checkList.getManagementCostOptions().add(option);
             }
         }
     }
 
+    @Transactional
     public void setNoiseOfCheckList(CheckList checkList, List<NoiseType> typeList) {
         if (!typeList.isEmpty()) {
             for (NoiseType type : typeList) {
@@ -248,13 +263,12 @@ public class CheckListService {
                         .type(type)
                         .build();
 
-                Noise savedNoise = noiseRepository.save(noise);
-
-                checkList.getNoises().add(savedNoise);
+                checkList.getNoises().add(noise);
             }
         }
     }
 
+    @Transactional
     public void setRoomStatusOfCheckList(CheckList checkList, List<RoomStatusType> typeList) {
         if (!typeList.isEmpty()) {
             for (RoomStatusType type : typeList) {
@@ -263,13 +277,12 @@ public class CheckListService {
                         .type(type)
                         .build();
 
-                RoomStatus savedRoomStatus = roomStatusRepository.save(roomStatus);
-
-                checkList.getRoomStatuses().add(savedRoomStatus);
+                checkList.getRoomStatuses().add(roomStatus);
             }
         }
     }
 
+    @Transactional
     public void setInnerOptionOfCheckList(CheckList checkList, List<InnerOptionType> typeList) {
         if (!typeList.isEmpty()) {
             for (InnerOptionType type : typeList) {
@@ -278,13 +291,12 @@ public class CheckListService {
                         .type(type)
                         .build();
 
-                InnerOption savedInnerOption = innerOptionRepository.save(innerOption);
-
-                checkList.getInnerOptions().add(savedInnerOption);
+                checkList.getInnerOptions().add(innerOption);
             }
         }
     }
 
+    @Transactional
     public void setOuterOptionOfCheckList(CheckList checkList, List<OuterOptionType> typeList) {
         if (!typeList.isEmpty()) {
             for (OuterOptionType type : typeList) {
@@ -293,14 +305,10 @@ public class CheckListService {
                         .type(type)
                         .build();
 
-                OuterOption savedOuterOption = outerOptionRepository.save(outerOption);
-
-                checkList.getOuterOptions().add(savedOuterOption);
+                checkList.getOuterOptions().add(outerOption);
             }
         }
     }
-
-
 
     // 삭제 요청을 한 유저가 해당 컬렉션의 소유자가 맞는지 검증
     private static void validCheckListOwner(Long requestUserId, CheckList checkList) {
@@ -309,12 +317,4 @@ public class CheckListService {
         }
     }
 
-    public List<CheckListCityCountGetDto> getCityCountTop7() {
-        return checkListRepository.findCityCountTop7();
-    }
-
-    public Page<CheckListCityAllGetDto> getCheckListsByCity(String city, Pageable pageable) {
-        Page<CheckListCityAllGetDto> checkListCityAllGetDtos = checkListRepository.findAllCity(city,pageable);
-        return checkListCityAllGetDtos;
-    }
 }

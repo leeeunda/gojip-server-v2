@@ -1,6 +1,6 @@
 package com.example.gojipserver.domain.checklist.entity;
 
-import com.example.gojipserver.domain.checklist.dto.CheckListUpdateDto;
+import com.example.gojipserver.domain.checklist.dto.CheckListRequestDto;
 import com.example.gojipserver.domain.checklist.entity.cost.ManagementCostOption;
 import com.example.gojipserver.domain.checklist.entity.cost.PropertyType;
 import com.example.gojipserver.domain.checklist.entity.option.InnerOption;
@@ -17,8 +17,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +33,7 @@ public class CheckList extends BaseTimeEntity {
     @Column(name = "check_list_id")
     private Long id;
 
-    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "room_address_id")
     private RoomAddress roomAddress;
 
@@ -43,7 +41,7 @@ public class CheckList extends BaseTimeEntity {
     @JoinColumn(name = "users_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "checkList")
+    @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<CheckListCollection> checkListCollections = new ArrayList<>();
 
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
@@ -150,6 +148,31 @@ public class CheckList extends BaseTimeEntity {
         this.likeCount = 0; // 초기값 무조건 0
         this.isPublic = true; // 초기값 무조건 true
 
+    }
+
+    public void update(CheckListRequestDto.UpdateDto dto) {
+        this.propertyType = dto.getPropertyType();
+        this.deposit = dto.getDeposit();
+        this.monthlyCost = dto.getMonthlyCost();
+        this.charterCost = dto.getCharterCost();
+        this.tradingCost = dto.getTradingCost();
+        this.area = dto.getArea();
+        this.structure = dto.getStructure();
+        this.floor = dto.getFloor();
+        this.buildingStatus = dto.getBuildingStatus();
+        this.stationDistance = dto.getStationDistance();
+        this.light = dto.getLight();
+        this.boilerType = dto.getBoilerType();
+        this.waterPressureStatus = dto.getWaterPressureStatus();
+        this.hotWaterStatus = dto.getHotWaterStatus();
+        this.tileStatus = dto.getTileStatus();
+        this.note = dto.getNote();
+        this.checkListName = dto.getCheckListName();
+        this.rating = dto.getRating();
+    }
+
+    public void updatePublic() {
+        this.isPublic = (this.isPublic == true) ? false : true;
     }
 
 

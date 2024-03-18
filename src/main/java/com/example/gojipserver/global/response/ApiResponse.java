@@ -35,8 +35,8 @@ public class ApiResponse<T> {
 
 
 
-    public static ApiResponse<?> responseSuccessWithNoContent() {
-        return new ApiResponse<>(true, StatusEnum.OK, null, null, null);
+    public static ApiResponse<?> responseSuccessWithNoContent(String message) {
+        return new ApiResponse<>(true, StatusEnum.OK, null, message, null);
     }
 
 

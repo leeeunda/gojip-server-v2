@@ -1,9 +1,8 @@
 package com.example.gojipserver.domain.checklist.repository;
 
-import com.example.gojipserver.domain.checklist.dto.CheckListCityAllGetDto;
-import com.example.gojipserver.domain.checklist.dto.CheckListCityCountGetDto;
-import com.example.gojipserver.domain.checklist.dto.CheckListCollectionGetDto;
+import com.example.gojipserver.domain.checklist.dto.*;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
+import com.example.gojipserver.domain.roomaddress.dto.RoomAddressCheckListInfoDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,4 +34,17 @@ public interface CheckListRepository extends JpaRepository<CheckList, Long> {
             "group by a.addressName")
     Page<CheckListCityAllGetDto> findAllCity(String city, Pageable pageable);
 
+    @Query("SELECT new com.example.gojipserver.domain.checklist.dto.CheckListSummaryGetDto(cl.checkListName,'이미지 준비중',cl.rating,cl.likeCount) " +
+            "FROM CheckList cl INNER JOIN cl.roomAddress a " +
+            "WHERE a.latitude = :latitude AND a.longitude = :longitude")
+    Page<CheckListSummaryGetDto> findCheckListSummary(String latitude, String longitude, Pageable pageable);
+
+    @Query("SELECT new com.example.gojipserver.domain.roomaddress.dto.RoomAddressCheckListInfoDto(a.addressName,count(a.addressName),AVG(cl.rating)) " +
+            "FROM CheckList cl INNER JOIN cl.roomAddress a " +
+            "WHERE a.latitude = :latitude AND a.longitude = :longitude " +
+            "group by a.addressName")
+    RoomAddressCheckListInfoDto findCheckListByRoomAddress(String latitude, String longitude);
+
+
 }
+

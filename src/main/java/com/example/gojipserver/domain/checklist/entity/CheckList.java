@@ -152,10 +152,10 @@ public class CheckList extends BaseTimeEntity {
 
     public void update(CheckListRequestDto.UpdateDto dto) {
         this.propertyType = dto.getPropertyType();
-        this.deposit = dto.getDeposit();
-        this.monthlyCost = dto.getMonthlyCost();
-        this.charterCost = dto.getCharterCost();
-        this.tradingCost = dto.getTradingCost();
+        this.deposit = (dto.getDeposit() == null) ? 0 : dto.getDeposit();
+        this.monthlyCost = (dto.getMonthlyCost() == null) ? 0 : dto.getMonthlyCost();
+        this.charterCost = (dto.getCharterCost() == null) ? 0 : dto.getCharterCost();
+        this.tradingCost = (dto.getTradingCost() == null) ? 0 : dto.getTradingCost();
         this.area = dto.getArea();
         this.structure = dto.getStructure();
         this.floor = dto.getFloor();
@@ -186,6 +186,11 @@ public class CheckList extends BaseTimeEntity {
         this.roomImages.add(roomImage);
         roomImage.registerToCheckList(this);
     }
+
+    public void removeRoomImage(RoomImage roomImage) {
+        this.roomImages.remove(roomImage);
+    }
+
     public void addLikeInCheckList(Like like){
         this.likes.add(like);
         like.registerCheckList(this);

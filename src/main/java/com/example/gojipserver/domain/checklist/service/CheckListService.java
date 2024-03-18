@@ -80,27 +80,67 @@ public class CheckListService {
 
         validCheckListOwner(requestUserId, findCheckList);
 
-        // 기존 데이터 delete
+        // 체크리스트의 현재 roomImageIdList
+        List<Long> currentRoomImageIdList = findCheckList.getRoomImages().stream()
+                .map(RoomImage::getId)
+                .collect(Collectors.toList());
+
+        // 체크리스트의 현재 collectionIdList
+        List<Long> currentCollectionIdList = checkListCollectionRepository.findCollectionIdByCheckListId(findCheckList.getId());
+
+        // 새로 추가할 IdList
+        List<Long> requestRoomImageIdList = requestDto.getRoomImageIdList();
+        List<Long> requestCollectionIdList = requestDto.getCollectionIdList();
+
+        // 추가해야될 id List와 삭제해야될 id List 가져오기
+        List<Long> imageIdListToAdd = getIdListToAdd(currentRoomImageIdList, requestRoomImageIdList);
+        List<Long> imageIdListToRemove = getIdListToRemove(currentRoomImageIdList, requestRoomImageIdList);
+
+        List<Long> collectionIdListToAdd = getIdListToAdd(currentCollectionIdList, requestCollectionIdList);
+        List<Long> collectionIdListToRemove = getIdListToRemove(currentCollectionIdList, requestCollectionIdList);
+
+        // 삭제
+        imageIdListToRemove.stream()
+                .forEach(imageIdToRemove -> {
+                    roomImageRepository.deleteById(imageIdToRemove);
+                });
+        collectionIdListToRemove.stream()
+                        .forEach(collectionIdToRemove -> {
+                            checkListCollectionRepository.deleteByCheckListIdAndCollectionId(findCheckList.getId(), collectionIdToRemove);
+                        });
         managementCostOptionRepository.deleteByCheckList(findCheckList);
         noiseRepository.deleteByCheckList(findCheckList);
         roomStatusRepository.deleteByCheckList(findCheckList);
         innerOptionRepository.deleteByCheckList(findCheckList);
         outerOptionRepository.deleteByCheckList(findCheckList);
-        roomImageRepository.deleteByCheckList(findCheckList); // TODO: 이미 DB에 등록된 ID가 넘어오면 예외 발생 -> 이미 존재하는 것을 삭제한 후 다시 세팅해주려고 하므로 찾을 수 없음
-        checkListCollectionRepository.deleteByCheckList(findCheckList);
 
-        // 새로운 데이터 insert
+        setRoomImageOfCheckList(findCheckList, imageIdListToAdd);
+        setCollectionOfCheckList(findCheckList, collectionIdListToAdd);
         setManagementCostOptionOfCheckList(findCheckList, requestDto.getManagementCostOptionTypes());
         setNoiseOfCheckList(findCheckList, requestDto.getNoiseTypes());
         setRoomStatusOfCheckList(findCheckList, requestDto.getRoomStatusTypes());
         setInnerOptionOfCheckList(findCheckList, requestDto.getInnerOptionTypes());
         setOuterOptionOfCheckList(findCheckList, requestDto.getOuterOptionTypes());
-        setRoomImageOfCheckList(findCheckList, requestDto.getRoomImageIdList());
-        setCollectionOfCheckList(findCheckList, requestDto.getCollectionIdList());
 
         findCheckList.update(requestDto);
 
         return findCheckList.getId();
+    }
+
+    private static List<Long> getIdListToRemove(List<Long> currentIdList, List<Long> requestIdList) {
+        // 현재 존재하는 엔티티중 삭제해야되는 엔티티의 id
+        List<Long> idListToRemove = currentIdList.stream()
+                .filter(id -> !requestIdList.contains(id))
+                .collect(Collectors.toList());
+        return idListToRemove;
+    }
+
+    private static List<Long> getIdListToAdd(List<Long> currentIdList, List<Long> requestIdList) {
+        // dto로 전달받은 idList중 새로 추가해야할 엔티티의 id
+        List<Long> idListToAdd = requestIdList.stream()
+                .filter(id -> !currentIdList.contains(id))
+                .collect(Collectors.toList());
+        return idListToAdd;
     }
 
     @Transactional

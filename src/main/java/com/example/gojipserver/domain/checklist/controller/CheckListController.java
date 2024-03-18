@@ -126,7 +126,7 @@ public class CheckListController {
     @Operation(summary = "리뷰가 많은 구 조회", description = "리뷰가 많은 구 상위 7개를 조회")
     public ApiResponse<List<CheckListCityCountGetDto>> checkListcityCountGet(){
         List<CheckListCityCountGetDto> checkListCityCountGetDtos = checkListService.getCityCountTop7();
-        return ApiResponse.createSuccess(checkListCityCountGetDtos);
+        return ApiResponse.responseSuccess(checkListCityCountGetDtos);
     }
 
     @GetMapping("/city")

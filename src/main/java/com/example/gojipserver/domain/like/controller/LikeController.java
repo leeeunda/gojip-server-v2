@@ -32,7 +32,7 @@ public class LikeController {
         CheckList checkList = checkListService.getCheckListById(checkListId);
         User user = userService.findById(userPrincipal.getId());
         LikeGetResponseDto likeResponse = likeService.addLike(checkList, user);
-        return ApiResponse.createSuccess(likeResponse);
+        return ApiResponse.responseSuccess(likeResponse);
     }
 
     @DeleteMapping("/{checkListId}/like")
@@ -41,7 +41,7 @@ public class LikeController {
         CheckList checkList = checkListService.getCheckListById(checkListId);
         User user = userService.findById(userPrincipal.getId());
         LikeGetResponseDto likeResponse = likeService.deleteLike(checkList, user);
-        return ApiResponse.createSuccess(likeResponse);
+        return ApiResponse.responseSuccess(likeResponse);
     }
 
     @GetMapping("/like")
@@ -52,6 +52,6 @@ public class LikeController {
         User user = userService.findById(userPrincipal.getId());
         Pageable pageable = PageRequest.of(page, 5);
         Page<LikePreviewResponseDto> likeCheckList = likeService.getLikeCheckList(user, pageable);
-        return ApiResponse.createSuccess(likeCheckList);
+        return ApiResponse.responseSuccess(likeCheckList);
     }
 }

@@ -54,7 +54,7 @@ public class CollectionController {
 
         collectionService.deleteCollection(requestUser.getId(), collectionId);
 
-        return ApiResponse.responseSuccessWithNoContent();
+        return ApiResponse.responseSuccessWithNoContent("컬렉션 삭제 성공!");
     }
 
     @GetMapping

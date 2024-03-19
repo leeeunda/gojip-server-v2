@@ -4,6 +4,7 @@ import com.example.gojipserver.domain.checklist.dto.*;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.checklist.service.CheckListService;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
+import com.example.gojipserver.domain.roomaddress.dto.RoomAddressCheckListInfoDto;
 import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
 import com.example.gojipserver.domain.roomimage.repository.RoomImageRepository;
 import com.example.gojipserver.global.response.ApiResponse;
@@ -139,4 +140,24 @@ public class CheckListController {
         return ApiResponse.responseSuccess(checkListsByCity);
     }
 
+    @GetMapping("/location")
+    @Operation(summary = "위치별 체크리스트 요약 조회", description = "위치별 체크리스트 요약 조회")
+    public ApiResponse<Page<CheckListSummaryGetDto>> checkListsByAddressGet(
+            @RequestParam String latitude,
+            @RequestParam String longitude,
+            @RequestParam(defaultValue = "0") int page){
+        PageRequest pageRequest = PageRequest.of(page, 5);
+        Page<CheckListSummaryGetDto> checkListSummaryGetDtos = checkListService.getCheckListSummarys(
+                latitude,longitude, pageRequest);
+        return ApiResponse.responseSuccess(checkListSummaryGetDtos);
+    }
+
+    @GetMapping("/location/info")
+    @Operation(summary = "위치별 체크리스트 정보 조회", description = "위치별 체크리스트 정보 조회")
+    public ApiResponse<RoomAddressCheckListInfoDto> checkListInfoByAddressGet(
+            @RequestParam String latitude,
+            @RequestParam String longitude){
+        RoomAddressCheckListInfoDto roomAddressCheckListInfoDto = checkListService.getCheckListsByAddress(latitude, longitude);
+        return ApiResponse.responseSuccess(roomAddressCheckListInfoDto);
+    }
 }

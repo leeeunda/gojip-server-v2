@@ -17,6 +17,7 @@ import com.example.gojipserver.domain.checklist_collection.entity.CheckListColle
 import com.example.gojipserver.domain.checklist_collection.repository.CheckListCollectionRepository;
 import com.example.gojipserver.domain.collection.entity.Collection;
 import com.example.gojipserver.domain.collection.repository.CollectionRepository;
+import com.example.gojipserver.domain.roomaddress.dto.RoomAddressCheckListInfoDto;
 import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
 import com.example.gojipserver.domain.roomaddress.repository.RoomAddressRepository;
 import com.example.gojipserver.domain.roomimage.entity.RoomImage;
@@ -357,4 +358,20 @@ public class CheckListService {
         }
     }
 
+    public List<CheckListCityCountGetDto> getCityCountTop7() {
+        return checkListRepository.findCityCountTop7();
+    }
+
+    public Page<CheckListCityAllGetDto> getCheckListsByCity(String city, Pageable pageable) {
+        Page<CheckListCityAllGetDto> checkListCityAllGetDtos = checkListRepository.findAllCity(city,pageable);
+        return checkListCityAllGetDtos;
+    }
+
+    public Page<CheckListSummaryGetDto> getCheckListSummarys(String latitude, String longitude,Pageable pageable) {
+        return checkListRepository.findCheckListSummary(latitude, longitude, pageable);
+    }
+
+    public RoomAddressCheckListInfoDto getCheckListsByAddress(String latitude, String longitude){
+        return checkListRepository.findCheckListByRoomAddress(latitude, longitude);
+    }
 }

@@ -82,39 +82,32 @@ public class CheckListService {
         validCheckListOwner(requestUserId, findCheckList);
 
         // 체크리스트의 현재 roomImageIdList
-        List<Long> currentRoomImageIdList = findCheckList.getRoomImages().stream()
-                .map(RoomImage::getId)
-                .collect(Collectors.toList());
+        List<Long> currentImageIdList = getCurrentImageIdList(findCheckList);
 
         // 체크리스트의 현재 collectionIdList
         List<Long> currentCollectionIdList = checkListCollectionRepository.findCollectionIdByCheckListId(findCheckList.getId());
 
         // 새로 추가할 IdList
-        List<Long> requestRoomImageIdList = requestDto.getRoomImageIdList();
+        List<Long> requestImageIdList = requestDto.getRoomImageIdList();
         List<Long> requestCollectionIdList = requestDto.getCollectionIdList();
 
         // 추가해야될 id List와 삭제해야될 id List 가져오기
-        List<Long> imageIdListToAdd = getIdListToAdd(currentRoomImageIdList, requestRoomImageIdList);
-        List<Long> imageIdListToRemove = getIdListToRemove(currentRoomImageIdList, requestRoomImageIdList);
-
+        List<Long> imageIdListToAdd = getIdListToAdd(currentImageIdList, requestImageIdList);
         List<Long> collectionIdListToAdd = getIdListToAdd(currentCollectionIdList, requestCollectionIdList);
+
+        List<Long> imageIdListToRemove = getIdListToRemove(currentImageIdList, requestImageIdList);
         List<Long> collectionIdListToRemove = getIdListToRemove(currentCollectionIdList, requestCollectionIdList);
 
-        // 삭제
-        imageIdListToRemove.stream()
-                .forEach(imageIdToRemove -> {
-                    roomImageRepository.deleteById(imageIdToRemove);
-                });
-        collectionIdListToRemove.stream()
-                        .forEach(collectionIdToRemove -> {
-                            checkListCollectionRepository.deleteByCheckListIdAndCollectionId(findCheckList.getId(), collectionIdToRemove);
-                        });
+        // delete
+        deleteImageByIdList(imageIdListToRemove);
+        deleteCheckListCollectionByCheckListIdAndCollectionId(findCheckList.getId(), collectionIdListToRemove);
         managementCostOptionRepository.deleteByCheckList(findCheckList);
         noiseRepository.deleteByCheckList(findCheckList);
         roomStatusRepository.deleteByCheckList(findCheckList);
         innerOptionRepository.deleteByCheckList(findCheckList);
         outerOptionRepository.deleteByCheckList(findCheckList);
 
+        // insert
         setRoomImageOfCheckList(findCheckList, imageIdListToAdd);
         setCollectionOfCheckList(findCheckList, collectionIdListToAdd);
         setManagementCostOptionOfCheckList(findCheckList, requestDto.getManagementCostOptionTypes());
@@ -123,25 +116,10 @@ public class CheckListService {
         setInnerOptionOfCheckList(findCheckList, requestDto.getInnerOptionTypes());
         setOuterOptionOfCheckList(findCheckList, requestDto.getOuterOptionTypes());
 
+        // 나머지 필드 update
         findCheckList.update(requestDto);
 
         return findCheckList.getId();
-    }
-
-    private static List<Long> getIdListToRemove(List<Long> currentIdList, List<Long> requestIdList) {
-        // 현재 존재하는 엔티티중 삭제해야되는 엔티티의 id
-        List<Long> idListToRemove = currentIdList.stream()
-                .filter(id -> !requestIdList.contains(id))
-                .collect(Collectors.toList());
-        return idListToRemove;
-    }
-
-    private static List<Long> getIdListToAdd(List<Long> currentIdList, List<Long> requestIdList) {
-        // dto로 전달받은 idList중 새로 추가해야할 엔티티의 id
-        List<Long> idListToAdd = requestIdList.stream()
-                .filter(id -> !currentIdList.contains(id))
-                .collect(Collectors.toList());
-        return idListToAdd;
     }
 
     @Transactional
@@ -224,6 +202,7 @@ public class CheckListService {
         Page<CheckListCityAllGetDto> checkListCityAllGetDtos = checkListRepository.findAllCity(city,pageable);
         return checkListCityAllGetDtos;
     }
+
 
     private User findUserById(Long userId) {
         User findUser = userRepository.findById(userId)
@@ -358,15 +337,6 @@ public class CheckListService {
         }
     }
 
-    public List<CheckListCityCountGetDto> getCityCountTop7() {
-        return checkListRepository.findCityCountTop7();
-    }
-
-    public Page<CheckListCityAllGetDto> getCheckListsByCity(String city, Pageable pageable) {
-        Page<CheckListCityAllGetDto> checkListCityAllGetDtos = checkListRepository.findAllCity(city,pageable);
-        return checkListCityAllGetDtos;
-    }
-
     public Page<CheckListSummaryGetDto> getCheckListSummarys(String latitude, String longitude,Pageable pageable) {
         return checkListRepository.findCheckListSummary(latitude, longitude, pageable);
     }
@@ -374,4 +344,42 @@ public class CheckListService {
     public RoomAddressCheckListInfoDto getCheckListsByAddress(String latitude, String longitude){
         return checkListRepository.findCheckListByRoomAddress(latitude, longitude);
     }
+
+    private static List<Long> getCurrentImageIdList(CheckList findCheckList) {
+        List<Long> currentRoomImageIdList = findCheckList.getRoomImages().stream()
+                .map(RoomImage::getId)
+                .collect(Collectors.toList());
+        return currentRoomImageIdList;
+    }
+
+    private void deleteCheckListCollectionByCheckListIdAndCollectionId(Long checkListId, List<Long> collectionIdListToRemove) {
+        collectionIdListToRemove.stream()
+                .forEach(collectionIdToRemove -> {
+                    checkListCollectionRepository.deleteByCheckListIdAndCollectionId(checkListId, collectionIdToRemove);
+                });
+    }
+
+    private void deleteImageByIdList(List<Long> imageIdListToRemove) {
+        imageIdListToRemove.stream()
+                .forEach(imageIdToRemove -> {
+                    roomImageRepository.deleteById(imageIdToRemove);
+                });
+    }
+
+    private static List<Long> getIdListToRemove(List<Long> currentIdList, List<Long> requestIdList) {
+        // 현재 존재하는 엔티티중 삭제해야되는 엔티티의  (현재 엔티티의 id 중 수정 요청에 담겨있지 있지 않는 id)
+        List<Long> idListToRemove = currentIdList.stream()
+                .filter(id -> !requestIdList.contains(id))
+                .collect(Collectors.toList());
+        return idListToRemove;
+    }
+
+    private static List<Long> getIdListToAdd(List<Long> currentIdList, List<Long> requestIdList) {
+        // dto로 전달받은 idList중 새로 추가해야할 엔티티의 id
+        List<Long> idListToAdd = requestIdList.stream()
+                .filter(id -> !currentIdList.contains(id))
+                .collect(Collectors.toList());
+        return idListToAdd;
+    }
+
 }

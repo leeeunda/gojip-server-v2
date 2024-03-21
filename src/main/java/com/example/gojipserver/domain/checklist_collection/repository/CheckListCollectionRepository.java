@@ -20,6 +20,6 @@ public interface CheckListCollectionRepository extends JpaRepository<CheckListCo
     List<Long> findCollectionIdByCheckListId(Long checkListId);
 
     @Query("SELECT cc.checkList.id FROM CheckListCollection cc WHERE cc.collection.id = :collectionId")
-    List<Long> findCheckListIdByCollectionId(Long collectionId);
+    List<Long> findCheckListIdsByCollectionId(Long collectionId);
 
 }

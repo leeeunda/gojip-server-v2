@@ -40,12 +40,17 @@ public class CollectionRequestDto {
     @Schema(description = "컬렉션 수정 DTO")
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public class CollectionUpdateDto {
+    public static class CollectionUpdateDto {
 
         @Schema(description = "수정할 컬렉션의 이름")
         @NotBlank(message = "컬렉션 이름은 필수 입력값입니다.")
         private String collectionName;
 
         private List<Long> checkListIdList = new ArrayList<>();
+
+        @Builder
+        public CollectionUpdateDto(String collectionName) {
+            this.collectionName = collectionName;
+        }
     }
 }

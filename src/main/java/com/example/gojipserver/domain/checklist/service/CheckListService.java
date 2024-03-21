@@ -55,7 +55,6 @@ public class CheckListService {
 
     @Transactional
     public Long saveCheckList(Long userId, CheckListRequestDto.SaveDto requestDto) {
-
         // 체크리스트 등록 유저와 주소 세팅
         User findUser = findUserById(userId);
         RoomAddress findRoomAddress = findRoomAddressById(requestDto.getRoomAddressId());
@@ -78,27 +77,21 @@ public class CheckListService {
     @Transactional
     public Long updateCheckList(Long checkListId, Long requestUserId, CheckListRequestDto.UpdateDto requestDto) {
         CheckList findCheckList = findCheckListById(checkListId);
-
         validCheckListOwner(requestUserId, findCheckList);
-
-        // 체크리스트의 현재 roomImageIdList
+        // Collection<->CheckList,RoomImage 연관관계 수정
+        // 1.체크리스트의 현재 idList와 수정 요청된 idList
         List<Long> currentImageIdList = getCurrentImageIdList(findCheckList);
-
-        // 체크리스트의 현재 collectionIdList
         List<Long> currentCollectionIdList = checkListCollectionRepository.findCollectionIdByCheckListId(findCheckList.getId());
-
-        // 새로 추가할 IdList
         List<Long> requestImageIdList = requestDto.getRoomImageIdList();
         List<Long> requestCollectionIdList = requestDto.getCollectionIdList();
 
-        // 추가해야될 id List와 삭제해야될 id List 가져오기
+        // 2.삭제할 id와 추가할 id 분류
         List<Long> imageIdListToAdd = getIdListToAdd(currentImageIdList, requestImageIdList);
         List<Long> collectionIdListToAdd = getIdListToAdd(currentCollectionIdList, requestCollectionIdList);
-
         List<Long> imageIdListToRemove = getIdListToRemove(currentImageIdList, requestImageIdList);
         List<Long> collectionIdListToRemove = getIdListToRemove(currentCollectionIdList, requestCollectionIdList);
 
-        // delete
+        // 3.삭제 후 추가
         deleteImageByIdList(imageIdListToRemove);
         deleteCheckListCollectionByCheckListIdAndCollectionId(findCheckList.getId(), collectionIdListToRemove);
         managementCostOptionRepository.deleteByCheckList(findCheckList);
@@ -107,7 +100,6 @@ public class CheckListService {
         innerOptionRepository.deleteByCheckList(findCheckList);
         outerOptionRepository.deleteByCheckList(findCheckList);
 
-        // insert
         setRoomImageOfCheckList(findCheckList, imageIdListToAdd);
         setCollectionOfCheckList(findCheckList, collectionIdListToAdd);
         setManagementCostOptionOfCheckList(findCheckList, requestDto.getManagementCostOptionTypes());
@@ -116,7 +108,7 @@ public class CheckListService {
         setInnerOptionOfCheckList(findCheckList, requestDto.getInnerOptionTypes());
         setOuterOptionOfCheckList(findCheckList, requestDto.getOuterOptionTypes());
 
-        // 나머지 필드 update
+        // 나머지 필드 수정
         findCheckList.update(requestDto);
 
         return findCheckList.getId();
@@ -235,8 +227,7 @@ public class CheckListService {
     }
 
     // CheckList <-> RoomImage 양방향 연관관계 설정
-    @Transactional
-    public void setRoomImageOfCheckList(CheckList checkList, List<Long> roomImageIdList) {
+    private void setRoomImageOfCheckList(CheckList checkList, List<Long> roomImageIdList) {
         if (!roomImageIdList.isEmpty()) {
             for (Long roomImageId : roomImageIdList) {
                 RoomImage findRoomImage = findRoomImageById(roomImageId);
@@ -246,8 +237,7 @@ public class CheckListService {
     }
 
     // CheckList <-> CheckListCollection, Collection <-> CheckListCollection 양방향 연관관계 설정
-    @Transactional
-    public void setCollectionOfCheckList(CheckList checkList, List<Long> collectionIdList) {
+    private void setCollectionOfCheckList(CheckList checkList, List<Long> collectionIdList) {
         if (!collectionIdList.isEmpty()) {
             for (Long collectionId : collectionIdList) {
                 Collection findCollection = findCollectionById(collectionId);
@@ -260,8 +250,7 @@ public class CheckListService {
         }
     }
 
-    @Transactional
-    public void setManagementCostOptionOfCheckList(CheckList checkList, List<ManagementCostOptionType> typeList) {
+    private void setManagementCostOptionOfCheckList(CheckList checkList, List<ManagementCostOptionType> typeList) {
         if (!typeList.isEmpty()) {
             for (ManagementCostOptionType type : typeList) {
                 ManagementCostOption option = ManagementCostOption.builder()
@@ -274,8 +263,7 @@ public class CheckListService {
         }
     }
 
-    @Transactional
-    public void setNoiseOfCheckList(CheckList checkList, List<NoiseType> typeList) {
+    private void setNoiseOfCheckList(CheckList checkList, List<NoiseType> typeList) {
         if (!typeList.isEmpty()) {
             for (NoiseType type : typeList) {
                 Noise noise = Noise.builder()
@@ -288,8 +276,7 @@ public class CheckListService {
         }
     }
 
-    @Transactional
-    public void setRoomStatusOfCheckList(CheckList checkList, List<RoomStatusType> typeList) {
+    private void setRoomStatusOfCheckList(CheckList checkList, List<RoomStatusType> typeList) {
         if (!typeList.isEmpty()) {
             for (RoomStatusType type : typeList) {
                 RoomStatus roomStatus = RoomStatus.builder()
@@ -302,8 +289,7 @@ public class CheckListService {
         }
     }
 
-    @Transactional
-    public void setInnerOptionOfCheckList(CheckList checkList, List<InnerOptionType> typeList) {
+    private void setInnerOptionOfCheckList(CheckList checkList, List<InnerOptionType> typeList) {
         if (!typeList.isEmpty()) {
             for (InnerOptionType type : typeList) {
                 InnerOption innerOption = InnerOption.builder()
@@ -316,8 +302,7 @@ public class CheckListService {
         }
     }
 
-    @Transactional
-    public void setOuterOptionOfCheckList(CheckList checkList, List<OuterOptionType> typeList) {
+    private void setOuterOptionOfCheckList(CheckList checkList, List<OuterOptionType> typeList) {
         if (!typeList.isEmpty()) {
             for (OuterOptionType type : typeList) {
                 OuterOption outerOption = OuterOption.builder()

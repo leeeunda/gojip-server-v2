@@ -49,13 +49,13 @@ public class CollectionService {
         validCollectionNameDuplicate(requestUserId, collectionName);
         // 컬렉션과 체크리스트 연관관계 수정
         // 1.현재 DB에 저장된 id List와 요청으로 온 id List
-        List<Long> currentCheckListIdList = checkListCollectionRepository.findCheckListIdByCollectionId(findCollection.getId());
+        List<Long> currentCheckListIdList = checkListCollectionRepository.findCheckListIdsByCollectionId(findCollection.getId());
         List<Long> requestCheckListIdList = collectionUpdateDto.getCheckListIdList();
         // 2.삭제할 id와 추가할 id 분류
         List<Long> checkListIdListToAdd = getIdListToAdd(currentCheckListIdList, requestCheckListIdList);
         List<Long> checkListIdListToRemove = getIdListToRemove(currentCheckListIdList, requestCheckListIdList);
         // 3.삭제 후 추가
-        deleteCheckListCollectionByCheckListIdAndCollectionId(collectionId, checkListIdListToRemove);
+        deleteCheckListCollectionByCheckListIdListAndCollectionId(collectionId, checkListIdListToRemove);
         setCheckListOfCollection(findCollection, checkListIdListToAdd);
         // 컬렉션 이름 수정
         findCollection.updateCollectionName(collectionName);
@@ -121,10 +121,10 @@ public class CollectionService {
         return idListToAdd;
     }
 
-    private void deleteCheckListCollectionByCheckListIdAndCollectionId(Long collectionId, List<Long> checkListIdListToRemove) {
+    private void deleteCheckListCollectionByCheckListIdListAndCollectionId(Long collectionId, List<Long> checkListIdListToRemove) {
         checkListIdListToRemove.stream()
-                .forEach(checkListIdToRemove -> {
-                    checkListCollectionRepository.deleteByCheckListIdAndCollectionId(collectionId, checkListIdToRemove);
+                .forEach(checkListId -> {
+                    checkListCollectionRepository.deleteByCheckListIdAndCollectionId(checkListId, collectionId);
                 });
     }
 
@@ -133,9 +133,7 @@ public class CollectionService {
             checkListIdList.stream()
                     .forEach(checkListId -> {
                         CheckList findCheckList = findCheckListById(checkListId);
-
                         CheckListCollection checkListCollection = CheckListCollection.createCheckListCollection(findCheckList, collection);
-
                         findCheckList.addCheckListCollection(checkListCollection);
                         collection.addCheckListCollection(checkListCollection);
                     });

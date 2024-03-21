@@ -1,6 +1,5 @@
 package com.example.gojipserver.domain.collection.entity;
 
-import com.example.gojipserver.domain.checklist.entity.CheckList;
 import com.example.gojipserver.domain.checklist_collection.entity.CheckListCollection;
 import com.example.gojipserver.domain.user.entity.User;
 import com.example.gojipserver.global.auditing.BaseTimeEntity;
@@ -45,12 +44,9 @@ public class Collection extends BaseTimeEntity {
     }
 
     //연관관계 편의 메서드
-
     public void addCheckListCollection(CheckListCollection checkListCollection) {
         this.checkListCollections.add(checkListCollection);
-        checkListCollection.addCollection(this);
+        checkListCollection.registerCollection(this);
     }
-
-
 
 }

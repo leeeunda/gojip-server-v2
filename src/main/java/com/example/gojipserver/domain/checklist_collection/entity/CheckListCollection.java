@@ -36,7 +36,7 @@ public class CheckListCollection extends BaseTimeEntity {
         this.checkList = checkList;
     }
 
-    public void addCollection(Collection collection) {
+    public void registerCollection(Collection collection) {
         this.collection = collection;
     }
 

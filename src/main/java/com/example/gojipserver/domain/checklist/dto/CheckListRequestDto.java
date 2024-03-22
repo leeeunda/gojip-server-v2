@@ -13,6 +13,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CheckListRequestDto {
@@ -43,7 +44,7 @@ public class CheckListRequestDto {
         private Integer tradingCost; //매매비용
 
         @Schema(description = "비용 / 관리비 옵션")
-        private List<ManagementCostOptionType> managementCostOptionTypes;
+        private List<ManagementCostOptionType> managementCostOptionTypes = new ArrayList<>();
 
         @Schema(description = "집 / 평수")
         @NotNull(message = "평수를 입력해주세요")
@@ -66,7 +67,7 @@ public class CheckListRequestDto {
         private Integer stationDistance;
 
         @Schema(description = "집 / 소음 종류 (층간소음, 외부소음, 방간소음)")
-        private List<NoiseType> noiseTypes;
+        private List<NoiseType> noiseTypes = new ArrayList<>();
 
         @Schema(description = "집 / 채광 (남향, 북향, 서향, 동향)")
         @NotNull(message = "채광을 선택해주세요.")
@@ -77,7 +78,7 @@ public class CheckListRequestDto {
         private BoilerType boilerType;
 
         @Schema(description = "집 / 방 상태 종류 (곰팡이, 벌레, 벽지오염, 옷풍, 바닥오염, 조명고장, 가스문제, 창틀오염)")
-        private List<RoomStatusType> roomStatusTypes;
+        private List<RoomStatusType> roomStatusTypes = new ArrayList<>();
 
         @Schema(description = "집 / 수압상태")
         @NotNull(message = "수압상태를 선택해주세요.")
@@ -92,19 +93,19 @@ public class CheckListRequestDto {
         private TileStatus tileStatus;
 
         @Schema(description = "옵션 / 내부옵션 종류")
-        private List<InnerOptionType> innerOptionTypes;
+        private List<InnerOptionType> innerOptionTypes = new ArrayList<>();
 
         @Schema(description = "옵션 / 외부옵션 종류")
-        private List<OuterOptionType> outerOptionTypes;
+        private List<OuterOptionType> outerOptionTypes = new ArrayList<>();
 
         @Schema(description = "추가 / 체크리스트를 등록할 컬렉션의 id 리스트")
-        private List<Long> collectionIdList;
+        private List<Long> collectionIdList = new ArrayList<>();
 
         @Schema(description = "추가 / 추가사항")
         private String note;
 
         @Schema(description = "추가 / 체크리스트에 등록할 이미지의 id 리스트")
-        private List<Long> roomImageIdList;
+        private List<Long> roomImageIdList = new ArrayList<>();;
 
         @Schema(description = "체크리스트 제목")
         @NotBlank(message = "제목을 입력해주세요.")
@@ -163,7 +164,7 @@ public class CheckListRequestDto {
         private Integer tradingCost; //매매비용
 
         @Schema(description = "비용 / 관리비 옵션")
-        private List<ManagementCostOptionType> managementCostOptionTypes;
+        private List<ManagementCostOptionType> managementCostOptionTypes = new ArrayList<>();
 
         @Schema(description = "집 / 평수")
         @NotNull(message = "평수를 입력해주세요")
@@ -186,7 +187,7 @@ public class CheckListRequestDto {
         private Integer stationDistance;
 
         @Schema(description = "집 / 소음 종류 (층간소음, 외부소음, 방간소음)")
-        private List<NoiseType> noiseTypes;
+        private List<NoiseType> noiseTypes = new ArrayList<>();
 
         @Schema(description = "집 / 채광 (남향, 북향, 서향, 동향)")
         @NotNull(message = "채광을 선택해주세요.")
@@ -197,7 +198,7 @@ public class CheckListRequestDto {
         private BoilerType boilerType;
 
         @Schema(description = "집 / 방 상태 종류 (곰팡이, 벌레, 벽지오염, 웃풍, 바닥오염, 조명고장, 가스문제, 창틀오염)")
-        private List<RoomStatusType> roomStatusTypes;
+        private List<RoomStatusType> roomStatusTypes = new ArrayList<>();
 
         @Schema(description = "집 / 수압상태")
         @NotNull(message = "수압상태를 선택해주세요.")
@@ -212,19 +213,19 @@ public class CheckListRequestDto {
         private TileStatus tileStatus;
 
         @Schema(description = "옵션 / 내부옵션 종류")
-        private List<InnerOptionType> innerOptionTypes;
+        private List<InnerOptionType> innerOptionTypes = new ArrayList<>();
 
         @Schema(description = "옵션 / 외부옵션 종류")
-        private List<OuterOptionType> outerOptionTypes;
+        private List<OuterOptionType> outerOptionTypes = new ArrayList<>();
 
         @Schema(description = "추가 / 체크리스트를 등록할 컬렉션의 id 리스트")
-        private List<Long> collectionIdList;
+        private List<Long> collectionIdList = new ArrayList<>();
 
         @Schema(description = "추가 / 추가사항")
         private String note;
 
         @Schema(description = "추가 / 체크리스트에 등록할 이미지의 id 리스트")
-        private List<Long> roomImageIdList;
+        private List<Long> roomImageIdList = new ArrayList<>();
 
         @Schema(description = "체크리스트 제목")
         @NotBlank(message = "제목을 입력해주세요.")

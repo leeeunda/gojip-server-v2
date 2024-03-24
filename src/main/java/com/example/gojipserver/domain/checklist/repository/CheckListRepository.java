@@ -19,7 +19,12 @@ public interface CheckListRepository extends JpaRepository<CheckList, Long> {
             "WHERE clc.collection.id = :collectionId")
     List<CheckListCollectionGetDto> findByCollectionId(@Param("collectionId") Long collectionId);
 
-    List<CheckList> findTop3ByUserIdOrderByLastModifiedDateDesc(long userId);
+    @Query("SELECT new com.example.gojipserver.domain.checklist.dto.CheckListRecentResponseDto(cl.id,ri.imgUrl,a.addressName) " +
+            "FROM CheckList cl INNER JOIN cl.roomAddress a " +
+            "left JOIN cl.roomImages ri " +
+            "WHERE cl.user.id = :userId " +
+            "order by cl.lastModifiedDate desc limit 3")
+    List<CheckListRecentResponseDto> findTop3ByUserIdOrderByLastModifiedDateDesc(long userId);
 
     @Query("SELECT new com.example.gojipserver.domain.checklist.dto.CheckListCityCountGetDto(a.city, count(a.city)) " +
             "FROM CheckList cl INNER JOIN cl.roomAddress a " +
@@ -28,14 +33,16 @@ public interface CheckListRepository extends JpaRepository<CheckList, Long> {
             "limit 7")
     List<CheckListCityCountGetDto> findCityCountTop7();
 
-    @Query("SELECT new com.example.gojipserver.domain.checklist.dto.CheckListCityAllGetDto(a.addressName,'이미지 준비중',0,count(a.addressName)) " +
+    @Query("SELECT new com.example.gojipserver.domain.checklist.dto.CheckListCityAllGetDto(a.addressName,ri.imgUrl,avg(cl.rating),count(a.addressName)) " +
             "FROM CheckList cl INNER JOIN cl.roomAddress a " +
+            "left JOIN cl.roomImages ri " +
             "WHERE a.city = :city " +
             "group by a.addressName")
     Page<CheckListCityAllGetDto> findAllCity(String city, Pageable pageable);
 
-    @Query("SELECT new com.example.gojipserver.domain.checklist.dto.CheckListSummaryGetDto(cl.checkListName,'이미지 준비중',cl.rating,cl.likeCount) " +
+    @Query("SELECT new com.example.gojipserver.domain.checklist.dto.CheckListSummaryGetDto(cl.checkListName,ri.imgUrl,cl.rating,cl.likeCount) " +
             "FROM CheckList cl INNER JOIN cl.roomAddress a " +
+            "left JOIN cl.roomImages ri " +
             "WHERE a.latitude = :latitude AND a.longitude = :longitude")
     Page<CheckListSummaryGetDto> findCheckListSummary(String latitude, String longitude, Pageable pageable);
 

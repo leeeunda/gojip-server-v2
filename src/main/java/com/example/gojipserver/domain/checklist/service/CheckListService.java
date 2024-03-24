@@ -171,18 +171,13 @@ public class CheckListService {
 
 
     public List<CheckListRecentResponseDto> getRecentCheckListTop3(Long userId) {
-        List<CheckList> recentTop3ByUser = findRecentTop3ByUser(userId);
+        List<CheckListRecentResponseDto> recentTop3ByUser = findRecentTop3ByUser(userId);
         if (recentTop3ByUser.isEmpty()) {
             throw new IllegalArgumentException("해당 사용자에 대한 체크리스트가 존재하지 않습니다: " + userId);
         }
-        return recentTop3ByUser.stream().map(
-                checkList -> CheckListRecentResponseDto.builder()
-                        .checklistId(checkList.getId())
-                        .addressName(checkList.getRoomAddress().getAddressName())
-                        .mainImage(null)
-                        .build()).collect(Collectors.toList());
+        return recentTop3ByUser;
     }
-    private List<CheckList> findRecentTop3ByUser(Long userId) {
+    private List<CheckListRecentResponseDto> findRecentTop3ByUser(Long userId) {
         return checkListRepository.findTop3ByUserIdOrderByLastModifiedDateDesc(userId);
     }
 

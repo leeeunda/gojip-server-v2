@@ -95,4 +95,16 @@ public class RoomImageController {
         }
         return ApiResponse.createSuccess("파일 성공적으로 삭제 imgUrl: " + imgUrl);
     }
+
+    //대표 이미지 설정
+    @Operation(summary = "대표 이미지 설정", description = "업로드하는 이미지 중 대표 이미지를 설정")
+    @Parameter()
+    public ApiResponse<?> setThumbnailImage(@PathVariable Long id){
+        try{
+            imageService.setThumbnailImage(id);
+            return ApiResponse.createSuccess(id);
+        } catch (Exception e){
+            return ApiResponse.
+        }
+    }
 }

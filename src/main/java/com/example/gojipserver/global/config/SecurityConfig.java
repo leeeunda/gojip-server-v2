@@ -30,8 +30,8 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
-            "/oauth2/**", "/login", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
-            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html","/login/kakao", "/newToken",
+            "/oauth2/**", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
+            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/newToken",
     }; // 인증 필터를 거치지 않는 경로
 
     CorsConfigurationSource corsConfigurationSource() {
@@ -61,7 +61,6 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 사용하지 않기 때문에 세션 설정을 STATELESS로 설정
         );
 
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeRequests(authorizeRequests -> authorizeRequests
                 .requestMatchers(AUTH_WHITELIST).permitAll()
@@ -81,6 +80,8 @@ public class SecurityConfig {
         http.exceptionHandling(authentication -> authentication
                 .defaultAuthenticationEntryPointFor(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),new AntPathRequestMatcher("/**"))
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

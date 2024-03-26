@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class CollectionResponseDto {
 
     private Long id;
-
     private String collectionName;
 
     @Builder

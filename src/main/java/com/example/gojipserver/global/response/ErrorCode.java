@@ -14,6 +14,7 @@ public enum ErrorCode {
     NO_BEARER_TOKEN(HttpStatus.UNAUTHORIZED, "Bearer 토큰이 필요합니다.", 401),
     LOGOUT_TOKEN(HttpStatus.UNAUTHORIZED, "로그아웃된 토큰입니다.", 401);
 
+
     private HttpStatus status;
     private String message;
     private int code;

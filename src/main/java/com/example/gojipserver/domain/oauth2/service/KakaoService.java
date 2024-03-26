@@ -1,9 +1,8 @@
 package com.example.gojipserver.domain.oauth2.service;
 
-import com.example.gojipserver.domain.oauth2.dto.UserResponseDto;
-import com.example.gojipserver.domain.user.entity.User;
-import com.example.gojipserver.domain.user.repository.UserRepository;
 import com.example.gojipserver.global.config.jwt.JwtTokenProvider;
+import com.example.gojipserver.global.config.redis.entity.AccessToken;
+import com.example.gojipserver.global.config.redis.repository.AccessTokenRepository;
 import com.example.gojipserver.global.config.redis.repository.RefreshTokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ import static com.example.gojipserver.domain.oauth2.dto.UserResponseDto.*;
 public class KakaoService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final UserRepository userRepository;
+    private final AccessTokenRepository accessTokenRepository;
 
     public CreatedAccessTokenResponse createNewAccessToken(HttpServletRequest request, String refreshToken) throws IOException {
         if (!jwtTokenProvider.validateToken(request,refreshToken)) {
@@ -29,4 +28,10 @@ public class KakaoService {
 
         return new CreatedAccessTokenResponse(jwtTokenProvider.createAccessToken(userId));
     }
+
+    public void saveAccessToken(String accessToken) {
+        AccessToken setAccessToken = new AccessToken(accessToken, "logout");
+        accessTokenRepository.save(setAccessToken);
+    }
+
 }

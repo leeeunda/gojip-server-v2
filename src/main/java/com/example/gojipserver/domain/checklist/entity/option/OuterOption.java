@@ -1,30 +1,34 @@
 package com.example.gojipserver.domain.checklist.entity.option;
 
-import jakarta.persistence.Embeddable;
+import com.example.gojipserver.domain.checklist.entity.CheckList;
+import com.example.gojipserver.global.auditing.BaseTimeEntity;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Embeddable
-@Getter
+@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OuterOption {
+@Getter
+public class OuterOption extends BaseTimeEntity {
 
-    private boolean parkingLot; //주차장
-    private boolean cctv; //cctv
-    private boolean elevator; //엘리베이터
-    private boolean managementOffice; //관리실
-    private boolean commonEntrance; //공동현관
-    private boolean separateDischargeSpace; //분리배출공간
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "outer_option_id")
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "check_list_id", nullable = false)
+    private CheckList checkList;
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private OuterOptionType type;
 
     @Builder
-    public OuterOption(boolean parkingLot, boolean cctv, boolean elevator, boolean managementOffice, boolean commonEntrance, boolean separateDischargeSpace) {
-        this.parkingLot = parkingLot;
-        this.cctv = cctv;
-        this.elevator = elevator;
-        this.managementOffice = managementOffice;
-        this.commonEntrance = commonEntrance;
-        this.separateDischargeSpace = separateDischargeSpace;
+    public OuterOption(CheckList checkList, OuterOptionType type) {
+        this.checkList = checkList;
+        this.type = type;
     }
 }

@@ -4,6 +4,7 @@ package com.example.gojipserver.global.config.jwt;
 import com.example.gojipserver.domain.oauth2.entity.UserPrincipal;
 import com.example.gojipserver.domain.oauth2.service.CustomUserDetailsService;
 import com.example.gojipserver.domain.user.entity.User;
+import com.example.gojipserver.global.config.redis.entity.AccessToken;
 import com.example.gojipserver.global.config.redis.entity.RefreshToken;
 import com.example.gojipserver.global.config.redis.repository.AccessTokenRepository;
 import com.example.gojipserver.global.config.redis.repository.RefreshTokenRepository;
@@ -42,7 +43,7 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
     private final CustomUserDetailsService userDetailsService;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final AccessTokenRepository accessTokenRepository;
 
     public String createAccessToken(Long userId) {
         Claims claims = Jwts.claims().setSubject(userId.toString()); // JWT payload 에 저장되는 정보단위
@@ -102,4 +103,12 @@ public class JwtTokenProvider {
         return null;
     }
 
+    // 로그아웃된 토큰인지 확인
+    public Boolean isAccessToken(HttpServletRequest request,String accessToken){
+        if(accessTokenRepository.existsById(accessToken)){
+            request.setAttribute("exception", ErrorCode.LOGOUT_TOKEN);
+            return true;
+        }
+        return false;
+    }
 }

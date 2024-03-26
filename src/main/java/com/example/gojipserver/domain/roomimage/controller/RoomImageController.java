@@ -5,7 +5,6 @@ import com.example.gojipserver.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
 import org.springframework.http.MediaType;
 import com.example.gojipserver.domain.roomimage.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +35,7 @@ public class RoomImageController {
         RoomImageSaveDto roomImageSaveDto = new RoomImageSaveDto(imgPath);
         imageService.saveImageToDB(roomImageSaveDto); // 업로드 이후 DB 저장
         log.info("imagePath = {}", imgPath);
-        return ApiResponse.createSuccess(imgPath);
+        return ApiResponse.responseSuccess(imgPath);
     }
 
     // 여러장의 이미지 한 번에 업로드
@@ -58,7 +57,7 @@ public class RoomImageController {
                     }
                 }).peek(s -> log.info("imagePath = {}", s))
                 .collect(Collectors.toList());
-        return ApiResponse.createSuccess(imgurl);
+        return ApiResponse.responseSuccess(imgurl);
     }
 
     // 이미지 업데이트
@@ -70,7 +69,7 @@ public class RoomImageController {
         String newImgUrl = imageService.updateImage(id, imgUrl, newFile);
         log.info("새로운 imageUrl = {}", newImgUrl);
 
-        return ApiResponse.createSuccess(newImgUrl);
+        return ApiResponse.responseSuccess(newImgUrl);
     }
 
     // 이미지 조회 -> 체크리스트 관련 이미지 전부 반환
@@ -79,7 +78,7 @@ public class RoomImageController {
     @GetMapping(value="/{id}")
     public ApiResponse<List<String>> getImages(@PathVariable Long id){
         List<String> imageUrls = imageService.getImagesByCheckListId(id);
-        return ApiResponse.createSuccess(imageUrls);
+        return ApiResponse.responseSuccess(imageUrls);
     }
 
     // 이미지 삭제
@@ -93,7 +92,7 @@ public class RoomImageController {
         } catch (IOException e) {
             log.error("파일 삭제 에러", e);
         }
-        return ApiResponse.createSuccess("파일 성공적으로 삭제 imgUrl: " + imgUrl);
+        return ApiResponse.responseSuccess("파일 성공적으로 삭제 imgUrl: " + imgUrl);
     }
 
     //대표 이미지 설정

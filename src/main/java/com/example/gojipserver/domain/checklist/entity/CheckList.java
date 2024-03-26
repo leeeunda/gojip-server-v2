@@ -1,10 +1,11 @@
 package com.example.gojipserver.domain.checklist.entity;
 
-import com.example.gojipserver.domain.checklist.dto.CheckListUpdateDto;
-import com.example.gojipserver.domain.checklist.entity.bathroomstatus.*;
-import com.example.gojipserver.domain.checklist.entity.roomcondition.Building;
-import com.example.gojipserver.domain.checklist.entity.roomstatus.Boiler;
-import com.example.gojipserver.domain.checklist.entity.roomstatus.Light;
+import com.example.gojipserver.domain.checklist.dto.CheckListRequestDto;
+import com.example.gojipserver.domain.checklist.entity.cost.ManagementCostOption;
+import com.example.gojipserver.domain.checklist.entity.cost.PropertyType;
+import com.example.gojipserver.domain.checklist.entity.option.InnerOption;
+import com.example.gojipserver.domain.checklist.entity.option.OuterOption;
+import com.example.gojipserver.domain.checklist.entity.room.*;
 import com.example.gojipserver.domain.checklist_collection.entity.CheckListCollection;
 import com.example.gojipserver.domain.like.entity.Like;
 import com.example.gojipserver.domain.roomaddress.entity.RoomAddress;
@@ -25,14 +26,14 @@ import static jakarta.persistence.FetchType.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class  CheckList extends BaseTimeEntity {
+public class CheckList extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "check_list_id")
     private Long id;
 
-    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "room_address_id")
     private RoomAddress roomAddress;
 
@@ -40,7 +41,7 @@ public class  CheckList extends BaseTimeEntity {
     @JoinColumn(name = "users_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "checkList")
+    @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<CheckListCollection> checkListCollections = new ArrayList<>();
 
     @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
@@ -49,193 +50,131 @@ public class  CheckList extends BaseTimeEntity {
     @OneToMany(mappedBy = "checkList")
     private List<Like> likes = new ArrayList<>();
 
-
     // 비용
-    private int deposit; //보증금
-    private int monthlyCost; //월세
-    private int managementCost; //관리비
+    @Enumerated(EnumType.STRING)
+    private PropertyType propertyType; //매물형태
+    private Integer deposit; //보증금
+    private Integer monthlyCost; //월세비용
+    private Integer charterCost; //전세비용
+    private Integer tradingCost ; //매매비용
 
     // 관리비 포함 옵션
-    private boolean waterCost; //수도세
-    private boolean heatingCost; //난방비
-    private boolean electricCost; //전기세
-    private boolean internetCost; //인터넷비
+    @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<ManagementCostOption> managementCostOptions = new ArrayList<>();
 
     // 집 조건
-    private int area; //평수
+    private Integer area; //평수
 
     @Enumerated(EnumType.STRING)
-    private Building building; //건물상태
+    private Structure structure; // 구조
 
-    private int stationDistance; //역과의 거리
+    @Enumerated(EnumType.STRING)
+    private Floor floor; // 층
 
-    private boolean floor; //층간소음
-    private boolean wall; //방간소음
-    private boolean outside; //외부소음
+    @Enumerated(EnumType.STRING)
+    private BuildingStatus buildingStatus; //건물상태
 
-    //방 상태
+    private Integer stationDistance; //역과의 거리, null 허용 X
+
+    @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Noise> noises = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     private Light light; //채광
 
     @Enumerated(EnumType.STRING)
-    private Boiler boiler; //보일러
+    private BoilerType boilerType; //보일러
 
-    private boolean mold; //곰팡이
-    private boolean wind; //옷풍
-    private boolean bug; //벌레
-    private boolean wallpaperPollution; //벽지오염
-
-    //화장실 상태
-    @Enumerated(EnumType.STRING)
-    private Toilet toilet; //변기
+    @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<RoomStatus> roomStatuses = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    private WashStand washstand; //세면대
+    private WaterPressureStatus waterPressureStatus; //수압
 
     @Enumerated(EnumType.STRING)
-    private Sink sink; //싱크대
+    private HotWaterStatus hotWaterStatus; //온수
 
     @Enumerated(EnumType.STRING)
-    private ShowerHead showerHead; //샤워기
-
-    @Enumerated(EnumType.STRING)
-    private HotWater hotWater; //온수
-
-    @Enumerated(EnumType.STRING)
-    private Tile tile; //타일
+    private TileStatus tileStatus; //타일
 
     //내부 옵션
-    private boolean airConditioner; //에어컨
-    private boolean refrigerator; //냉장고
-    private boolean washingMachine; //세탁기
-    private boolean microwave; //전자레인지
-    private boolean gasRange; //가스레인지
-    private boolean induction; //인덕션
-    private boolean bed; //침대
-    private boolean desk; //책상
-    private boolean closet; //옷장
-    private boolean tv; //TV
-    private boolean wifiRouter; //공유기
-    private boolean computer; //컴퓨터
-    private boolean doorLock; //도어락
-    private boolean ventilator; //환풍기
+    @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<InnerOption> innerOptions = new ArrayList<>();
 
     //외부 옵션
-    private boolean parkingLot; //주차장
-    private boolean cctv; //cctv
-    private boolean elevator; //엘리베이터
-    private boolean managementOffice; //관리실
-    private boolean commonEntrance; //공동현관
-    private boolean separateDischargeSpace; //분리배출공간
+    @OneToMany(mappedBy = "checkList", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<OuterOption> outerOptions = new ArrayList<>();
 
     //기타
     private String note; //추가 사항
-    private String imgDescription; //이미지 설명
-    private int likeCount;
+    private Integer likeCount;
+
+    private String checkListName;
+    private Integer rating; // TODO: enum으로 만들 수도 있음
+
+    private boolean isPublic; // 공개여부
 
     @Builder
-    public CheckList(RoomAddress roomAddress, User user, List<RoomImage> roomImages, int deposit, int monthlyCost, int managementCost, boolean waterCost, boolean heatingCost, boolean electricCost, boolean internetCost, int area, Building building, int stationDistance, boolean floor, boolean wall, boolean outside, Light light, Boiler boiler, boolean mold, boolean wind, boolean bug, boolean wallpaperPollution, Toilet toilet, WashStand washstand, Sink sink, ShowerHead showerHead, HotWater hotWater, Tile tile, boolean airConditioner, boolean refrigerator, boolean washingMachine, boolean microwave, boolean gasRange, boolean induction, boolean bed, boolean desk, boolean closet, boolean tv, boolean wifiRouter, boolean computer, boolean doorLock, boolean ventilator, boolean parkingLot, boolean cctv, boolean elevator, boolean managementOffice, boolean commonEntrance, boolean separateDischargeSpace, String note, String imgDescription) {
+    public CheckList(RoomAddress roomAddress, User user, PropertyType propertyType, Integer deposit, Integer monthlyCost, Integer charterCost, Integer tradingCost, Integer area, Structure structure, Floor floor, BuildingStatus buildingStatus, Integer stationDistance, Light light, BoilerType boilerType, WaterPressureStatus waterPressureStatus, HotWaterStatus hotWaterStatus, TileStatus tileStatus, String note, String checkListName, Integer rating) {
         this.roomAddress = roomAddress;
         this.user = user;
-//        this.roomImages = (roomImages != null) ? roomImages : new ArrayList<>();
+        this.propertyType = propertyType;
         this.deposit = deposit;
         this.monthlyCost = monthlyCost;
-        this.managementCost = managementCost;
-        this.waterCost = waterCost;
-        this.heatingCost = heatingCost;
-        this.electricCost = electricCost;
-        this.internetCost = internetCost;
+        this.charterCost = charterCost;
+        this.tradingCost = tradingCost;
         this.area = area;
-        this.building = building;
-        this.stationDistance = stationDistance;
+        this.structure = structure;
         this.floor = floor;
-        this.wall = wall;
-        this.outside = outside;
+        this.buildingStatus = buildingStatus;
+        this.stationDistance = stationDistance;
         this.light = light;
-        this.boiler = boiler;
-        this.mold = mold;
-        this.wind = wind;
-        this.bug = bug;
-        this.wallpaperPollution = wallpaperPollution;
-        this.toilet = toilet;
-        this.washstand = washstand;
-        this.sink = sink;
-        this.showerHead = showerHead;
-        this.hotWater = hotWater;
-        this.tile = tile;
-        this.airConditioner = airConditioner;
-        this.refrigerator = refrigerator;
-        this.washingMachine = washingMachine;
-        this.microwave = microwave;
-        this.gasRange = gasRange;
-        this.induction = induction;
-        this.bed = bed;
-        this.desk = desk;
-        this.closet = closet;
-        this.tv = tv;
-        this.wifiRouter = wifiRouter;
-        this.computer = computer;
-        this.doorLock = doorLock;
-        this.ventilator = ventilator;
-        this.parkingLot = parkingLot;
-        this.cctv = cctv;
-        this.elevator = elevator;
-        this.managementOffice = managementOffice;
-        this.commonEntrance = commonEntrance;
-        this.separateDischargeSpace = separateDischargeSpace;
+        this.boilerType = boilerType;
+        this.waterPressureStatus = waterPressureStatus;
+        this.hotWaterStatus = hotWaterStatus;
+        this.tileStatus = tileStatus;
         this.note = note;
-        this.imgDescription = imgDescription;
+        this.checkListName = checkListName;
+        this.rating = rating;
     }
 
-    public void update(CheckListUpdateDto dto) {
-        this.deposit = dto.getDeposit();
-        this.monthlyCost = dto.getMonthlyCost();
-        this.managementCost = dto.getManagementCost();
-        this.waterCost = dto.isWaterCost();
-        this.heatingCost = dto.isHeatingCost();
-        this.electricCost = dto.isElectricCost();
-        this.internetCost = dto.isInternetCost();
-        this.area = dto.getArea();
-        this.building = dto.getBuilding();
-        this.stationDistance = dto.getStationDistance();
-        this.floor = dto.isFloor();
-        this.wall = dto.isWall();
-        this.outside = dto.isOutside();
-        this.light = dto.getLight();
-        this.boiler = dto.getBoiler();
-        this.mold = dto.isMold();
-        this.wind = dto.isWind();
-        this.bug = dto.isBug();
-        this.wallpaperPollution = dto.isWallpaperPollution();
-        this.toilet = dto.getToilet();
-        this.washstand = dto.getWashstand();
-        this.sink = dto.getSink();
-        this.showerHead = dto.getShowerHead();
-        this.hotWater = dto.getHotWater();
-        this.tile = dto.getTile();
-        this.airConditioner = dto.isAirConditioner();
-        this.refrigerator = dto.isRefrigerator();
-        this.washingMachine = dto.isWashingMachine();
-        this.microwave = dto.isMicrowave();
-        this.gasRange = dto.isGasRange();
-        this.induction = dto.isInduction();
-        this.bed = dto.isBed();
-        this.desk = dto.isDesk();
-        this.closet = dto.isCloset();
-        this.tv = dto.isTv();
-        this.wifiRouter = dto.isWifiRouter();
-        this.computer = dto.isComputer();
-        this.doorLock = dto.isDoorLock();
-        this.ventilator = dto.isVentilator();
-        this.parkingLot = dto.isParkingLot();
-        this.cctv = dto.isCctv();
-        this.elevator = dto.isElevator();
-        this.managementOffice = dto.isManagementOffice();
-        this.commonEntrance = dto.isCommonEntrance();
-        this.separateDischargeSpace = dto.isSeparateDischargeSpace();
-        this.note = dto.getNote();
-        this.imgDescription = dto.getImgDescription();
+    // 엔티티 생성 시 필드 기본값 설정
+    @PrePersist
+    public void prePersist() {
+        this.deposit = (this.deposit == null) ? 0 : this.deposit; // null이면(클라이언트에서 값을 입력하지 않으면) 0
+        this.monthlyCost = (this.monthlyCost == null) ? 0 : this.monthlyCost;
+        this.charterCost = (this.charterCost == null) ? 0 : this.charterCost;
+        this.tradingCost = (this.tradingCost == null) ? 0 : this.tradingCost;
+        this.likeCount = 0; // 초기값 무조건 0
+        this.isPublic = true; // 초기값 무조건 true
+
     }
+
+    public void update(CheckListRequestDto.UpdateDto dto) {
+        this.propertyType = dto.getPropertyType();
+        this.deposit = (dto.getDeposit() == null) ? 0 : dto.getDeposit();
+        this.monthlyCost = (dto.getMonthlyCost() == null) ? 0 : dto.getMonthlyCost();
+        this.charterCost = (dto.getCharterCost() == null) ? 0 : dto.getCharterCost();
+        this.tradingCost = (dto.getTradingCost() == null) ? 0 : dto.getTradingCost();
+        this.area = dto.getArea();
+        this.structure = dto.getStructure();
+        this.floor = dto.getFloor();
+        this.buildingStatus = dto.getBuildingStatus();
+        this.stationDistance = dto.getStationDistance();
+        this.light = dto.getLight();
+        this.boilerType = dto.getBoilerType();
+        this.waterPressureStatus = dto.getWaterPressureStatus();
+        this.hotWaterStatus = dto.getHotWaterStatus();
+        this.tileStatus = dto.getTileStatus();
+        this.note = dto.getNote();
+        this.checkListName = dto.getCheckListName();
+        this.rating = dto.getRating();
+    }
+
+    public void updatePublic() {
+        this.isPublic = (this.isPublic == true) ? false : true;
+    }
+
 
     // 연관관계 편의 메서드
     public void addCheckListCollection(CheckListCollection checkListCollection) {
@@ -247,6 +186,11 @@ public class  CheckList extends BaseTimeEntity {
         this.roomImages.add(roomImage);
         roomImage.registerToCheckList(this);
     }
+
+    public void removeRoomImage(RoomImage roomImage) {
+        this.roomImages.remove(roomImage);
+    }
+
     public void addLikeInCheckList(Like like){
         this.likes.add(like);
         like.registerCheckList(this);

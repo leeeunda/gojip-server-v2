@@ -22,7 +22,7 @@ public class AmazonS3Controller {
      */
     @PostMapping("/files")
     public ApiResponse<List<String>> uploadFile(@RequestPart List<MultipartFile> multipartFile) {
-        return ApiResponse.createSuccess(awsS3Service.uploadFile(multipartFile));
+        return ApiResponse.responseSuccess(awsS3Service.uploadFile(multipartFile));
     }
 
     /**
@@ -43,6 +43,6 @@ public class AmazonS3Controller {
     @DeleteMapping("/files")
     public ApiResponse<Object> deleteFile(@RequestParam String fileName) {
         awsS3Service.deleteFile(fileName);
-        return ApiResponse.createSuccess(null);
+        return ApiResponse.responseSuccess(null);
     }
 }

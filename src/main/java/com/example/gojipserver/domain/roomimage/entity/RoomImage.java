@@ -25,7 +25,7 @@ public class RoomImage extends BaseTimeEntity {
     private String imgUrl;
 
     @Column(nullable=false)
-    private Boolean isThumbnail;
+    private Boolean isThumbnail=false;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "check_list_id")

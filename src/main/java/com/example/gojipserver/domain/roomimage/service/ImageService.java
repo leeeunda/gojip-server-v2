@@ -137,23 +137,25 @@ public class ImageService {
     // 이미지 스케줄링
     @Scheduled
     @Transactional
-    public void deleteUnNecessaryImage(Long id, String imgUrl) throws IOException{
-        try{
-            final List<RoomImage> images = roomImageRepository.findAllRoomImagesByNull();
-            images.stream()
-                    .filter(image -> Duration.between(image.getCreatedDate(), LocalDateTime.now()).toHours() >= 24)
-                    .forEach(image -> {
+    public void deleteUnNecessaryImage() {
+
+        final List<RoomImage> images = roomImageRepository.findAllRoomImagesByNull();
+        images.stream()
+                .filter(image -> Duration.between(image.getCreatedDate(), LocalDateTime.now()).toHours() >= 24)
+                .forEach(image -> {
+                    try{
                         final DeleteObjectRequest deleteRequest = new DeleteObjectRequest(bucket, image.getImgUrl());
                         s3Client.deleteObject(deleteRequest);
+                        s3Client.deleteObject(deleteRequest);
                         roomImageRepository.delete(image);
-                    });
-        } catch (SdkClientException e){
-            throw new IOException("S3로부터 파일 제거 오류", e);
-        }
-
+                    } catch (SdkClientException e){
+                        log.error("S3 객체 삭제 중 오류 발생", e);
+                    }
+                });
     }
 
     // 썸네일 이미지 설정
+    @Transactional
     public void setThumbnailImage(Long roomImageId){
 
         RoomImage thumbnailImage = roomImageRepository.findById(roomImageId)

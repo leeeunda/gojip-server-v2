@@ -27,6 +27,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -78,8 +79,6 @@ public class ImageService {
     // 업로드 이후 RoomImage Entity를 DB에 저장 (imgUrl만 우선저장)
     @Transactional
     public void saveImageToDB(RoomImageSaveDto roomImageSaveDto) throws IOException{
-//        CheckList checkList=checkListRepository.findById(roomImageSaveDto.getCheckListId())
-//                .orElseThrow(() -> new IllegalArgumentException("해당 체크리스트를 찾을 수 없습니다. id= "+ roomImageSaveDto.getCheckListId()));
         RoomImage roomImage = roomImageSaveDto.toEntity();
         roomImageRepository.save(roomImage);
 
@@ -109,7 +108,7 @@ public class ImageService {
 
     // 체크리스트 Id로 관련 이미지들 찾기
     public List<String> getImagesByCheckListId(Long checkListId){
-        return roomImageRepository.findByCheckListId(checkListId)
+        return roomImageRepository.findByCheckList_Id(checkListId)
                 .stream()
                 .map(RoomImage::getImgUrl)
                 .collect(Collectors.toList());
@@ -134,8 +133,8 @@ public class ImageService {
         }
     }
 
-    // 이미지 스케줄링
-    @Scheduled
+    // 이미지가 생성된지 24시간 이후 수행, 1시간마다 수행
+    @Scheduled(fixedDelay = 3600000)
     @Transactional
     public void deleteUnNecessaryImage() {
 
@@ -145,7 +144,6 @@ public class ImageService {
                 .forEach(image -> {
                     try{
                         final DeleteObjectRequest deleteRequest = new DeleteObjectRequest(bucket, image.getImgUrl());
-                        s3Client.deleteObject(deleteRequest);
                         s3Client.deleteObject(deleteRequest);
                         roomImageRepository.delete(image);
                     } catch (SdkClientException e){
@@ -158,19 +156,24 @@ public class ImageService {
     @Transactional
     public void setThumbnailImage(Long roomImageId){
 
-        RoomImage thumbnailImage = roomImageRepository.findById(roomImageId)
+        RoomImage newThumbnailImage = roomImageRepository.findById(roomImageId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 이미지가 없습니다. id = " + roomImageId));
-        Long checkListId = thumbnailImage.getCheckListId();
+        Long checkListId = newThumbnailImage.getCheckListId();
 
-        List<RoomImage> roomImages = roomImageRepository.findByCheckListId(checkListId);
-        for (RoomImage roomImage : roomImages){
-            roomImage.setIsThumbnail(false);
+        // 해당 체크리스트의 현재 대표 이미지가 있는지 확인
+        Optional<RoomImage> iscurrentThumbnail = roomImageRepository.findByCheckList_IdAndIsThumbnailTrue(checkListId);
+
+        if (iscurrentThumbnail.isPresent()) {
+            // 기존 대표 이미지가 있으면, 대표 이미지 설정을 해제
+            RoomImage currentThumbnail = iscurrentThumbnail.get();
+            if (!currentThumbnail.getId().equals(roomImageId)) {
+                currentThumbnail.setIsThumbnail(false);
+                roomImageRepository.save(currentThumbnail);
+            }
         }
-        roomImageRepository.saveAll(roomImages);
-
         // 선택된 이미지를 썸네일 이미지로 지정
-        thumbnailImage.setIsThumbnail(true);
-        roomImageRepository.save(thumbnailImage);
+        newThumbnailImage.setIsThumbnail(true);
+        roomImageRepository.save(newThumbnailImage);
     }
 
     // 체크리스트 생성 이후 연관관계 설정

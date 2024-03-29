@@ -3,6 +3,7 @@ package com.example.gojipserver.domain.roomimage.service;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.gojipserver.domain.checklist.entity.CheckList;
@@ -16,13 +17,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -32,10 +37,7 @@ import java.util.stream.Collectors;
 public class ImageService {
 
     private final AmazonS3 s3Client;
-
     private final RoomImageRepository roomImageRepository;
-
-    private final CheckListRepository checkListRepository;
 
 
     // 버킷 이름
@@ -77,8 +79,6 @@ public class ImageService {
     // 업로드 이후 RoomImage Entity를 DB에 저장 (imgUrl만 우선저장)
     @Transactional
     public void saveImageToDB(RoomImageSaveDto roomImageSaveDto) throws IOException{
-//        CheckList checkList=checkListRepository.findById(roomImageSaveDto.getCheckListId())
-//                .orElseThrow(() -> new IllegalArgumentException("해당 체크리스트를 찾을 수 없습니다. id= "+ roomImageSaveDto.getCheckListId()));
         RoomImage roomImage = roomImageSaveDto.toEntity();
         roomImageRepository.save(roomImage);
 
@@ -108,7 +108,7 @@ public class ImageService {
 
     // 체크리스트 Id로 관련 이미지들 찾기
     public List<String> getImagesByCheckListId(Long checkListId){
-        return roomImageRepository.findByCheckListId(checkListId)
+        return roomImageRepository.findByCheckList_Id(checkListId)
                 .stream()
                 .map(RoomImage::getImgUrl)
                 .collect(Collectors.toList());
@@ -131,6 +131,49 @@ public class ImageService {
         } catch (SdkClientException e){
             throw new IOException("S3부터 파일 제거 오류", e);
         }
+    }
+
+    // 이미지가 생성된지 24시간 이후 수행, 1시간마다 수행
+    @Scheduled(fixedDelay = 3600000)
+    @Transactional
+    public void deleteUnNecessaryImage() {
+
+        final List<RoomImage> images = roomImageRepository.findAllRoomImagesByNull();
+        images.stream()
+                .filter(image -> Duration.between(image.getCreatedDate(), LocalDateTime.now()).toHours() >= 24)
+                .forEach(image -> {
+                    try{
+                        final DeleteObjectRequest deleteRequest = new DeleteObjectRequest(bucket, image.getImgUrl());
+                        s3Client.deleteObject(deleteRequest);
+                        roomImageRepository.delete(image);
+                    } catch (SdkClientException e){
+                        log.error("S3 객체 삭제 중 오류 발생", e);
+                    }
+                });
+    }
+
+    // 썸네일 이미지 설정
+    @Transactional
+    public void setThumbnailImage(Long roomImageId){
+
+        RoomImage newThumbnailImage = roomImageRepository.findById(roomImageId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이미지가 없습니다. id = " + roomImageId));
+        Long checkListId = newThumbnailImage.getCheckListId();
+
+        // 해당 체크리스트의 현재 대표 이미지가 있는지 확인
+        Optional<RoomImage> iscurrentThumbnail = roomImageRepository.findByCheckList_IdAndIsThumbnailTrue(checkListId);
+
+        if (iscurrentThumbnail.isPresent()) {
+            // 기존 대표 이미지가 있으면, 대표 이미지 설정을 해제
+            RoomImage currentThumbnail = iscurrentThumbnail.get();
+            if (!currentThumbnail.getId().equals(roomImageId)) {
+                currentThumbnail.setIsThumbnail(false);
+                roomImageRepository.save(currentThumbnail);
+            }
+        }
+        // 선택된 이미지를 썸네일 이미지로 지정
+        newThumbnailImage.setIsThumbnail(true);
+        roomImageRepository.save(newThumbnailImage);
     }
 
     // 체크리스트 생성 이후 연관관계 설정

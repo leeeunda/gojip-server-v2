@@ -62,7 +62,7 @@ public class RoomImageController {
 
     // 이미지 업데이트
     @Operation(summary = "이미지 수정", description = "이미지를 삭제 후 다시 업로드")
-    @Parameter(name = "requestUser", description = "사용자가 삭제하려고 이미지 id와 imgUrl, 올리려고 하는 새로운 파일을 받습니다.")
+    @Parameter(name = "requestUser", description = "사용자가 삭제하려고 하는 이미지 id와 imgUrl, 올리려고 하는 새로운 파일을 받습니다.")
     @PutMapping(value="/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<String> updateFile(@PathVariable Long id, @RequestParam String imgUrl, @RequestPart MultipartFile newFile) throws IOException{
 
@@ -93,5 +93,21 @@ public class RoomImageController {
             log.error("파일 삭제 에러", e);
         }
         return ApiResponse.responseSuccess("파일 성공적으로 삭제 imgUrl: " + imgUrl);
+    }
+
+    //대표 이미지 설정
+    @Operation(summary = "대표 이미지 설정", description = "업로드하는 이미지 중 대표 이미지를 설정")
+    @Parameter(name = "requestUser", description = "사용자가 대표 이미지로 설정하고자 하는 이미지 Id를 받습니다.")
+    @PostMapping(value="/set-main/{imageId}")
+    public ApiResponse<?> setThumbnailImage(@PathVariable Long imageId){
+
+        try{
+            imageService.setThumbnailImage(imageId);
+            return ApiResponse.responseSuccess(null);
+
+        } catch (Exception e){
+            log.error("썸네일 이미지 설정 에러", e);
+            return ApiResponse.response400Error("썸네일 이미지 설정 에러", null);
+        }
     }
 }

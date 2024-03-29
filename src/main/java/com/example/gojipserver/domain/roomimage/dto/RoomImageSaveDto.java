@@ -15,6 +15,7 @@ public class RoomImageSaveDto {
     public RoomImage toEntity(){
         return RoomImage.builder()
                 .imgUrl(imgUrl)
+                .isThumbnail(false)
                 .build();
     }
 

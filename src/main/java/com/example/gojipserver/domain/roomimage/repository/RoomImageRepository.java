@@ -6,6 +6,7 @@ import com.example.gojipserver.domain.roomimage.entity.RoomImage;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
 import java.util.List;
 
 public interface RoomImageRepository extends JpaRepository<RoomImage, Long> {
@@ -15,7 +16,10 @@ public interface RoomImageRepository extends JpaRepository<RoomImage, Long> {
             "WHERE roomImage.id in :list")
     List<RoomImage> findAllRoomImagesById(@Param("list") final List<Long> roomImageIds);
 
-    void deleteByCheckList(CheckList checkList);
+    @Query("SELECT ri FROM RoomImage ri WHERE ri.checkList IS NULL")
+    List<RoomImage> findAllRoomImagesByNull();
 
-    List<RoomImage> findByCheckListId(Long checkListId);
+    List<RoomImage> findByCheckList_Id(Long checkListId);
+
+    Optional<RoomImage> findByCheckList_IdAndIsThumbnailTrue(Long checkListId);
 }

@@ -98,8 +98,8 @@ public class RoomImageController {
     //대표 이미지 설정
     @Operation(summary = "대표 이미지 설정", description = "업로드하는 이미지 중 대표 이미지를 설정")
     @Parameter(name = "requestUser", description = "사용자가 대표 이미지로 설정하고자 하는 이미지 Id를 받습니다.")
-    @PostMapping(value="/set-main")
-    public ApiResponse<?> setThumbnailImage(@RequestParam Long imageId){
+    @PostMapping(value="/set-main/{imageId}")
+    public ApiResponse<?> setThumbnailImage(@PathVariable Long imageId){
 
         try{
             imageService.setThumbnailImage(imageId);

@@ -39,6 +39,7 @@ public class RoomImage extends BaseTimeEntity {
     public RoomImage(String imgUrl, CheckList checkList, Boolean isThumbnail) {
         this.imgUrl = imgUrl;
         this.isThumbnail = isThumbnail;
+        this.checkList = checkList;
     }
 
     public Long getCheckListId(){
